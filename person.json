@@ -1,0 +1,24 @@
+[
+    {"currentYear" : 2021},
+    {
+        "first name":"John",
+        "last name":"Doe",
+        "year of birth" : "-",
+        "age": 34,
+        "email":"somethinginc@atcooli.com"
+    },
+    {
+        "first name":"Jane",
+        "last name":"Doe",
+        "year of birth" : "-",
+        "age": 21,
+        "email":"hello@bla.com"
+    },
+    {
+        "first name":"John",
+        "last name":"Doe",
+        "year of birth" : "1986",
+        "age": 35,
+        "email":"something@blail.org"
+    }
+]
