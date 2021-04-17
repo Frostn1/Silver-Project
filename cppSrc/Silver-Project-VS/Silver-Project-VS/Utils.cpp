@@ -117,3 +117,15 @@ void printHelp() {
     std::cout << "Options:\n-h --help for usage and help\n-l --lex only return the lexemes of the file\n";
     exit(0);
 }
+
+std::ostream& operator<<(std::ostream& os, const Token::Kind& kind) {
+    static const char* const names[]{
+        "Number",      "Identifier",  "LeftParen",  "RightParen", "LeftSquare",
+        "RightSquare", "LeftCurly",   "RightCurly", "LessThan",   "GreaterThan",
+        "Equal",       "Plus",        "Minus",      "Asterisk",   "Slash",
+        "Hash",        "Dot",         "Comma",      "Colon",      "Semicolon",
+        "SingleQuote", "DoubleQuote", "Comment",    "Pipe",       "End",
+        "Unexpected",  "At",
+    };
+    return os << names[static_cast<int>(kind)];
+}

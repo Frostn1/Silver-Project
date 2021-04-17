@@ -1,6 +1,7 @@
 #pragma once
 #include <Windows.h>
 #include <iostream>
+#include "Token.h"
 bool is_identifier_char(char c) noexcept;
 bool is_digit(char c) noexcept;
 bool is_space(char c) noexcept;
@@ -24,3 +25,4 @@ enum colour {
 
 void col(unsigned short color);
 void printHelp();
+std::ostream& operator<<(std::ostream& os, const Token::Kind& kind);

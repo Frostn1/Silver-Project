@@ -34,8 +34,10 @@ public:
         End,
         Unexpected,
         At,
+
         
     };
+    Token();
     Token(Kind kind) noexcept : m_kind{ kind } {}
 
     Token(Kind kind, const char* beg, std::size_t len) noexcept

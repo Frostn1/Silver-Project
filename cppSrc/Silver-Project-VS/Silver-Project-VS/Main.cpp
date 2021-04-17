@@ -8,20 +8,11 @@
 #include "ErrorHandle.h"
 #include <vector>
 #include <algorithm>
+#include "Parser.h"
 
-std::ostream& operator<<(std::ostream& os, const Token::Kind& kind) {
-    static const char* const names[]{
-        "Number",      "Identifier",  "LeftParen",  "RightParen", "LeftSquare",
-        "RightSquare", "LeftCurly",   "RightCurly", "LessThan",   "GreaterThan",
-        "Equal",       "Plus",        "Minus",      "Asterisk",   "Slash",
-        "Hash",        "Dot",         "Comma",      "Colon",      "Semicolon",
-        "SingleQuote", "DoubleQuote", "Comment",    "Pipe",       "End",
-        "Unexpected",  "At",
-    };
-    return os << names[static_cast<int>(kind)];
-}
 
-void main(int argc, char** argv) {
+
+int main(int argc, char** argv) {
     std::vector<char> flags;
     int i = 1;
     for (i = 1; i < argc; i++) {
@@ -51,6 +42,9 @@ void main(int argc, char** argv) {
         }
         exit(0);
     }
+    Parser par(lex);
+    par.parse();
+
 
         
     system("pause");

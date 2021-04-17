@@ -6,7 +6,7 @@ public:
     Lexer(const char* beg) noexcept : m_beg{ beg } {}
 
     Token next() noexcept;
-
+    
 private:
     Token identifier() noexcept;
     Token number() noexcept;

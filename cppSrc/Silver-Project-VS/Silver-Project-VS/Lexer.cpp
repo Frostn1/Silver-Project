@@ -125,6 +125,7 @@ Token Lexer::next() noexcept {
     }
 }
 
+
 Token Lexer::identifier() noexcept {
     const char* start = m_beg;
     get();
@@ -157,6 +158,3 @@ Token Lexer::slash_or_comment() noexcept {
         return Token(Token::Kind::Slash, start, 1);
     }
 }
-
-
-
