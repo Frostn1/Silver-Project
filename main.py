@@ -1,5 +1,7 @@
 import sys
-import lexer
+import lexer as _lexer
+
+
 def main(argv : list):
     if len(argv) < 2:
         raise Exception("file error : missing file")
@@ -9,8 +11,11 @@ def main(argv : list):
         if not fileP.readable():
             raise Exception("file error : file not readable")
         fileContent = fileP.read()
-        lex = lexer.Lexer(fileContent)
+        lex = _lexer.Lexer(fileContent)
         lex.lexify()
+        # lex.printStructs()
+        par = _lexer.Parser()
+        par.parse(lex)
 
 if __name__ == "__main__":
     main(sys.argv)

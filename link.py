@@ -12,7 +12,7 @@ class Link:
         if not enderFlag:
             raise Exception("lexer error : expecting `)`")
         self.linkedFiles = [i.strip().strip("'").strip('"') for i in content[content.index(":")+1:currentIndex].split("|")]
-        print("Links", self.linkedFiles)
+        # print("Links", self.linkedFiles)
         return currentIndex
 
 class Export:

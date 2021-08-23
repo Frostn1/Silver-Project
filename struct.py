@@ -27,8 +27,8 @@ class Struct:
             currentIndex += 1
         if not enderFlag:
             raise Exception("lexer error : expecting `>`")
-        self.structName = content[1:content.index(":")]
-        structIden = [i.strip() for i in content[content.index(":") + 1 : currentIndex].split(",")]
+        self.structName = content[startIndex+1:startIndex+content[startIndex+1:].index(":")+1].strip()
+        structIden = [i.strip() for i in content[startIndex+content[startIndex:].index(":") + 1 : currentIndex].split(",")]
         for iden in structIden:
             if "=>" in iden:
                 call = str(iden[iden.index("=>")+2:].strip())
@@ -36,4 +36,6 @@ class Struct:
                 funcArgs = [i.strip() for i in call[call.index("(")+1:call.index(")")].split("|")]
                 self.callbacks[iden[:iden.index("=>")].strip()] = Callback(funcName, funcArgs)
                 self.idens.append(iden[:iden.index("=>")].strip())
+            else:
+                self.idens.append(iden)
         return currentIndex
