@@ -1,17 +1,32 @@
 import struct as _struct
+import chunk as _chunk
+import link as _link
 class Lexer:
     def __init__(self, content):
         self.index = 0
         self.content = content
         self.structs = []
+        self.chunks = []
+        self.links = []
+        self.exports = []
         # self.data
     def lexify(self):
-        for char in self.content:
-            if char == "<":
+        while self.index < len(self.content):
+            if self.content[self.index] == "<":
                 self.structs.append(_struct.Struct())
                 self.index = self.structs[-1].detectStructs(self.content, self.index)
                 print("current index is", self.index)
+            elif self.content[self.index] == "{":
+                print("Index is", self.index)
+                self.chunks.append(_chunk.Chunk())
                 
+                self.index = self.chunks[-1].detectData(self.content, self.index)
+            elif self.content[self.index] == "(":
+                print("Index is", self.index)
+                self.links.append(_link.Link())
+                self.index = self.links[-1].detectLinks(self.content, self.index)
+            elif self.content[self.index] == "#":
+                self.exports.append()
             else :
                 self.index += 1
             
