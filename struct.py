@@ -18,12 +18,15 @@ class Struct:
         self.idens = []
         self.structName = ""
     def detectStructs(self, content, currentIndex):
+        startIndex = currentIndex
         enderFlag = False
         for char in content[currentIndex:]:
             if char == '>' and currentIndex > 0 and content[currentIndex - 1] != '=':
                 enderFlag = True
                 break
             currentIndex += 1
+        if not enderFlag:
+            raise Exception("lexer error : expecting `>`")
         self.structName = content[1:content.index(":")]
         structIden = [i.strip() for i in content[content.index(":") + 1 : currentIndex].split(",")]
         for iden in structIden:

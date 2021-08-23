@@ -26,7 +26,8 @@ class Lexer:
                 self.links.append(_link.Link())
                 self.index = self.links[-1].detectLinks(self.content, self.index)
             elif self.content[self.index] == "#":
-                self.exports.append()
+                self.exports.append(_link.Export())
+                self.index = self.exports[-1].detectExports(self.content, self.index)
             else :
                 self.index += 1
             
