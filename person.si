@@ -1,5 +1,4 @@
 ( link : 'code.pi' )
-// this is a comment
 < person:
     first name,
     last name,
@@ -8,10 +7,11 @@
     email
 >
 {
-    'currentYear' : 2021,
-    person : [first name='Jane', last name='Doe',age=21,email='hello@bla.com'],
-    person : [first name='John', last name='Doe',age=34,email='somethinginc@atcooli.com'],
-    person : [first name='Larry', last name='Bird',email='something@blail.org', year of birth=1986]
+    'currentYear' ? 2021,
+    ano ? person[first name='Jane', last name='Doe',age=21,email='hello@bla.com'],
+    ano ? person[first name='John', last name='Doe',age=34,email='somethinginc@atcooli.com'],
+    ano ? person[first name='Larry', last name='Bird',email='something@blail.org', year of birth=1986],
+    'lebron' ? person[first name='lebron', last name='james', age=36,email='leking@gmail.com']
 }
 
 export json
