@@ -21,6 +21,7 @@ def main(argv : list):
         ast.semanticAnalysis()
         # ast.printData(ast.data)
         gen = _lexer.GEN(ast)
+        # ast.printData(ast.data)
         gen.generateCode()
 if __name__ == "__main__":
     main(sys.argv)

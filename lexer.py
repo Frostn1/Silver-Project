@@ -30,7 +30,8 @@ class GEN:
                     # fileP.write(":")
                     if isinstance(self.ast.data[data], list):
                         # print(self.ast.data[data][0][1])
-                        if len(self.ast.data[data]) > 1:
+                        length = False
+                        if len(self.ast.data[data]) > 1 or len(self.ast.data[data]) == 0:
                             length = True
                             fileContent += '['
                         for index1, section in enumerate(self.ast.data[data]):
