@@ -1,0 +1,32 @@
+{
+    "ano": [
+        {
+            "first name": "Jane",
+            "last name": "Doe",
+            "age": "21",
+            "email": "hello@bla.com",
+            "year of birth": ""
+        },
+        {
+            "first name": "John",
+            "last name": "Doe",
+            "age": "34",
+            "email": "somethinginc@atcooli.com",
+            "year of birth": ""
+        },
+        {
+            "first name": "Larry",
+            "last name": "Bird",
+            "email": "something@blail.org",
+            "year of birth": "1986"
+        }
+    ],
+    "currentYear": 2021,
+    "lebron": {
+        "first name": "lebron",
+        "last name": "james",
+        "age": "36",
+        "email": "leking@gmail.com",
+        "year of birth": ""
+    }
+}
