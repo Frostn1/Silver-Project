@@ -1,28 +1,66 @@
 import struct as _struct
 import chunk as _chunk
 import link as _link
+import json
 
+class GEN:
+    def __init__(self, ast):
+        self.ast = ast
+    def generateCode(self):
+        for export in self.ast.par.exports:
+            if export.exportName == "json":
+                self.jsonGEN()
+    def jsonGEN(self):
+        self.ast.par.filePath = self.ast.par.filePath.strip("\\").strip(".\\")
+        fileContent = ""
+        with open(self.ast.par.filePath[:self.ast.par.filePath.index(".")]+".json", "w") as fileP:
+            if not fileP.writable() :
+                raise Exception("gen error : can't create export file")
+            else:
+                fileContent += '{'
+                # fileP.write("{")
+                # print("hello", self.ast.data)
+                for index,data in enumerate(self.ast.data.keys()):
+                    if index > 0:
+                        fileContent += ','
+                        # fileP.write(',')
+                    fileContent += str(data).replace("'",'"')
+                    # fileP.write(str(data).replace("'",'"'))
+                    fileContent += ':'
+                    # fileP.write(":")
+                    if isinstance(self.ast.data[data], list):
+                        # print(self.ast.data[data][0][1])
+                        fileContent += str(self.ast.data[data][0][1]).replace("'",'"')
+                        # fileP.write(str(self.ast.data[data][0][1]).replace("'",'"'))
+                    else:
+                        fileContent += str(self.ast.data[data]).replace("'",'"')
+                        # fileP.write(str(self.ast.data[data]).replace("'",'"'))
+                # fileP.write("}")
+                fileContent += '}'
+                fileContent = eval(fileContent)
+                json.dump(fileContent, fileP, indent=4)
+        print("Opened File")
 class AST:
     def __init__(self, par):
         self.data = par.data
         self.par = par
     def semanticAnalysis(self):
         structNames = [i.structName for i in self.par.structs]
-        for index, structPair in enumerate(self.par.data["ano"]):
+        for index, structPair in enumerate(self.par.data["'ano'"]):
             if structPair[0] not in structNames:
                 raise Exception("parser error : struct type `"+structPair[0]+"` not expected")
             else:
-                self.missingArgs("ano", index, structPair)
+                self.missingArgs("'ano'", index, structPair)
 
         for index, key in enumerate(self.par.data.keys()):
-            if key != "ano":
+            if key != "'ano'":
                 # print(key, "->", self.par.data[key])
                 if isinstance(self.par.data[key], list):
                     if self.par.data[key][0][0] not in structNames:
                         raise Exception("parser error : struct type `"+structPair[0]+"` not expected")
                     else:
                         self.missingArgs(key, 0, self.par.data[key][0])
-        self.printData(self.data)
+        
 
     def missingArgs(self, address ,index ,pair):
         validStructs = []
@@ -55,10 +93,11 @@ class AST:
 
 class Parser:
     def __init__(self):
-        self.data = {"ano":[]}
+        self.data = {"'ano'":[]}
         self.exports = []
         self.links = []
     def parse(self, lexer):
+        self.filePath = lexer.filePath
         self.structs = lexer.structs
         self.exports = lexer.exports
         self.links = lexer.links
@@ -74,7 +113,7 @@ class Parser:
                         fields = {}
                         for field in data[data.index("[")+1:data.index("]")].split("|"):
                             fields[field.split("=")[0].strip().strip("'").strip('"')] = field.split("=")[1].strip().strip("'").strip('"')
-                        self.data["ano"].append((typeName,fields))
+                        self.data["'ano'"].append((typeName,fields))
             for key in chunk.chunkDict.keys():
                 data = chunk.chunkDict[key]
                 if "[" in data:
@@ -83,12 +122,12 @@ class Parser:
                         raise Exception("parser error : struct type `"+typeName+"` not expected")
                     else:
                         fields = {}
-                        self.data[key.strip().strip("'").strip('"')] = []
+                        self.data[key.strip().strip('"')] = []
                         for field in data[data.index("[")+1:data.index("]")].split("|"):
-                            fields[field.split("=")[0].strip().strip("'").strip('"')] = field.split("=")[1].strip().strip("'").strip('"')
-                        self.data[key.strip().strip("'").strip('"')].append((typeName,fields))
+                            fields[field.split("=")[0].strip().strip('"')] = field.split("=")[1].strip().strip("'").strip('"')
+                        self.data[key.strip().strip('"')].append((typeName,fields))
                 else:
-                    self.data[key.strip().strip("'").strip('"')] = data
+                    self.data[key.strip().strip('"')] = data
                 # print(key," -> ",  chunk.chunkDict[key])
     
     def printData(self):
@@ -110,7 +149,8 @@ class Parser:
                 else:
                     print()
 class Lexer:
-    def __init__(self, content):
+    def __init__(self, content, filePath):
+        self.filePath = filePath
         self.index = 0
         self.content = content
         self.structs = []
@@ -120,19 +160,14 @@ class Lexer:
     def lexify(self):
         while self.index < len(self.content):
             if self.content[self.index] == "<":
-                print("<- Count Struct ->")
                 self.structs.append(_struct.Struct())
                 self.index = self.structs[-1].detectStructs(self.content, self.index)
-                # print("current index is", self.index)
-                # print("here",[i.idens for i in self.structs])
 
             elif self.content[self.index] == "{":
-                # print("Index is", self.index)
                 self.chunks.append(_chunk.Chunk())
                 self.index = self.chunks[-1].detectData(self.content, self.index)
 
             elif self.content[self.index] == "(":
-                # print("Index is", self.index)
                 self.links.append(_link.Link())
                 self.index = self.links[-1].detectLinks(self.content, self.index)
 

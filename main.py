@@ -11,7 +11,7 @@ def main(argv : list):
         if not fileP.readable():
             raise Exception("file error : file not readable")
         fileContent = fileP.read()
-        lex = _lexer.Lexer(fileContent)
+        lex = _lexer.Lexer(fileContent, argv[1])
         lex.lexify()
         # lex.printStructs()
         par = _lexer.Parser()
@@ -19,5 +19,8 @@ def main(argv : list):
         # par.printData()
         ast = _lexer.AST(par)
         ast.semanticAnalysis()
+        # ast.printData(ast.data)
+        gen = _lexer.GEN(ast)
+        gen.generateCode()
 if __name__ == "__main__":
     main(sys.argv)

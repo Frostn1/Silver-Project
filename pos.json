@@ -1,0 +1,17 @@
+{
+    "ano": {
+        "first name": "Jane",
+        "last name": "Doe",
+        "age": "21",
+        "email": "hello@bla.com",
+        "year of birth": ""
+    },
+    "currentYear": 2021,
+    "lebron": {
+        "first name": "lebron",
+        "last name": "james",
+        "age": "36",
+        "email": "leking@gmail.com",
+        "year of birth": ""
+    }
+}
