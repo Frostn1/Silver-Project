@@ -3,34 +3,47 @@ import chunk as _chunk
 import link as _link
 
 class AST:
-    def __init__(self):
-        self.data = ""
-    def semanticAnalysis(self, par):
-        # par.printData()
-        structNames = [i.structName for i in par.structs]
-        for index, structPair in enumerate(par.data["ano"]):
+    def __init__(self, par):
+        self.data = par.data
+        self.par = par
+    def semanticAnalysis(self):
+        structNames = [i.structName for i in self.par.structs]
+        for index, structPair in enumerate(self.par.data["ano"]):
             if structPair[0] not in structNames:
                 raise Exception("parser error : struct type `"+structPair[0]+"` not expected")
             else:
-                validStructs = []
-                for i in par.structs :
-                    if i.structName == structPair[0] : 
-                        validStructs.append(i)
-                currentArgs = validStructs[0].idens
-                argsLeft = set(currentArgs) - set(structPair[1]) 
-                if len(argsLeft):
-                    callbackValues = []
-                    for i in par.structs :
-                        if i.structName == structPair[0] : 
-                            callbackValues = i.callbacks.keys()
-                    for arg in argsLeft:
-                        if arg in callbackValues:
-                            pass
-                            # print("This value has dynamic ->", arg)
-                            # TODO : Value Dynamic
-                        else:
-                            par.data["ano"][index][1][arg] = ""
-        self.data = par.data
+                self.missingArgs("ano", index, structPair)
+
+        for index, key in enumerate(self.par.data.keys()):
+            if key != "ano":
+                # print(key, "->", self.par.data[key])
+                if isinstance(self.par.data[key], list):
+                    if self.par.data[key][0][0] not in structNames:
+                        raise Exception("parser error : struct type `"+structPair[0]+"` not expected")
+                    else:
+                        self.missingArgs(key, 0, self.par.data[key][0])
+        self.printData(self.data)
+
+    def missingArgs(self, address ,index ,pair):
+        validStructs = []
+        for i in self.par.structs :
+            if i.structName == pair[0] : 
+                validStructs.append(i)
+        currentArgs = validStructs[0].idens
+        argsLeft = set(currentArgs) - set(pair[1]) 
+        if len(argsLeft):
+            callbackValues = []
+            for i in self.par.structs :
+                if i.structName == pair[0] : 
+                    callbackValues = i.callbacks.keys()
+            for arg in argsLeft:
+                if arg in callbackValues:
+                    pass
+                    # print("This value has dynamic ->", arg)
+                    # TODO : Value Dynamic
+                else:
+                    self.data[address][index][1][arg] = ""
+
     def printData(self, data):
         for key in data.keys():
             print(key, " -> ", data[key])
@@ -107,6 +120,7 @@ class Lexer:
     def lexify(self):
         while self.index < len(self.content):
             if self.content[self.index] == "<":
+                print("<- Count Struct ->")
                 self.structs.append(_struct.Struct())
                 self.index = self.structs[-1].detectStructs(self.content, self.index)
                 # print("current index is", self.index)
