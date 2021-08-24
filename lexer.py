@@ -13,6 +13,8 @@ class GEN:
     def jsonGEN(self):
         self.ast.par.filePath = self.ast.par.filePath.strip("\\").strip(".\\")
         fileContent = ""
+        if self.ast.data["'ano'"] == []:
+            self.ast.data.pop("'ano'")
         with open(self.ast.par.filePath[:self.ast.par.filePath.index(".")]+".json", "w") as fileP:
             if not fileP.writable() :
                 raise Exception("gen error : can't create export file")
