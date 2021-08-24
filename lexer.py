@@ -30,7 +30,16 @@ class GEN:
                     # fileP.write(":")
                     if isinstance(self.ast.data[data], list):
                         # print(self.ast.data[data][0][1])
-                        fileContent += str(self.ast.data[data][0][1]).replace("'",'"')
+                        if len(self.ast.data[data]) > 1:
+                            length = True
+                            fileContent += '['
+                        for index1, section in enumerate(self.ast.data[data]):
+                            if index1 > 0:
+                                fileContent += ','
+                            fileContent += str(section[1]).replace("'",'"')
+                        if length:
+                            fileContent += ']'
+                            length = False
                         # fileP.write(str(self.ast.data[data][0][1]).replace("'",'"'))
                     else:
                         fileContent += str(self.ast.data[data]).replace("'",'"')
@@ -39,7 +48,6 @@ class GEN:
                 fileContent += '}'
                 fileContent = eval(fileContent)
                 json.dump(fileContent, fileP, indent=4)
-        print("Opened File")
 class AST:
     def __init__(self, par):
         self.data = par.data
