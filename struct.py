@@ -6,7 +6,6 @@
 #     email
 # >
 # < nameOfStruct : idenList >
-
 class Callback:
     def __init__(self, name : str, args : list):
         self.name = name

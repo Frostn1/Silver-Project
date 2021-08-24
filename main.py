@@ -16,6 +16,6 @@ def main(argv : list):
         # lex.printStructs()
         par = _lexer.Parser()
         par.parse(lex)
-
+        # par.printData()
 if __name__ == "__main__":
     main(sys.argv)

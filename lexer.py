@@ -6,20 +6,41 @@ class Parser:
         self.data = {"ano":[]}
     
     def parse(self, lexer):
+        self.restrcutureData(lexer)
+        
+    def restrcutureData(self, lexer):
         for chunk in lexer.chunks:
             for data in chunk.ano:
                 if "[" in data:
                     typeName = data[:data.index("[")]
-                    print(typeName)
                     if typeName not in [i.structName for i in lexer.structs]:
                         raise Exception("parser error : struct type `"+typeName+"` not expected")
                     else:
                         
-                        print("data",data[data.index("[")+1:data.index("]")])
+                        
                         fields = {}
                         for field in data[data.index("[")+1:data.index("]")].split("|"):
                             fields[field.split("=")[0].strip().strip("'").strip('"')] = field.split("=")[1].strip().strip("'").strip('"')
-                        print("fields",fields)
+                        self.data["ano"].append((typeName,fields))
+            for key in chunk.chunkDict.keys():
+                data = chunk.chunkDict[key]
+                if "[" in data:
+                    typeName = data[:data.index("[")]
+                    if typeName not in [i.structName for i in lexer.structs]:
+                        raise Exception("parser error : struct type `"+typeName+"` not expected")
+                    else:
+                        fields = {}
+                        self.data[key.strip().strip("'").strip('"')] = []
+                        for field in data[data.index("[")+1:data.index("]")].split("|"):
+                            fields[field.split("=")[0].strip().strip("'").strip('"')] = field.split("=")[1].strip().strip("'").strip('"')
+                        self.data[key.strip().strip("'").strip('"')].append((typeName,fields))
+                else:
+                    self.data[key.strip().strip("'").strip('"')] = data
+                # print(key," -> ",  chunk.chunkDict[key])
+    
+    def printData(self):
+        for key in self.data.keys():
+            print(key, " -> ", self.data[key])
 
 class Lexer:
     def __init__(self, content):
