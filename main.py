@@ -17,5 +17,7 @@ def main(argv : list):
         par = _lexer.Parser()
         par.parse(lex)
         # par.printData()
+        ast = _lexer.AST()
+        ast.semanticAnalysis(par)
 if __name__ == "__main__":
     main(sys.argv)
