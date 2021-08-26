@@ -123,7 +123,10 @@ class Parser:
                     else:
                         fields = {}
                         for field in data[data.index("[")+1:data.index("]")].split("|"):
-                            fields[field.split("=")[0].strip().strip("'").strip('"')] = field.split("=")[1].strip().strip("'").strip('"')
+                            try:
+                                fields[field.split("=")[0].strip().strip("'").strip('"')] = field.split("=")[1].strip().strip("'").strip('"')
+                            except:
+                                raise Exception("parser error : missing `=` at data chunk")
                         self.data["'ano'"].append((typeName,fields))
             for key in chunk.chunkDict.keys():
                 data = chunk.chunkDict[key]
