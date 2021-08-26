@@ -14,12 +14,12 @@ class Chunk:
             raise Exception("lexer error : expecting `}`")
         chunks = [i.strip() for i in content[startIndex + 1 : currentIndex].split(",")]
         for chunk in chunks:
-            if "?" not in chunk:
-                raise Exception("chunk error : expecting `?`")
-            elif chunk.count("?") > 1:
-                raise Exception("chunk error : not expecting another `?`")
+            if ":" not in chunk:
+                raise Exception("chunk error : expecting `:`")
+            elif chunk.count(":") > 1:
+                raise Exception("chunk error : not expecting another `:`")
             else:
-                dataName, data = [i.strip() for i in chunk.split("?")]
+                dataName, data = [i.strip() for i in chunk.split(":")]
                 if dataName == "ano":
                     self.ano.append(data)
                 else :

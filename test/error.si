@@ -1,0 +1,10 @@
+< Animal :
+    name,
+    type,
+    age
+>
+{
+    ano : Animal[name="Niki" | type="Dog" | age=5]
+}
+
+#export json
