@@ -72,13 +72,14 @@ class AST:
         argsLeft = set(currentArgs) - set(pair[1]) 
         if len(argsLeft):
             callbackValues = []
+            addtionalData = []
             for i in self.par.structs :
                 if i.structName == pair[0] : 
-                    callbackValues = i.callbacks.keys()
+                    callbackValues = i.callbacks
+                    addtionalData.append(i)
             for arg in argsLeft:
-                if arg in callbackValues:
-                    pass
-                    # print("This value has dynamic ->", arg)
+                if arg in callbackValues.keys():
+                    self.functionDynamic(callbackValues[arg].args, callbackValues[arg].name, self.data[address][index])
                     # TODO : Value Dynamic
                     # A solution for now
                     self.data[address][index][1][arg] = ""
@@ -88,11 +89,29 @@ class AST:
     def printData(self, data):
         for key in data.keys():
             print(key, " -> ", data[key])
-    def functionDynamic(self, values, functionCall):
+    def functionDynamic(self, functionArgs, functionCall, additionalData):
         '''
         TODO: Create Function Dynamic
         '''
-        pass
+        # Checking for struct data
+        data = {}
+        value = ""
+        for arg in functionArgs:
+            data[arg] = ""
+            if '.' in arg and arg[:arg.index('.')] in [i.structName for i in self.par.structs]:
+                # TODO : Add error checking in iden name
+                # iden = arg[arg.index('.') + 1:]
+                
+                if additionalData[0] == arg[:arg.index('.')]:
+                    value = additionalData[1][arg[arg.index('.')+1:]]
+            else:
+                value = self.data['\''+arg+'\'']
+
+            if value.isnumeric():
+                data[arg] = eval(value)
+            else:
+                data[arg] = value
+        print("[ New Data ] =>\n", functionCall, data)
 
 class Parser:
     def __init__(self):
@@ -134,7 +153,6 @@ class Parser:
                         self.data[key.strip().strip('"')].append((typeName,fields))
                 else:
                     self.data[key.strip().strip('"')] = data
-                # print(key," -> ",  chunk.chunkDict[key])
     
     def printData(self):
         for key in self.data.keys():
