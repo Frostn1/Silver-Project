@@ -20,18 +20,12 @@ class GEN:
                 raise Exception("gen error : can't create export file")
             else:
                 fileContent += '{'
-                # fileP.write("{")
-                # print("hello", self.ast.data)
                 for index,data in enumerate(self.ast.data.keys()):
                     if index > 0:
                         fileContent += ','
-                        # fileP.write(',')
                     fileContent += str(data).replace("'",'"')
-                    # fileP.write(str(data).replace("'",'"'))
                     fileContent += ':'
-                    # fileP.write(":")
                     if isinstance(self.ast.data[data], list):
-                        # print(self.ast.data[data][0][1])
                         length = False
                         if len(self.ast.data[data]) > 1 or len(self.ast.data[data]) == 0:
                             length = True
@@ -43,11 +37,8 @@ class GEN:
                         if length:
                             fileContent += ']'
                             length = False
-                        # fileP.write(str(self.ast.data[data][0][1]).replace("'",'"'))
                     else:
                         fileContent += str(self.ast.data[data]).replace("'",'"')
-                        # fileP.write(str(self.ast.data[data]).replace("'",'"'))
-                # fileP.write("}")
                 fileContent += '}'
                 fileContent = eval(fileContent)
                 json.dump(fileContent, fileP, indent=4)
@@ -65,7 +56,6 @@ class AST:
 
         for index, key in enumerate(self.par.data.keys()):
             if key != "'ano'":
-                # print(key, "->", self.par.data[key])
                 if isinstance(self.par.data[key], list):
                     if self.par.data[key][0][0] not in structNames:
                         raise Exception("parser error : struct type `"+structPair[0]+"` not expected")
@@ -90,6 +80,8 @@ class AST:
                     pass
                     # print("This value has dynamic ->", arg)
                     # TODO : Value Dynamic
+                    # A solution for now
+                    self.data[address][index][1][arg] = ""
                 else:
                     self.data[address][index][1][arg] = ""
 
