@@ -31,3 +31,11 @@ As we can see age field's delta is subtracting the structs in question `year of 
 `CurrentYear` is not a special identifier, but it is just a future reference to a constant that will be presentetd in the chunk part of the code file.<br>
 When creating a new Person struct, all of the fields will be initiated with the value given, but if the `age` field will be left empty, the delta will execute with the new data it gathered and create an updated value for it.<br><br>
 
+## <b>Milestones</b>
+[x] Data structs<br>
+[x] Ano data<br>
+[x] Export to json<br>
+[x] Constant data<br>
+[ ] Delta Calculation<br>
+[ ] Data arrays<br>
+
