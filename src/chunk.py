@@ -15,6 +15,7 @@ class Chunk:
         chunks = [i.strip() for i in content[startIndex + 1 : currentIndex].split(",")]
         for chunk in chunks:
             if ":" not in chunk:
+                print(chunk)
                 raise Exception("chunk error : expecting `:`")
             elif chunk.count(":") > 1:
                 raise Exception("chunk error : not expecting another `:`")

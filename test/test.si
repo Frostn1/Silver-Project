@@ -8,8 +8,8 @@
     age
 >
 {
-    'Second Dog' ? dog[name='Niki' | breed="Hybrid" | age=5],
-    'First Dog' ? dog[name="Bonita" | breed="Sharpei" | age=8]
+    'Second Dog' : dog[name='Niki' | breed="Hybrid" | age=5],
+    'First Dog' : dog[name="Bonita" | breed="Sharpei" | age=8]
 }
 
 #export json
