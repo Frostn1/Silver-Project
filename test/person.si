@@ -1,7 +1,7 @@
 < Person:
     first name,
     last name,
-    age => Cal(CurrentYear | Person.year of birth),
+    age => (CurrentYear - Person.year of birth),
     year of birth
 >
 

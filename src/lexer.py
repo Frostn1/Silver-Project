@@ -79,7 +79,7 @@ class AST:
                     addtionalData.append(i)
             for arg in argsLeft:
                 if arg in callbackValues.keys():
-                    self.functionDynamic(callbackValues[arg].args, callbackValues[arg].name, self.data[address][index])
+                    self.functionDynamic(callbackValues[arg].expr, callbackValues[arg].name, self.data[address][index])
                     # TODO : Value Dynamic
                     # A solution for now
                     self.data[address][index][1][arg] = ""

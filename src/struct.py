@@ -2,14 +2,17 @@
 #     first name,
 #     last name,
 #     year of birth,
-#     age => calAge(currentYear | person.year of birth),
+#     age => (currentYear - person.year of birth),
 #     email
 # >
 # < nameOfStruct : idenList >
 class Callback:
-    def __init__(self, name : str, args : list):
+    def __init__(self, name : str, expression : str):
         self.name = name
-        self.args = args
+        self.expr = expression
+    
+    def solveExpression(self, data):
+        pass
     
 class Struct:
     def __init__(self):
@@ -32,8 +35,8 @@ class Struct:
             if "=>" in iden:
                 print(iden)
                 call = str(iden[iden.index("=>")+2:].strip())
-                funcName = call[:call.index("(")]
-                funcArgs = [i.strip() for i in call[call.index("(")+1:call.index(")")].split("|")]
+                funcName = str(iden[:iden.index("=>")].strip())
+                funcArgs = call[call.index("(")+1:call[::-1].index(")")]
                 self.callbacks[iden[:iden.index("=>")].strip()] = Callback(funcName, funcArgs)
                 self.idens.append(iden[:iden.index("=>")].strip())
             else:
