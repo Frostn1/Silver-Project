@@ -40,7 +40,6 @@ class GEN:
                     else:
                         fileContent += str(self.ast.data[data]).replace("'",'"')
                 fileContent += '}'
-                print(fileContent)
                 fileContent = eval(fileContent)
                 json.dump(fileContent, fileP, indent=4)
 class AST:
@@ -80,10 +79,8 @@ class AST:
                     addtionalData.append(i)
             for arg in argsLeft:
                 if arg in callbackValues.keys():
-                    self.functionDynamic(callbackValues[arg].expr, callbackValues[arg].name, self.data[address][index])
-                    # TODO : Value Dynamic
-                    # A solution for now
-                    self.data[address][index][1][arg] = ""
+                    # Dynamic value gather
+                    self.data[address][index][1][arg] = self.functionDynamic(callbackValues[arg].expr, callbackValues[arg].name, self.data[address][index])
                 else:
                     self.data[address][index][1][arg] = ""
 
@@ -91,32 +88,41 @@ class AST:
         for key in data.keys():
             print(key, " -> ", data[key])
     def functionDynamic(self, expression, argName, structsData):
-        '''
-        TODO: Create Function Dynamic
-        '''
-        print(self.data)
-        # print("CURRENT : ", functionArgs, functionCall, additionalData )
-        # # Checking for struct data
 
-        # data = {}
-        # value = ""
-        # for arg in functionArgs:
-        #     data[arg] = ""
-        #     if '.' in arg and arg[:arg.index('.')] in [i.structName for i in self.par.structs]:
-        #         # TODO : Add error checking in iden name
-        #         # iden = arg[arg.index('.') + 1:]
-                
-        #         if additionalData[0] == arg[:arg.index('.')]:
-        #             value = additionalData[1][arg[arg.index('.')+1:]]
-        #     else:
-        #         value = self.data['\''+arg+'\'']
+        validOperators = ['+','-','*','/','(',')']
+        index = 0
+        length = len(expression)
+        finalExp = ""
+        while index < length:
+            semi = index
+            currentSlice = ""
 
-        #     if value.isnumeric():
-        #         data[arg] = eval(value)
-        #     else:
-        #         data[arg] = value
-        # print("[ New Data ] =>\n", functionCall, data)
+            # Get current iden and save it in currentSlice
+            while semi < length and expression[semi] not in validOperators:
+                currentSlice += expression[semi]
+                semi += 1
+            index = semi
+            currentSlice = currentSlice.strip()
 
+            # Identifiy currentSlice
+            if currentSlice in self.data.keys():
+                finalExp += self.data[currentSlice]
+            elif '.' in currentSlice and currentSlice[:currentSlice.index('.')] in [i.structName for i in self.par.structs]:
+                fieldName = currentSlice[currentSlice.index('.')+1:]
+                finalExp += structsData[1][fieldName]
+            elif currentSlice.isnumeric() or ('.' in currentSlice and 
+                currentSlice[:currentSlice.index('.')].isnumeric() and
+                currentSlice[currentSlice.index('.')+1:].isnumeric()):
+                finalExp += currentSlice
+            elif (currentSlice[0] == '\'' and currentSlice[-1] == '\'') or (currentSlice[0] == '"' and currentSlice[-1] == '"'):
+                finalExp += currentSlice
+            else:
+                print("ERROR OCCURED", currentSlice)
+            if semi != length:
+                finalExp += expression[semi]
+            index += 1
+        return str(eval(finalExp))
+        
 class Parser:
     def __init__(self):
         self.data = {"'ano'":[]}
