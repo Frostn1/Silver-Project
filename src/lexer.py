@@ -23,7 +23,7 @@ class GEN:
                 for index,data in enumerate(self.ast.data.keys()):
                     if index > 0:
                         fileContent += ','
-                    fileContent += str(data).replace("'",'"')
+                    fileContent += '"' + str(data) + '"'
                     fileContent += ':'
                     if isinstance(self.ast.data[data], list):
                         length = False
@@ -40,6 +40,7 @@ class GEN:
                     else:
                         fileContent += str(self.ast.data[data]).replace("'",'"')
                 fileContent += '}'
+                print(fileContent)
                 fileContent = eval(fileContent)
                 json.dump(fileContent, fileP, indent=4)
 class AST:
@@ -74,7 +75,7 @@ class AST:
             callbackValues = []
             addtionalData = []
             for i in self.par.structs :
-                if i.structName == pair[0] : 
+                if i.structName == pair[0] :
                     callbackValues = i.callbacks
                     addtionalData.append(i)
             for arg in argsLeft:
@@ -89,29 +90,32 @@ class AST:
     def printData(self, data):
         for key in data.keys():
             print(key, " -> ", data[key])
-    def functionDynamic(self, functionArgs, functionCall, additionalData):
+    def functionDynamic(self, expression, argName, structsData):
         '''
         TODO: Create Function Dynamic
         '''
-        # Checking for struct data
-        data = {}
-        value = ""
-        for arg in functionArgs:
-            data[arg] = ""
-            if '.' in arg and arg[:arg.index('.')] in [i.structName for i in self.par.structs]:
-                # TODO : Add error checking in iden name
-                # iden = arg[arg.index('.') + 1:]
-                
-                if additionalData[0] == arg[:arg.index('.')]:
-                    value = additionalData[1][arg[arg.index('.')+1:]]
-            else:
-                value = self.data['\''+arg+'\'']
+        print(self.data)
+        # print("CURRENT : ", functionArgs, functionCall, additionalData )
+        # # Checking for struct data
 
-            if value.isnumeric():
-                data[arg] = eval(value)
-            else:
-                data[arg] = value
-        print("[ New Data ] =>\n", functionCall, data)
+        # data = {}
+        # value = ""
+        # for arg in functionArgs:
+        #     data[arg] = ""
+        #     if '.' in arg and arg[:arg.index('.')] in [i.structName for i in self.par.structs]:
+        #         # TODO : Add error checking in iden name
+        #         # iden = arg[arg.index('.') + 1:]
+                
+        #         if additionalData[0] == arg[:arg.index('.')]:
+        #             value = additionalData[1][arg[arg.index('.')+1:]]
+        #     else:
+        #         value = self.data['\''+arg+'\'']
+
+        #     if value.isnumeric():
+        #         data[arg] = eval(value)
+        #     else:
+        #         data[arg] = value
+        # print("[ New Data ] =>\n", functionCall, data)
 
 class Parser:
     def __init__(self):

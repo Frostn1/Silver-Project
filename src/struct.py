@@ -36,7 +36,7 @@ class Struct:
                 print(iden)
                 call = str(iden[iden.index("=>")+2:].strip())
                 funcName = str(iden[:iden.index("=>")].strip())
-                funcArgs = call[call.index("(")+1:call[::-1].index(")")]
+                funcArgs = call[call.index("(")+1:(call[::-1].index(")"))+len(call)-1]
                 self.callbacks[iden[:iden.index("=>")].strip()] = Callback(funcName, funcArgs)
                 self.idens.append(iden[:iden.index("=>")].strip())
             else:
