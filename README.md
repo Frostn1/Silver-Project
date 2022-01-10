@@ -1,64 +1,31 @@
 # Silver Project
-Data language used to create better file formatting and dynamic usage.
+Data language used to create better file formatting and dynamic usage.<br>
+Its main purpose is to generalize dynamic data written and being able to export it to different file types.
 
-## Usage
+## <b>Usage</b>
 Git clone the files to your computer.  
 Under the `src` folder you will see `main.py` file.  
 Run said file using python 3.8 or higher while giving it with args a file to compile.
 
-## Example Code
+## <b>Docs</b>
+The Silver Language is focused on the data itself and how we can manipulate and rewrite it in different ways.
+
+### Structs
+You can create various structs that can represents chunks of different data, and have it classified as one unit.
+For example we can create a Person struct
 ```go
-( link : 'code.pi' )
-< person:
+< Person:
     first name,
     last name,
-    year of birth,
-    age => calAge(currentYear | person.year of birth),
-    email
+    age => (CurrentYear - Person.year of birth),
+    year of birth
 >
-{
-    'currentYear' ? 2021,
-    ano ? person[first name='Jane' |  last name='Doe' | age=21 | email='hello@bla.com'],
-    ano ? person[first name='John' |  last name='Doe'| age=34 | email='somethinginc@atcooli.com'],
-    ano ? person[first name='Larry' | last name='Bird' | email='something@blail.org' | year of birth=1986],
-    'lebron' ? person[first name='lebron' |  last name='james'| age=36 | email='leking@gmail.com']
-}
-
-#export json
 ```
-Compiles to
+As you can see, we created a new struct named `Person` that holds 4 fields.<br>
+The fields names can be what ever you want, and don't have any limitations, this make is so you can have spaces in the name too !<br><br>
+The keen eye of you have noticed that the `age` field is a bit special, as it holds a delta, i.e. ( `=> (CurrentYear - Person.year of birth) ).`<br><br>
+As this language is dynamic and wants to take the load off the user itself, when one or more of the fields is not given when creating a new struct, the lang will try and replace it with a new value, either using a delta or a blank value.<br>
+This feature makes it that the structure of the final file export is kept and can be safely read by a 3rd party.
 
-```json
-{
-    "ano": [
-        {
-            "first name": "Jane",
-            "last name": "Doe",
-            "age": "21",
-            "email": "hello@bla.com",
-            "year of birth": ""
-        },
-        {
-            "first name": "John",
-            "last name": "Doe",
-            "age": "34",
-            "email": "somethinginc@atcooli.com",
-            "year of birth": ""
-        },
-        {
-            "first name": "Larry",
-            "last name": "Bird",
-            "email": "something@blail.org",
-            "year of birth": "1986"
-        }
-    ],
-    "currentYear": 2021,
-    "lebron": {
-        "first name": "lebron",
-        "last name": "james",
-        "age": "36",
-        "email": "leking@gmail.com",
-        "year of birth": ""
-    }
-}
-```
+
+
