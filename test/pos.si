@@ -1,9 +1,8 @@
-( link : 'code.pi' )
 < person:
     first name,
     last name,
     year of birth,
-    age => calAge(currentYear | person.year of birth),
+    age => (currentYear - person.year of birth),
     email
 >
 {

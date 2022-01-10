@@ -13,8 +13,8 @@ class GEN:
     def jsonGEN(self):
         self.ast.par.filePath = self.ast.par.filePath.strip("\\").strip(".\\")
         fileContent = ""
-        if self.ast.data["'ano'"] == []:
-            self.ast.data.pop("'ano'")
+        if self.ast.data["ano"] == []:
+            self.ast.data.pop("ano")
         with open(self.ast.par.filePath[:self.ast.par.filePath.index(".")]+".json", "w") as fileP:
             if not fileP.writable() :
                 raise Exception("gen error : can't create export file")
@@ -48,14 +48,14 @@ class AST:
         self.par = par
     def semanticAnalysis(self):
         structNames = [i.structName for i in self.par.structs]
-        for index, structPair in enumerate(self.par.data["'ano'"]):
+        for index, structPair in enumerate(self.par.data["ano"]):
             if structPair[0] not in structNames:
                 raise Exception("parser error : struct type `"+structPair[0]+"` not expected")
             else:
-                self.missingArgs("'ano'", index, structPair)
+                self.missingArgs("ano", index, structPair)
 
         for index, key in enumerate(self.par.data.keys()):
-            if key != "'ano'":
+            if key != "ano":
                 if isinstance(self.par.data[key], list):
                     if self.par.data[key][0][0] not in structNames:
                         raise Exception("parser error : struct type `"+structPair[0]+"` not expected")
@@ -125,7 +125,7 @@ class AST:
         
 class Parser:
     def __init__(self):
-        self.data = {"'ano'":[]}
+        self.data = {"ano":[]}
         self.exports = []
         self.links = []
     def parse(self, lexer):
@@ -148,7 +148,7 @@ class Parser:
                                 fields[field.split("=")[0].strip().strip("'").strip('"')] = field.split("=")[1].strip().strip("'").strip('"')
                             except:
                                 raise Exception("parser error : missing `=` at data chunk")
-                        self.data["'ano'"].append((typeName,fields))
+                        self.data["ano"].append((typeName,fields))
             for key in chunk.chunkDict.keys():
                 data = chunk.chunkDict[key]
                 if "[" in data:
