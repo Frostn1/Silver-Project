@@ -36,6 +36,8 @@ When creating a new Person struct, all of the fields will be initiated with the 
 - [x] Ano data<br>
 - [x] Export to json<br>
 - [x] Constant data<br>
+- [x] Data chunks
 - [ ] Delta Calculation<br>
 - [ ] Data arrays<br>
+- [ ] Multiple data chunks<br>
 

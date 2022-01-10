@@ -23,5 +23,6 @@ def main(argv : list):
         gen = _lexer.GEN(ast)
         # ast.printData(ast.data)
         gen.generateCode()
+        
 if __name__ == "__main__":
     main(sys.argv)

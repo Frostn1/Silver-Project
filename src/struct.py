@@ -30,6 +30,7 @@ class Struct:
         structIden = [i.strip() for i in content[startIndex+content[startIndex:].index(":") + 1 : currentIndex].split(",")]
         for iden in structIden:
             if "=>" in iden:
+                print(iden)
                 call = str(iden[iden.index("=>")+2:].strip())
                 funcName = call[:call.index("(")]
                 funcArgs = [i.strip() for i in call[call.index("(")+1:call.index(")")].split("|")]

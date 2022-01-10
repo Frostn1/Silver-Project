@@ -21,9 +21,9 @@ class Export:
         self.exportName = ""
     def detectExports(self, content : str, currentIndex : int):
         currentIndex += 1
-        if content[currentIndex: currentIndex + 6] != "export":
-            raise Exception("lexer error : expecting `export` symbol instead got `"+content[currentIndex: currentIndex + 7]+"`")
-        currentIndex += 7
+        if content[currentIndex-1: currentIndex + 5] != "export":
+            raise Exception("lexer error : expecting `export` symbol instead got `"+content[currentIndex-1: currentIndex + 5]+"`")
+        currentIndex += 6
         exportName = ""
         while currentIndex < len(content) and content[currentIndex] != "\n":
             if content[currentIndex] != " ":

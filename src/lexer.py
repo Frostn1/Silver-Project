@@ -191,11 +191,12 @@ class Lexer:
                 self.chunks.append(_chunk.Chunk())
                 self.index = self.chunks[-1].detectData(self.content, self.index)
 
-            elif self.content[self.index] == "(":
-                self.links.append(_link.Link())
-                self.index = self.links[-1].detectLinks(self.content, self.index)
+            # Removing links from the language and moving the calculation to a lambda function in the struct itself
+            # elif self.content[self.index] == "(":
+            #     self.links.append(_link.Link())
+            #     self.index = self.links[-1].detectLinks(self.content, self.index)
 
-            elif self.content[self.index] == "#":
+            elif self.content[self.index] == "e":
                 self.exports.append(_link.Export())
                 self.index = self.exports[-1].detectExports(self.content, self.index)
 

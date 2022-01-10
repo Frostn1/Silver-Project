@@ -14,7 +14,9 @@ class Chunk:
             raise Exception("lexer error : expecting `}`")
         chunks = [i.strip() for i in content[startIndex + 1 : currentIndex].split(",")]
         for chunk in chunks:
-            if ":" not in chunk:
+            if chunk == "":
+                raise Exception("chunk error : chunk line can't be empty; trailing `,` in end of chunk")
+            elif ":" not in chunk:
                 raise Exception("chunk error : expecting `:`")
             elif chunk.count(":") > 1:
                 raise Exception("chunk error : not expecting another `:`")

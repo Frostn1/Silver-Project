@@ -1,0 +1,13 @@
+< Person:
+    first name,
+    last name,
+    age => Cal(CurrentYear | Person.year of birth),
+    year of birth
+>
+
+{
+    'CurrentYear': 2021,
+    'Sean' : Person[first name='Sean' | last name= 'Dahan' | year of birth=2004]
+}
+
+export json
