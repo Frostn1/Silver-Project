@@ -32,10 +32,10 @@ As we can see age field's delta is subtracting the structs in question `year of 
 When creating a new Person struct, all of the fields will be initiated with the value given, but if the `age` field will be left empty, the delta will execute with the new data it gathered and create an updated value for it.<br><br>
 
 ## <b>Milestones</b>
-[x] Data structs<br>
-[x] Ano data<br>
-[x] Export to json<br>
-[x] Constant data<br>
-[ ] Delta Calculation<br>
-[ ] Data arrays<br>
+- [x] Data structs<br>
+- [x] Ano data<br>
+- [x] Export to json<br>
+- [x] Constant data<br>
+- [ ] Delta Calculation<br>
+- [ ] Data arrays<br>
 
