@@ -8,7 +8,7 @@ Run said file using python 3.8 or higher while giving it with args a file to com
 
 ## Example Code
 ```go
-( link : 'code.pi' )
+( link : 'code.nova' )
 < person:
     first name,
     last name,
