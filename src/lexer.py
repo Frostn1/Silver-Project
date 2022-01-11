@@ -33,6 +33,7 @@ class GEN:
                         if index:
                             fileContent += ','
                         if isinstance(data, list):
+                            print(data)
                             length = False
                             if len(data) > 1 or len(data) == 0:
                                 length = True
@@ -44,6 +45,8 @@ class GEN:
                             if length:
                                 fileContent += ']'
                                 length = False
+                        elif type(data) == tuple:
+                            fileContent += str(data[1]).replace("'",'"')
                         else:
                             fileContent += str(data).replace("'",'"')
                     if len(self.ast.data["ano"]) > 1:
