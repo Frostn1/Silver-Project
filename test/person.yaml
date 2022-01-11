@@ -1,8 +1,11 @@
 - ano: 
-    - 25
+    - "Hello"
     - 17
-CurrentYear: 2022
+    - {"first name": "Tom", "last name": "Dahan", "age": "20", "year of birth": "2002"}
+
+- CurrentYear: 2022
 - Sean: 
     - first name: Sean
     - last name: Dahan
     - age: 17
+    - year of birth: 2005

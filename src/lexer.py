@@ -51,10 +51,11 @@ class GEN:
                             fileContent += str(data).replace("'",'"')
                     if len(self.ast.data["ano"]) > 1:
                         fileContent += ']'
-                    fileContent += ','
-                self.ast.data.pop("ano")
+
                 for index,data in enumerate(self.ast.data.keys()):
-                    if index > 0:
+                    if data == "ano":
+                        continue
+                    if index:
                         fileContent += ','
                     fileContent += '"' + str(data) + '":'
                     if isinstance(self.ast.data[data], list):
@@ -105,14 +106,20 @@ class GEN:
                             if length:
                                 fileContent += ']'
                                 length = False
+                        elif type(data) == tuple:
+                            values = [i for i in data[1].values() if i]
+                            fileContent += '[ ' + str(values).replace("'",'').replace('"','')[1:-1] + ' ]'
+
                         else:
                             fileContent += str(data).replace("'",'"')
                     if len(self.ast.data["ano"]) > 1:
                         fileContent += ' ]'
                     fileContent += ',\n'
-                self.ast.data.pop("ano")
 
                 for index,data in enumerate(self.ast.data.keys()):
+                    if data == "ano":
+                        index = 0
+                        continue
                     if index:
                         fileContent += ',\n'
                     fileContent += '\t' + str(data)
@@ -166,13 +173,18 @@ class GEN:
                             if length:
                                 fileContent += ']'
                                 length = False
+                        elif type(data) == tuple:
+                            fileContent += str(data[1]).replace("'",'"')
+
                         else:
                             fileContent += str(data).replace("'",'"')
                     
                     fileContent += '\n'
-                self.ast.data.pop("ano")
 
                 for index,data in enumerate(self.ast.data.keys()):
+                    if data == "ano":
+                        index = 0
+                        continue
                     if index:
                         fileContent += '\n- '
                     fileContent += str(data)
