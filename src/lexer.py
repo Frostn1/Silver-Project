@@ -18,8 +18,6 @@ class GEN:
     def jsonGEN(self):
         self.ast.par.filePath = self.ast.par.filePath.strip("\\").strip(".\\")
         fileContent = ""
-        if "ano" in self.ast.data.keys() and self.ast.data["ano"] == []:
-            self.ast.data.pop("ano")
         with open(self.ast.par.filePath[:self.ast.par.filePath.index(".")]+".json", "w") as fileP:
             if not fileP.writable() :
                 raise Exception("gen error : can't create export file")
@@ -76,13 +74,41 @@ class GEN:
     def rawGEN(self):
         self.ast.par.filePath = self.ast.par.filePath.strip("\\").strip(".\\")
         fileContent = ""
-        if "ano" in self.ast.data.keys() and self.ast.data["ano"] == []:
-            self.ast.data.pop("ano")
         with open(self.ast.par.filePath[:self.ast.par.filePath.index(".")]+".txt", "w") as fileP:
             if not fileP.writable() :
                 raise Exception("gen error : can't create export file")
             else:
+
                 fileContent += '{\n'
+                if "ano" in self.ast.data.keys() and self.ast.data["ano"] != []:
+                    # Write ano to file
+                        
+                    fileContent += '\tano : '
+                    if len(self.ast.data["ano"]) > 1:
+                        fileContent += '[ '
+                    for index, data in enumerate(self.ast.data["ano"]):
+                        if index:
+                            fileContent += ', '
+                        if isinstance(data, list):
+                            length = False
+                            if len(data) > 1 or len(data) == 0:
+                                length = True
+                                fileContent += '['
+                            for index1, section in enumerate(data):
+                                if index1 > 0:
+                                    fileContent += ','
+                                values = [i for i in section[1].values() if i]
+                                fileContent += '[ ' + str(values).replace("'",'').replace('"','')[1:-1] + ' ]'
+                            if length:
+                                fileContent += ']'
+                                length = False
+                        else:
+                            fileContent += str(data).replace("'",'"')
+                    if len(self.ast.data["ano"]) > 1:
+                        fileContent += ' ]'
+                    fileContent += ',\n'
+                self.ast.data.pop("ano")
+
                 for index,data in enumerate(self.ast.data.keys()):
                     if index:
                         fileContent += ',\n'
