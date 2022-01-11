@@ -56,7 +56,7 @@ export yaml
 export raw
 ```
 
-Which will export to .json, .yaml. txt files:
+Which will export to .json, .yaml .txt files:
 ```json
 // Person.json
 {
