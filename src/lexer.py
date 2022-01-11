@@ -86,7 +86,28 @@ class GEN:
             if not fileP.writable() :
                 raise Exception("gen error : can't create export file")
             else:
-                pass
+                if len(self.ast.data.keys()) > 1:
+                    fileContent += '- '
+                for index,data in enumerate(self.ast.data.keys()):
+                    if index:
+                        fileContent += '\n- '
+                    fileContent += str(data)
+                    fileContent += ': '
+                    if isinstance(self.ast.data[data], list):
+                        length = False
+                        if len(self.ast.data[data]) > 1 or len(self.ast.data[data]) == 0:
+                            length = True
+                            fileContent += '\n    - '
+                        for index1, section in enumerate(self.ast.data[data]):
+                            if index1:
+                                fileContent += '\n    - '
+                            fileFormat = "\n    - " + "\n    - ".join([str(i[0]) + ': ' + str(i[1]) for i in section[1].items()])
+                            fileContent += fileFormat
+                        if length:
+                            length = False
+                    else:
+                        fileContent += str(self.ast.data[data]).replace("'",'').replace('"','')
+                fileP.write(fileContent)
 
 class AST:
     def __init__(self, par):
