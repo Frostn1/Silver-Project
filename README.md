@@ -103,6 +103,8 @@ As we can see, the Silver code is exported to different file types, while having
 - [x] Multiple data chunks<br>
 - [x] Added exports : yaml, raw<br>
 - [ ] Data arrays<br>
+- [x] Recursive fields in Delta<br> 
+
 
 ## <b>Similar Projects</b>
 - <i><b>The Dhall Configuration Language</b></i><br>
