@@ -10,10 +10,14 @@ class GEN:
         for export in self.ast.par.exports:
             if export.exportName == "json":
                 self.jsonGEN()
+            elif export.exportName == "raw":
+                self.rawGEN()
+            elif export.exportName == "yaml":
+                self.yamlGEN()
     def jsonGEN(self):
         self.ast.par.filePath = self.ast.par.filePath.strip("\\").strip(".\\")
         fileContent = ""
-        if self.ast.data["ano"] == []:
+        if "ano" in self.ast.data.keys() and self.ast.data["ano"] == []:
             self.ast.data.pop("ano")
         with open(self.ast.par.filePath[:self.ast.par.filePath.index(".")]+".json", "w") as fileP:
             if not fileP.writable() :
@@ -42,6 +46,69 @@ class GEN:
                 fileContent += '}'
                 fileContent = eval(fileContent)
                 json.dump(fileContent, fileP, indent=4)
+    def rawGEN(self):
+        self.ast.par.filePath = self.ast.par.filePath.strip("\\").strip(".\\")
+        fileContent = ""
+        if "ano" in self.ast.data.keys() and self.ast.data["ano"] == []:
+            self.ast.data.pop("ano")
+        with open(self.ast.par.filePath[:self.ast.par.filePath.index(".")]+".txt", "w") as fileP:
+            if not fileP.writable() :
+                raise Exception("gen error : can't create export file")
+            else:
+                fileContent += '{\n'
+                for index,data in enumerate(self.ast.data.keys()):
+                    if index:
+                        fileContent += ',\n'
+                    fileContent += '\t' + str(data)
+                    fileContent += ' : '
+                    if isinstance(self.ast.data[data], list):
+                        length = False
+                        if len(self.ast.data[data]) > 1 or len(self.ast.data[data]) == 0:
+                            length = True
+                            fileContent += '['
+                        for index1, section in enumerate(self.ast.data[data]):
+                            if index1:
+                                fileContent += ','
+                            fileContent += '[ ' + str(list(section[1].values())).replace("'",'').replace('"','')[1:-1] + ' ]'
+                        if length:
+                            fileContent += ']'
+                            length = False
+                    else:
+                        fileContent += str(self.ast.data[data]).replace("'",'').replace('"','')
+                fileContent += '\n}'
+                fileP.write(fileContent)
+    def yamlGEN(self):
+        self.ast.par.filePath = self.ast.par.filePath.strip("\\").strip(".\\")
+        fileContent = ""
+        if "ano" in self.ast.data.keys() and self.ast.data["ano"] == []:
+            self.ast.data.pop("ano")
+        with open(self.ast.par.filePath[:self.ast.par.filePath.index(".")]+".yaml", "w") as fileP:
+            if not fileP.writable() :
+                raise Exception("gen error : can't create export file")
+            else:
+                if len(self.ast.data.keys()) > 1:
+                    fileContent += '- '
+                for index,data in enumerate(self.ast.data.keys()):
+                    if index:
+                        fileContent += '\n- '
+                    fileContent += str(data)
+                    fileContent += ': '
+                    if isinstance(self.ast.data[data], list):
+                        length = False
+                        if len(self.ast.data[data]) > 1 or len(self.ast.data[data]) == 0:
+                            length = True
+                            fileContent += '\n    - '
+                        for index1, section in enumerate(self.ast.data[data]):
+                            if index1:
+                                fileContent += '\n    - '
+                            fileFormat = "\n    - " + "\n    - ".join([str(i[0]) + ': ' + str(i[1]) for i in section[1].items()])
+                            fileContent += fileFormat
+                        if length:
+                            length = False
+                    else:
+                        fileContent += str(self.ast.data[data]).replace("'",'').replace('"','')
+                fileP.write(fileContent)
+
 class AST:
     def __init__(self, par):
         self.data = par.data
