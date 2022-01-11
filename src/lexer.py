@@ -144,12 +144,25 @@ class AST:
                 if i.structName == pair[0] :
                     callbackValues = i.callbacks
                     addtionalData.append(i)
+            dynamicSave = []
+
             for arg in argsLeft:
                 if arg in callbackValues.keys():
+                    valueFlagCheck = self.functionDynamic(callbackValues[arg].expr, callbackValues[arg].name, self.data[address][index])
                     # Dynamic value gather
-                    self.data[address][index][1][arg] = self.functionDynamic(callbackValues[arg].expr, callbackValues[arg].name, self.data[address][index])
+                    if valueFlagCheck == -1:
+                        dynamicSave.append([address, index, arg])
+                        continue
+                    self.data[address][index][1][arg] = valueFlagCheck
                 else:
                     self.data[address][index][1][arg] = ""
+            for save in dynamicSave:
+                valueFlagCheck = self.functionDynamic(callbackValues[arg].expr, callbackValues[arg].name, self.data[address][index])
+                # Second Run Dynamic value gather
+                if valueFlagCheck == -1:
+                    dynamicSave.append([address, index, arg])
+                    continue
+                self.data[save[0]][save[1]][1][save[2]] = valueFlagCheck
 
     def printData(self, data):
         for key in data.keys():
@@ -176,6 +189,8 @@ class AST:
                 finalExp += self.data[currentSlice]
             elif '.' in currentSlice and currentSlice[:currentSlice.index('.')] in [i.structName for i in self.par.structs]:
                 fieldName = currentSlice[currentSlice.index('.')+1:]
+                if fieldName not in structsData[1].keys():
+                    return -1
                 finalExp += structsData[1][fieldName]
             elif currentSlice.isnumeric() or ('.' in currentSlice and 
                 currentSlice[:currentSlice.index('.')].isnumeric() and
