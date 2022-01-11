@@ -114,7 +114,6 @@ class GEN:
                             fileContent += str(data).replace("'",'"')
                     if len(self.ast.data["ano"]) > 1:
                         fileContent += ' ]'
-                    fileContent += ',\n'
 
                 for index,data in enumerate(self.ast.data.keys()):
                     if data == "ano":
