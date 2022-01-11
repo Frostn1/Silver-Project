@@ -94,6 +94,13 @@ As we can see, the Silver code is exported to different file types, while having
 
 
 ## <b>Milestones</b>
+### Current
+
+- [ ] Data arrays<br>
+- [ ] Miss order of delta<br> 
+
+### Done
+
 - [x] Data structs<br>
 - [x] Ano data<br>
 - [x] Export to json<br>
@@ -102,10 +109,9 @@ As we can see, the Silver code is exported to different file types, while having
 - [x] Delta Calculation<br>
 - [x] Multiple data chunks<br>
 - [x] Added exports : yaml, raw<br>
-- [ ] Data arrays<br>
 - [x] Recursive fields in Delta<br> 
 - [x] Constant Values in ano<br> 
-- [ ] Miss order of delta<br> 
+
 - [x] Fix empty values in raw export<br> 
 
 ## <b>Similar Projects</b>
