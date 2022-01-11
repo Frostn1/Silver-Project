@@ -252,10 +252,11 @@ class AST:
                 else:
                     self.data[address][index][1][arg] = ""
             for save in dynamicSave:
-                valueFlagCheck = self.functionDynamic(callbackValues[arg].expr, callbackValues[arg].name, self.data[address][index])
+                if save[2] in callbackValues.keys():
+                    valueFlagCheck = self.functionDynamic(callbackValues[save[2]].expr, callbackValues[save[2]].name, self.data[address][index])
                 # Second Run Dynamic value gather
                 if valueFlagCheck == -1:
-                    dynamicSave.append([address, index, arg])
+                    dynamicSave.append([save[0], save[1], save[2]])
                     continue
                 self.data[save[0]][save[1]][1][save[2]] = valueFlagCheck
 
@@ -298,6 +299,8 @@ class AST:
             if semi != length:
                 finalExp += expression[semi]
             index += 1
+        if finalExp[-1] in validOperators:
+            return ""
         return str(eval(finalExp))
         
 class Parser:
