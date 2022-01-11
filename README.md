@@ -102,8 +102,11 @@ As we can see, the Silver code is exported to different file types, while having
 - [x] Delta Calculation<br>
 - [x] Multiple data chunks<br>
 - [x] Added exports : yaml, raw<br>
+- [x] Recursive fields in Delta<br>
 - [ ] Data arrays<br>
-- [x] Recursive fields in Delta<br> 
+- [ ] Constant Values in ano<br>
+- [ ] Miss order of delta<br>
+- [ ] Fix empty values in raw export
 
 
 ## <b>Similar Projects</b>

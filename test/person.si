@@ -1,17 +1,16 @@
 < Person:
     first name,
     last name,
-    pre age => (Person.age - 1),
     age => (CurrentYear - Person.year of birth),
     year of birth
 >
 
 {
     'CurrentYear': 2022,
-    'Sean' : Person[first name='Sean' | last name= 'Dahan' | year of birth=1998]
+    'Sean' : Person[first name='Sean' | last name= 'Dahan' | age=24],
+    ano : Person[first name='John' | last name='Doe'],
+    ano : Person[first name='Jane' | last name='Doe']
 }
 
 
-export json
-export yaml
 export raw
