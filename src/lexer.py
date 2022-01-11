@@ -32,7 +32,7 @@ class GEN:
                     if len(self.ast.data["ano"]) > 1:
                         fileContent += '['
                     for index, data in enumerate(self.ast.data["ano"]):
-                        if index > 0:
+                        if index:
                             fileContent += ','
                         if isinstance(data, list):
                             length = False
@@ -96,7 +96,8 @@ class GEN:
                         for index1, section in enumerate(self.ast.data[data]):
                             if index1:
                                 fileContent += ','
-                            fileContent += '[ ' + str(list(section[1].values())).replace("'",'').replace('"','')[1:-1] + ' ]'
+                            values = [i for i in section[1].values() if i]
+                            fileContent += '[ ' + str(values).replace("'",'').replace('"','')[1:-1] + ' ]'
                         if length:
                             fileContent += ']'
                             length = False

@@ -1,4 +1,4 @@
 {
 	CurrentYear : 2022,
-	Sean : [ Sean, Dahan, 1998, 24, 23 ]
+	Sean : [ Sean, Dahan, 17 ]
 }
