@@ -17,7 +17,7 @@ class Link:
 
 class Export:
     def __init__(self):
-        self.validExports = ['json']
+        self.validExports = ['json', 'raw', 'yaml']
         self.exportName = ""
     def detectExports(self, content : str, currentIndex : int):
         currentIndex += 1
