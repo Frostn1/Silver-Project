@@ -40,4 +40,4 @@ When creating a new Person struct, all of the fields will be initiated with the 
 - [x] Delta Calculation<br>
 - [ ] Data arrays<br>
 - [x] Multiple data chunks<br>
-
+- [x] Added exports : yaml, raw<br>
