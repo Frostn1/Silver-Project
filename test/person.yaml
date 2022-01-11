@@ -1,17 +1,11 @@
 - ano: 
-    - 
-    - first name: John
-    - last name: Doe
-    - year of birth: 
-    - age: 
-    - 
-    - first name: Jane
-    - last name: Doe
-    - year of birth: 
-    - age: 
+    - "Hello"
+    - 17
+    - {"first name": "Tom", "last name": "Dahan", "age": "20", "year of birth": "2002"}
+
 - CurrentYear: 2022
 - Sean: 
     - first name: Sean
     - last name: Dahan
-    - age: 24
-    - year of birth: 
+    - age: 17
+    - year of birth: 2005

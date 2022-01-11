@@ -56,7 +56,7 @@ export yaml
 export raw
 ```
 
-Which will export to .json, .yaml. txt files:
+Which will export to .json, .yaml .txt files:
 ```json
 // Person.json
 {
@@ -94,6 +94,13 @@ As we can see, the Silver code is exported to different file types, while having
 
 
 ## <b>Milestones</b>
+### Current
+
+- [ ] Data arrays<br>
+- [ ] Miss order of delta<br> 
+
+### Done
+
 - [x] Data structs<br>
 - [x] Ano data<br>
 - [x] Export to json<br>
@@ -102,12 +109,11 @@ As we can see, the Silver code is exported to different file types, while having
 - [x] Delta Calculation<br>
 - [x] Multiple data chunks<br>
 - [x] Added exports : yaml, raw<br>
-- [x] Recursive fields in Delta<br>
-- [ ] Data arrays<br>
-- [ ] Constant Values in ano<br>
-- [ ] Miss order of delta<br>
-- [ ] Fix empty values in raw export
+- [x] Recursive fields in Delta<br> 
+- [x] Constant Values in ano<br> 
 
+
+- [x] Fix empty values in raw export<br> 
 
 ## <b>Similar Projects</b>
 - <i><b>The Dhall Configuration Language</b></i><br>
