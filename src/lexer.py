@@ -134,14 +134,41 @@ class GEN:
     def yamlGEN(self):
         self.ast.par.filePath = self.ast.par.filePath.strip("\\").strip(".\\")
         fileContent = ""
-        if "ano" in self.ast.data.keys() and self.ast.data["ano"] == []:
-            self.ast.data.pop("ano")
         with open(self.ast.par.filePath[:self.ast.par.filePath.index(".")]+".yaml", "w") as fileP:
             if not fileP.writable() :
                 raise Exception("gen error : can't create export file")
             else:
                 if len(self.ast.data.keys()) > 1:
                     fileContent += '- '
+                if "ano" in self.ast.data.keys() and self.ast.data["ano"] != []:
+                    # Write ano to file
+                        
+                    fileContent += 'ano: '
+                    if len(self.ast.data["ano"]) > 1:
+                        fileContent += '\n    - '
+                    for index, data in enumerate(self.ast.data["ano"]):
+                        if index:
+                            fileContent += '\n    - '
+                        if isinstance(data, list):
+                            length = False
+                            if len(data) > 1 or len(data) == 0:
+                                length = True
+                                fileContent += '\n    - '
+                            for index1, section in enumerate(data):
+                                if index1:
+                                    fileContent += '\n    - '
+                                fileFormat = "\n    - " + "\n    - ".join([str(i[0]) + ': ' + str(i[1]) for i in section[1].items()])
+                                
+                                fileContent += fileFormat
+                            if length:
+                                fileContent += ']'
+                                length = False
+                        else:
+                            fileContent += str(data).replace("'",'"')
+                    
+                    fileContent += '\n'
+                self.ast.data.pop("ano")
+
                 for index,data in enumerate(self.ast.data.keys()):
                     if index:
                         fileContent += '\n- '
@@ -155,7 +182,7 @@ class GEN:
                         for index1, section in enumerate(self.ast.data[data]):
                             if index1:
                                 fileContent += '\n    - '
-                            fileFormat = "\n    - " + "\n    - ".join([str(i[0]) + ': ' + str(i[1]) for i in section[1].items()])
+                            fileFormat = "\n    - " + "\n    - ".join([str(i[0]) + ': ' + str(i[1]) for i in section[1].items() if i[1]])
                             fileContent += fileFormat
                         if length:
                             length = False
