@@ -15,34 +15,44 @@ class GEN:
             elif export.exportName == "yaml":
                 self.yamlGEN()
     def jsonGEN(self):
+
         self.ast.par.filePath = self.ast.par.filePath.strip("\\").strip(".\\")
-        fileContent = ""
-        if "ano" in self.ast.data.keys() and self.ast.data["ano"] == []:
-            self.ast.data.pop("ano")
+        self.fileContent = ""
+
+        def writeJsonData(self, data):
+            if isinstance(self.ast.data[data], list):
+                length = False
+                if len(self.ast.data[data]) > 1 or len(self.ast.data[data]) == 0:
+                    length = True
+                    self.fileContent += '['
+                for index1, section in enumerate(self.ast.data[data]):
+                    if index1 > 0:
+                        self.fileContent += ','
+                    self.fileContent += str(section[1]).replace("'",'"')
+                if length:
+                    self.fileContent += ']'
+                    length = False
+            else:
+                print("Adding data:",self.ast.data[data])
+                self.fileContent += str(self.ast.data[data]).replace("'",'"')
+        
         with open(self.ast.par.filePath[:self.ast.par.filePath.index(".")]+".json", "w") as fileP:
             if not fileP.writable() :
                 raise Exception("gen error : can't create export file")
             else:
                 fileContent += '{'
+                if "ano" in self.ast.data.keys() and self.ast.data["ano"] == []:
+                    self.ast.data.pop("ano")
+                    print("Popped")
+                else:
+                    # Write ano to file
+
                 for index,data in enumerate(self.ast.data.keys()):
                     if index > 0:
                         fileContent += ','
                     fileContent += '"' + str(data) + '"'
                     fileContent += ':'
-                    if isinstance(self.ast.data[data], list):
-                        length = False
-                        if len(self.ast.data[data]) > 1 or len(self.ast.data[data]) == 0:
-                            length = True
-                            fileContent += '['
-                        for index1, section in enumerate(self.ast.data[data]):
-                            if index1 > 0:
-                                fileContent += ','
-                            fileContent += str(section[1]).replace("'",'"')
-                        if length:
-                            fileContent += ']'
-                            length = False
-                    else:
-                        fileContent += str(self.ast.data[data]).replace("'",'"')
+                    
                 fileContent += '}'
                 fileContent = eval(fileContent)
                 json.dump(fileContent, fileP, indent=4)
@@ -116,9 +126,9 @@ class AST:
     def semanticAnalysis(self):
         structNames = [i.structName for i in self.par.structs]
         for index, structPair in enumerate(self.par.data["ano"]):
-            if structPair[0] not in structNames:
+            if type(structPair) == tuple and structPair[0] not in structNames:
                 raise Exception("parser error : struct type `"+structPair[0]+"` not expected")
-            else:
+            elif type(structPair) == tuple:
                 self.missingArgs("ano", index, structPair)
 
         for index, key in enumerate(self.par.data.keys()):
@@ -231,6 +241,8 @@ class Parser:
                             except:
                                 raise Exception("parser error : missing `=` at data chunk")
                         self.data["ano"].append((typeName,fields))
+                else:
+                    self.data["ano"].append(data)
             for key in chunk.chunkDict.keys():
                 data = chunk.chunkDict[key]
                 if "[" in data:
