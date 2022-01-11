@@ -1,3 +1,4 @@
+from os import write
 import struct as _struct
 import chunk as _chunk
 import link as _link
@@ -15,44 +16,60 @@ class GEN:
             elif export.exportName == "yaml":
                 self.yamlGEN()
     def jsonGEN(self):
-
         self.ast.par.filePath = self.ast.par.filePath.strip("\\").strip(".\\")
-        self.fileContent = ""
-
-        def writeJsonData(self, data):
-            if isinstance(self.ast.data[data], list):
-                length = False
-                if len(self.ast.data[data]) > 1 or len(self.ast.data[data]) == 0:
-                    length = True
-                    self.fileContent += '['
-                for index1, section in enumerate(self.ast.data[data]):
-                    if index1 > 0:
-                        self.fileContent += ','
-                    self.fileContent += str(section[1]).replace("'",'"')
-                if length:
-                    self.fileContent += ']'
-                    length = False
-            else:
-                print("Adding data:",self.ast.data[data])
-                self.fileContent += str(self.ast.data[data]).replace("'",'"')
-        
+        fileContent = ""
+        if "ano" in self.ast.data.keys() and self.ast.data["ano"] == []:
+            self.ast.data.pop("ano")
         with open(self.ast.par.filePath[:self.ast.par.filePath.index(".")]+".json", "w") as fileP:
             if not fileP.writable() :
                 raise Exception("gen error : can't create export file")
             else:
                 fileContent += '{'
-                if "ano" in self.ast.data.keys() and self.ast.data["ano"] == []:
-                    self.ast.data.pop("ano")
-                    print("Popped")
-                else:
+                if "ano" in self.ast.data.keys() and self.ast.data["ano"] != []:
                     # Write ano to file
-
+                        
+                    fileContent += '"ano":'
+                    if len(self.ast.data["ano"]) > 1:
+                        fileContent += '['
+                    for index, data in enumerate(self.ast.data["ano"]):
+                        if index > 0:
+                            fileContent += ','
+                        if isinstance(data, list):
+                            length = False
+                            if len(data) > 1 or len(data) == 0:
+                                length = True
+                                fileContent += '['
+                            for index1, section in enumerate(data):
+                                if index1 > 0:
+                                    fileContent += ','
+                                fileContent += str(section[1]).replace("'",'"')
+                            if length:
+                                fileContent += ']'
+                                length = False
+                        else:
+                            fileContent += str(data).replace("'",'"')
+                    if len(self.ast.data["ano"]) > 1:
+                        fileContent += ']'
+                    fileContent += ','
+                self.ast.data.pop("ano")
                 for index,data in enumerate(self.ast.data.keys()):
                     if index > 0:
                         fileContent += ','
-                    fileContent += '"' + str(data) + '"'
-                    fileContent += ':'
-                    
+                    fileContent += '"' + str(data) + '":'
+                    if isinstance(self.ast.data[data], list):
+                        length = False
+                        if len(self.ast.data[data]) > 1 or len(self.ast.data[data]) == 0:
+                            length = True
+                            fileContent += '['
+                        for index1, section in enumerate(self.ast.data[data]):
+                            if index1 > 0:
+                                fileContent += ','
+                            fileContent += str(section[1]).replace("'",'"')
+                        if length:
+                            fileContent += ']'
+                            length = False
+                    else:
+                        fileContent += str(self.ast.data[data]).replace("'",'"')
                 fileContent += '}'
                 fileContent = eval(fileContent)
                 json.dump(fileContent, fileP, indent=4)

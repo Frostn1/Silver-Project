@@ -9,7 +9,8 @@
 {
     'CurrentYear': 2022,
     'Sean' : Person[first name='Sean' | last name= 'Dahan' | year of birth=1998],
-    ano : 25
+    ano : 25,
+    ano : "Name"
 }
 
 
