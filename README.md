@@ -111,8 +111,6 @@ As we can see, the Silver code is exported to different file types, while having
 - [x] Added exports : yaml, raw<br>
 - [x] Recursive fields in Delta<br> 
 - [x] Constant Values in ano<br> 
-
-
 - [x] Fix empty values in raw export<br> 
 
 ## <b>Similar Projects</b>

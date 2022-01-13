@@ -331,12 +331,15 @@ class Parser:
                         self.data["ano"].append((typeName,fields))
                 else:
                     self.data["ano"].append(data)
+                    
             for key in chunk.chunkDict.keys():
                 data = chunk.chunkDict[key]
                 if "[" in data:
                     typeName = data[:data.index("[")]
-                    if typeName not in [i.structName for i in lexer.structs]:
+                    if typeName != '' and typeName not in [i.structName for i in lexer.structs]:
                         raise Exception("parser error : struct type `"+typeName+"` not expected")
+                    elif typeName == '':
+                        print("Got a list")
                     else:
                         fields = {}
                         self.data[key.strip().strip('"')] = []

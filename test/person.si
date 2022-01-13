@@ -7,13 +7,10 @@
 
 {
     'CurrentYear': 2022,
-    'Sean' : Person[first name='Sean' | last name= 'Dahan' | age = 17],
-    ano : "Hello",
-    ano : 17,
-    ano : Person[first name='Tom' | last name= 'Dahan' | age = 20]
+    'People' : [
+        Person(first name='Sean' | last name= 'Dahan')
+        Person(first name='Tom' | last name= 'Dahan')
+        ]
 }
 
-
 export json
-export raw
-export yaml
