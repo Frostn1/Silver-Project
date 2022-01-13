@@ -51,7 +51,7 @@ class GEN:
                             fileContent += str(data).replace("'",'"')
                     if len(self.ast.data["ano"]) > 1:
                         fileContent += ']'
-
+                self.ast.data.pop('ano')
                 for index,data in enumerate(self.ast.data.keys()):
                     if data == "ano":
                         continue
@@ -114,6 +114,7 @@ class GEN:
                             fileContent += str(data).replace("'",'"')
                     if len(self.ast.data["ano"]) > 1:
                         fileContent += ' ]'
+                self.ast.data.pop('ano')
 
                 for index,data in enumerate(self.ast.data.keys()):
                     if data == "ano":
@@ -179,6 +180,7 @@ class GEN:
                             fileContent += str(data).replace("'",'"')
                     
                     fileContent += '\n'
+                self.ast.data.pop('ano')
 
                 for index,data in enumerate(self.ast.data.keys()):
                     if data == "ano":
@@ -317,7 +319,7 @@ class Parser:
     def restrcutureData(self, lexer):
         for chunk in lexer.chunks:
             for data in chunk.ano:
-                if "[" in data:
+                if "(" in data:
                     typeName = data[:data.index("[")]
                     if typeName not in [i.structName for i in lexer.structs]:
                         raise Exception("parser error : struct type `"+typeName+"` not expected")
@@ -331,7 +333,7 @@ class Parser:
                         self.data["ano"].append((typeName,fields))
                 else:
                     self.data["ano"].append(data)
-                    
+
             for key in chunk.chunkDict.keys():
                 data = chunk.chunkDict[key]
                 if "[" in data:
@@ -339,7 +341,10 @@ class Parser:
                     if typeName != '' and typeName not in [i.structName for i in lexer.structs]:
                         raise Exception("parser error : struct type `"+typeName+"` not expected")
                     elif typeName == '':
-                        print("Got a list")
+
+                        values = []
+                        print("Chunk Data", self.getData(data, lexer))
+
                     else:
                         fields = {}
                         self.data[key.strip().strip('"')] = []
@@ -349,6 +354,25 @@ class Parser:
                 else:
                     self.data[key.strip().strip('"')] = data
     
+    def getData(self, data, lexer):
+        if "[" in data:
+            typeName = data[:data.index("[")]
+            if typeName != '' and typeName not in [i.structName for i in lexer.structs]:
+                raise Exception("parser error : struct type `"+typeName+"` not expected")
+            elif typeName == '':
+
+                print("Got a list",data.split())
+                values = []
+                return values
+            else:
+                fields = {}
+                values = []
+                for field in data[data.index("[")+1:data.index("]")].split("|"):
+                    fields[field.split("=")[0].strip().strip('"')] = field.split("=")[1].strip().strip("'").strip('"')
+                values.append((typeName,fields))
+                return values
+        else:
+            return data
     def printData(self):
         for key in self.data.keys():
             print(key, " -> ", self.data[key])
