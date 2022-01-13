@@ -1,6 +1,7 @@
 from os import write
 import struct as _struct
 import chunk as _chunk
+from unittest import skip
 import link as _link
 import json
 
@@ -355,12 +356,39 @@ class Parser:
                     self.data[key.strip().strip('"')] = data
     
     def getData(self, data, lexer):
+
+        def skipZero(string, index):
+            while index < len(string) and string[index] in [' ', '\n', '\t']:
+                index += 1
+            return index
         if "[" in data:
             typeName = data[:data.index("[")]
             if typeName != '' and typeName not in [i.structName for i in lexer.structs]:
                 raise Exception("parser error : struct type `"+typeName+"` not expected")
             elif typeName == '':
-
+                data = data[1:]
+                index = 0
+                current = data[index]
+                keyword = ""
+                while index < len(data) and current != ',':
+                    keyword += current
+                    if keyword != '' and keyword in [i.structName for i in lexer.structs]:
+                        print("Got a struct")
+                        index = skipZero(data[index:], index)
+                        current = data[index]
+                        if current != '[':
+                            raise Exception(f"parser error : expected '[' in structs creation; got '{current}'")
+                        structWORD = keyword
+                        while index < len(data) and current != ']':
+                            structWORD += current
+                            index += 1
+                            current = data[index]
+                        structWORD += ']'
+                        # `structWORD` will hold the struct creation line
+                        # Call getData again to get the value of structs creation
+                    index += 1
+                    current = data[index]
+                    
                 print("Got a list",data.split())
                 values = []
                 return values

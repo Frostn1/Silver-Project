@@ -7,10 +7,7 @@
 
 {
     'CurrentYear': 2022,
-    'People' : [
-        Person[first name='Sean' | last name= 'Dahan']
-        Person[first name='Tom' | last name= 'Dahan']
-        ]
+    'People' : [ Person[first name='Sean' | last name= 'Dahan'] Person[first name='Tom' | last name= 'Dahan'] ]
 }
 
 export json
