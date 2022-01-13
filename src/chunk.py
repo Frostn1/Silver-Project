@@ -25,6 +25,5 @@ class Chunk:
                 if dataName == "ano":
                     self.ano.append(data)
                 else :
-                    print("DATA:", data)
                     self.chunkDict[dataName[1:-1]] = data
         return currentIndex

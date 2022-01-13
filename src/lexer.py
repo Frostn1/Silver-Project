@@ -344,6 +344,7 @@ class Parser:
                     elif typeName == '':
 
                         values = []
+                        print("DATA SENT", data)
                         print("Chunk Data", self.getData(data, lexer))
 
                     else:
@@ -361,23 +362,25 @@ class Parser:
             while index < len(string) and string[index] in [' ', '\n', '\t']:
                 index += 1
             return index
+        
+        
         if "[" in data:
             typeName = data[:data.index("[")]
             if typeName != '' and typeName not in [i.structName for i in lexer.structs]:
                 raise Exception("parser error : struct type `"+typeName+"` not expected")
             elif typeName == '':
-                data = data[1:]
+                values = []
+                data = data[1:].strip()
                 index = 0
                 current = data[index]
                 keyword = ""
-                while index < len(data) and current != ',':
+                while index < len(data) and current != ']':
                     keyword += current
-                    if keyword != '' and keyword in [i.structName for i in lexer.structs]:
-                        print("Got a struct")
+                    print(current)
+                    if current == '[' and keyword != '' and keyword[:-1] in [i.structName for i in lexer.structs]:
                         index = skipZero(data[index:], index)
                         current = data[index]
-                        if current != '[':
-                            raise Exception(f"parser error : expected '[' in structs creation; got '{current}'")
+                        
                         structWORD = keyword
                         while index < len(data) and current != ']':
                             structWORD += current
@@ -386,11 +389,24 @@ class Parser:
                         structWORD += ']'
                         # `structWORD` will hold the struct creation line
                         # Call getData again to get the value of structs creation
-                    index += 1
+                        print("WORD", structWORD)
+                        values.append(self.getData(structWORD, lexer)[0])
+                        index += 1
+                        current = data[index]
+                        print("CURRENT", current)
+                        keyword = ""
+
+                    if current in [' ', '\n', '\t']:
+                        index = skipZero(data[index:], index)
+                    if index + 1 < len(data):
+                        index += 1
+                    else:
+                        print("GOT HERE", current)
                     current = data[index]
-                    
-                print("Got a list",data.split())
-                values = []
+                
+                print("VALUES", values)
+                # print("Got a list",data.split())
+                
                 return values
             else:
                 fields = {}
