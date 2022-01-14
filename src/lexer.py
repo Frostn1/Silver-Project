@@ -55,6 +55,7 @@ class GEN:
                             fileContent += str(data).replace("'",'"')
                     if len(self.ast.data["ano"]) > 1:
                         fileContent += ']'
+                    fileContent += ','
                 self.ast.data.pop('ano')
                 for index,data in enumerate(self.ast.data.keys()):
                     if data == "ano":
@@ -408,7 +409,25 @@ class Parser:
                         index += 1
                         current = data[index]
                         keyword = ""
+                    elif current == '"' or current == '\'':
+                        starter = current
+                        index += 1
+                        current = data[index]
+                        foundString = ""
+                        while index < len(data) and current != starter:
+                            foundString += current
+                            index += 1
+                            current = data[index]
 
+                        values.append(foundString)
+                    elif current.isnumeric():
+                        endNumber = current
+
+                        while index < len(data) and current not in consts.EMPTY_SPACE:
+                            endNumber += current
+                            index += 1
+                            current = data[index]
+                        values.append(endNumber)
                     if index + 1 < len(data):
                         index += 1
                 return values
