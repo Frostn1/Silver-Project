@@ -222,10 +222,10 @@ class AST:
 
         for index, key in enumerate(self.par.data.keys()):
             if key != "ano":
-                print("KEY",key, self.par.data[key])
+                # print("KEY",key, self.par.data[key])
                 if isinstance(self.par.data[key], list):
                     for pairIndex, pair in enumerate(self.par.data[key]):
-                        print("PAIR", pair)
+                        # print("PAIR", pair)
                         if pair[0] not in structNames:
                             raise Exception("parser error : struct type `"+structPair[0]+"` not expected")
                         else:
@@ -247,15 +247,13 @@ class AST:
 
             for arg in argsLeft:
                 if arg in callbackValues.keys():
-                    print("\nARG", callbackValues[arg].expr, callbackValues[arg].name, self.data[address][index])
+                    # print("\nARG", callbackValues[arg].expr, callbackValues[arg].name, self.data[address][index])
                     valueFlagCheck = self.functionDynamic(callbackValues[arg].expr, callbackValues[arg].name, self.data[address][index])
                     
                     # Dynamic value gather
                     if valueFlagCheck == -1:
                         dynamicSave.append([address, index, arg])
                         continue
-                    else:
-                        print("ERROR 1 : FAILED TO CALCULATE DELTA")
                     self.data[address][index][1][arg] = valueFlagCheck
                 else:
                     self.data[address][index][1][arg] = ""
@@ -266,8 +264,6 @@ class AST:
                 if valueFlagCheck == -1:
                     dynamicSave.append([save[0], save[1], save[2]])
                     continue
-                else:
-                    print("ERROR 2 : FAILED TO CALCULATE DELTA")
                 self.data[save[0]][save[1]][1][save[2]] = valueFlagCheck
 
     def printData(self, data):
