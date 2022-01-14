@@ -10,6 +10,12 @@ class GEN:
     def __init__(self, ast):
         self.ast = ast
     def generateCode(self):
+        
+        # Sort dict keys by structs
+        print([i.idens for i in self.ast.par.structs])
+
+
+
         for export in self.ast.par.exports:
             if export.exportName == "json":
                 self.jsonGEN()
@@ -17,6 +23,19 @@ class GEN:
                 self.rawGEN()
             elif export.exportName == "yaml":
                 self.yamlGEN()
+    def sortKeysByStructs(self, currentKey):
+        if isinstance(self.ast.data[currentKey], list):
+            for index1, section in enumerate(self.ast.data[currentKey]):
+                if isinstance(section, list):
+                    for index2, section2 in enumerate(self.ast.data[currentKey]):
+                        # print(str(section2[1]).replace("'",'"'))
+                        pass
+                else:
+                    pass
+                    # fileContent += str(section[1]).replace("'",'"')
+        else:
+            pass
+            # fileContent += str(self.ast.data[currentKey]).replace("'",'"')
     def jsonGEN(self):
         self.ast.par.filePath = self.ast.par.filePath.strip("\\").strip(".\\")
         fileContent = ""
