@@ -2,16 +2,28 @@
     "CurrentYear": 2022,
     "Sean": {
         "first name": "Hagai",
-        "last name": "Dahan"
+        "last name": "Dahan",
+        "year of birth": "",
+        "age": ""
     },
     "People": [
         {
             "first name": "Sean",
-            "last name": "Dahan"
+            "last name": "Dahan",
+            "year of birth": "",
+            "age": ""
         },
         {
             "first name": "Tom",
-            "last name": "Dahan"
+            "last name": "Dahan",
+            "year of birth": "",
+            "age": ""
+        },
+        {
+            "first name": "Niki",
+            "last name": "Dahan",
+            "year of birth": "",
+            "age": ""
         }
     ]
 }

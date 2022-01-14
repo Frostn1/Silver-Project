@@ -224,12 +224,12 @@ class AST:
             if key != "ano":
                 print("KEY",key, self.par.data[key])
                 if isinstance(self.par.data[key], list):
-                    for pair in self.par.data[key]:
+                    for pairIndex, pair in enumerate(self.par.data[key]):
                         print("PAIR", pair)
                         if pair[0] not in structNames:
                             raise Exception("parser error : struct type `"+structPair[0]+"` not expected")
                         else:
-                            self.missingArgs(key, 0, pair)
+                            self.missingArgs(key, pairIndex, pair)
         
 
     def missingArgs(self, address ,index ,pair):
@@ -247,11 +247,15 @@ class AST:
 
             for arg in argsLeft:
                 if arg in callbackValues.keys():
+                    print("\nARG", callbackValues[arg].expr, callbackValues[arg].name, self.data[address][index])
                     valueFlagCheck = self.functionDynamic(callbackValues[arg].expr, callbackValues[arg].name, self.data[address][index])
+                    
                     # Dynamic value gather
                     if valueFlagCheck == -1:
                         dynamicSave.append([address, index, arg])
                         continue
+                    else:
+                        print("ERROR 1 : FAILED TO CALCULATE DELTA")
                     self.data[address][index][1][arg] = valueFlagCheck
                 else:
                     self.data[address][index][1][arg] = ""
@@ -262,6 +266,8 @@ class AST:
                 if valueFlagCheck == -1:
                     dynamicSave.append([save[0], save[1], save[2]])
                     continue
+                else:
+                    print("ERROR 2 : FAILED TO CALCULATE DELTA")
                 self.data[save[0]][save[1]][1][save[2]] = valueFlagCheck
 
     def printData(self, data):
@@ -342,11 +348,11 @@ class Parser:
                     if typeName != '' and typeName not in [i.structName for i in lexer.structs]:
                         raise Exception("parser error : struct type `"+typeName+"` not expected")
                     elif typeName == '':
-                        print("DATA SENT", data)
+                        # print("DATA SENT", data)
                         values = self.getData(data, lexer)
-                        print("Chunk Data",key.strip().strip('"') ,values)
-                        for field in values:
-                            print(field)
+                        # print("Chunk Data",key.strip().strip('"') ,values)
+                        # for field in values:
+                        #     print(field)
 
                         self.data[key.strip().strip('"')] = values
 
