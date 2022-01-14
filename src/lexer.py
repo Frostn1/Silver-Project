@@ -4,6 +4,7 @@ import chunk as _chunk
 from unittest import skip
 import link as _link
 import json
+import consts
 
 class GEN:
     def __init__(self, ast):
@@ -268,7 +269,6 @@ class AST:
             print(key, " -> ", data[key])
     def functionDynamic(self, expression, argName, structsData):
 
-        validOperators = ['+','-','*','/','(',')']
         index = 0
         length = len(expression)
         finalExp = ""
@@ -277,7 +277,7 @@ class AST:
             currentSlice = ""
 
             # Get current iden and save it in currentSlice
-            while semi < length and expression[semi] not in validOperators:
+            while semi < length and expression[semi] not in consts.BASIC_ARITHMETIC:
                 currentSlice += expression[semi]
                 semi += 1
             index = semi
@@ -359,7 +359,7 @@ class Parser:
     def getData(self, data, lexer):
 
         def skipZero(string, index):
-            while index < len(string) and string[index] in [' ', '\n', '\t']:
+            while index < len(string) and string[index] in consts.EMPTY_SPACE:
                 index += 1
             return index
         
@@ -396,7 +396,7 @@ class Parser:
                         print("CURRENT", current)
                         keyword = ""
 
-                    if current in [' ', '\n', '\t']:
+                    if current in consts.EMPTY_SPACE:
                         index = skipZero(data[index:], index)
                     if index + 1 < len(data):
                         index += 1
