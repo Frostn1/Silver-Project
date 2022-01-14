@@ -43,9 +43,12 @@ class GEN:
                             for index1, section in enumerate(data):
                                 if index1 > 0:
                                     fileContent += ','
-                                    
-                                keys = [i.idens for i in self.ast.par.structs if i.structName == section[0]][0]
-                                fileContent += str(dict(sorted(section[1].items(), key= lambda x : keys.index(x[0])))).replace("'",'"')
+                                print(section)
+                                if type(section) == tuple:
+                                    keys = [i.idens for i in self.ast.par.structs if i.structName == section[0]][0]
+                                    fileContent += str(dict(sorted(section[1].items(), key= lambda x : keys.index(x[0])))).replace("'",'"')
+                                else:
+                                    fileContent += str(data).replace("'",'"')
                             if length:
                                 fileContent += ']'
                                 length = False
@@ -71,15 +74,20 @@ class GEN:
                         for index1, section in enumerate(self.ast.data[data]):
                             if index1 > 0:
                                 fileContent += ','
-
-                            keys = [i.idens for i in self.ast.par.structs if i.structName == section[0]][0]
-                            fileContent += str(dict(sorted(section[1].items(), key= lambda x : keys.index(x[0])))).replace("'",'"')
+                            # print([i.idens for i in self.ast.par.structs if i.structName == section[0]])
+                            # print(section)
+                            if type(section) == tuple:
+                                keys = [i.idens for i in self.ast.par.structs if i.structName == section[0]][0]
+                                fileContent += str(dict(sorted(section[1].items(), key= lambda x : keys.index(x[0])))).replace("'",'"')
+                            else:
+                                fileContent += str(section).replace("'",'"')
                         if length:
                             fileContent += ']'
                             length = False
                     else:
                         fileContent += str(self.ast.data[data]).replace("'",'"')
                 fileContent += '}'
+                print("CONTENT", fileContent)
                 fileContent = eval(fileContent)
                 json.dump(fileContent, fileP, indent=4)
     def rawGEN(self):
@@ -227,10 +235,10 @@ class AST:
 
         for index, key in enumerate(self.par.data.keys()):
             if key != "ano":
-                print("KEY",key, self.par.data[key])
+                # print("KEY",key, self.par.data[key])
                 if isinstance(self.par.data[key], list):
                     for pairIndex, pair in enumerate(self.par.data[key]):
-                        print("PAIR", pair)
+                        # print("PAIR", pair)
                         if type(structPair) == tuple and pair[0] not in structNames:
                             raise Exception("eparser error : struct type `"+pair[0]+"` not expected")
                         elif type(structPair) == tuple:
@@ -419,6 +427,7 @@ class Parser:
                             current = data[index]
 
                         values.append(foundString)
+                        keyword = ""
                     elif current.isnumeric():
                         endNumber = ""
 
@@ -427,6 +436,7 @@ class Parser:
                             index += 1
                             current = data[index]
                         values.append(endNumber)
+                        keyword = ""
                     if index + 1 < len(data):
                         index += 1
                 return values
