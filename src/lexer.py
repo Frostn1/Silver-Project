@@ -420,12 +420,12 @@ class Parser:
                         starter = current
                         index += 1
                         current = data[index]
-                        foundString = ""
+                        foundString = "" + starter.replace('"','\'')
                         while index < len(data) and current != starter:
                             foundString += current
                             index += 1
                             current = data[index]
-
+                        foundString += starter.replace('"','\'')
                         values.append(foundString)
                         keyword = ""
                     elif current.isnumeric():

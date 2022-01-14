@@ -2,6 +2,7 @@
     "ano": "Hello",
     "CurrentYear": 2022,
     "People": [
+        "Yahav",
         56,
         {
             "first name": "Sean",
