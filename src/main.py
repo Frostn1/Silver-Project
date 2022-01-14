@@ -1,6 +1,6 @@
 import sys
 import lexer as _lexer
-OVERRIDE_FLAG = True
+OVERRIDE_FLAG = False
 OVERRIDE_PATH = "test\person.si"
 def main(argv : list):
 

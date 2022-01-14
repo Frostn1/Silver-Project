@@ -345,7 +345,11 @@ class Parser:
 
                         values = []
                         print("DATA SENT", data)
-                        print("Chunk Data", self.getData(data, lexer))
+                        newData = self.getData(data, lexer)
+                        print("Chunk Data",newData)
+                        for field in newData:
+                            print(field)
+
 
                     else:
                         fields = {}
@@ -369,19 +373,20 @@ class Parser:
             if typeName != '' and typeName not in [i.structName for i in lexer.structs]:
                 raise Exception("parser error : struct type `"+typeName+"` not expected")
             elif typeName == '':
-                values = []
                 data = data[1:].strip()
+                values = []
                 index = 0
-                current = data[index]
+                current = ''
                 keyword = ""
                 while index < len(data) and current != ']':
+                    index = skipZero(data, index)
+                    current = data[index]
                     keyword += current
-                    print(current)
                     if current == '[' and keyword != '' and keyword[:-1] in [i.structName for i in lexer.structs]:
-                        index = skipZero(data[index:], index)
+                        index = skipZero(data, index)
                         current = data[index]
                         
-                        structWORD = keyword
+                        structWORD = keyword[:-1]
                         while index < len(data) and current != ']':
                             structWORD += current
                             index += 1
@@ -389,25 +394,15 @@ class Parser:
                         structWORD += ']'
                         # `structWORD` will hold the struct creation line
                         # Call getData again to get the value of structs creation
-                        print("WORD", structWORD)
                         values.append(self.getData(structWORD, lexer)[0])
                         index += 1
                         current = data[index]
-                        print("CURRENT", current)
                         keyword = ""
 
-                    if current in consts.EMPTY_SPACE:
-                        index = skipZero(data[index:], index)
                     if index + 1 < len(data):
                         index += 1
-                    else:
-                        print("GOT HERE", current)
-                    current = data[index]
-                
-                print("VALUES", values)
-                # print("Got a list",data.split())
-                
                 return values
+
             else:
                 fields = {}
                 values = []
