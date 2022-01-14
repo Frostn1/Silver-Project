@@ -1,5 +1,8 @@
 {
-    "ano": "Hello",
+    "ano": [
+        "Hello",
+        "World"
+    ],
     "CurrentYear": 2022,
     "People": [
         "Yahav",

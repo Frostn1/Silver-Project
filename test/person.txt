@@ -1,5 +1,5 @@
 {
-	ano :  "Hello",
+	ano : [ "Hello", "World"],
 	CurrentYear :  2022,
 	People : [ "Yahav", 56,[ Sean, Dahan, 17 ],[ Tom, Dahan, 2001 ],[ Niki, Dahan ]],
 	Number :  72
