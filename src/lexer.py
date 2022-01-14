@@ -221,19 +221,19 @@ class AST:
         structNames = [i.structName for i in self.par.structs]
         for index, structPair in enumerate(self.par.data["ano"]):
             if type(structPair) == tuple and structPair[0] not in structNames:
-                raise Exception("parser error : struct type `"+structPair[0]+"` not expected")
+                raise Exception("zparser error : struct type `"+structPair[0]+"` not expected")
             elif type(structPair) == tuple:
                 self.missingArgs("ano", index, structPair)
 
         for index, key in enumerate(self.par.data.keys()):
             if key != "ano":
-                # print("KEY",key, self.par.data[key])
+                print("KEY",key, self.par.data[key])
                 if isinstance(self.par.data[key], list):
                     for pairIndex, pair in enumerate(self.par.data[key]):
-                        # print("PAIR", pair)
-                        if pair[0] not in structNames:
-                            raise Exception("parser error : struct type `"+structPair[0]+"` not expected")
-                        else:
+                        print("PAIR", pair)
+                        if type(structPair) == tuple and pair[0] not in structNames:
+                            raise Exception("eparser error : struct type `"+pair[0]+"` not expected")
+                        elif type(structPair) == tuple:
                             self.missingArgs(key, pairIndex, pair)
         
 
@@ -252,7 +252,6 @@ class AST:
 
             for arg in argsLeft:
                 if arg in callbackValues.keys():
-                    # print("\nARG", callbackValues[arg].expr, callbackValues[arg].name, self.data[address][index])
                     valueFlagCheck = self.functionDynamic(callbackValues[arg].expr, callbackValues[arg].name, self.data[address][index])
                     
                     # Dynamic value gather
@@ -421,9 +420,9 @@ class Parser:
 
                         values.append(foundString)
                     elif current.isnumeric():
-                        endNumber = current
+                        endNumber = ""
 
-                        while index < len(data) and current not in consts.EMPTY_SPACE:
+                        while index < len(data) and current not in consts.EMPTY_SPACE and current != ']':
                             endNumber += current
                             index += 1
                             current = data[index]
