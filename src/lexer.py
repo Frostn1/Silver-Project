@@ -1,8 +1,10 @@
 from os import write
 import struct as _struct
 import chunk as _chunk
+from unittest import skip
 import link as _link
 import json
+import consts
 
 class GEN:
     def __init__(self, ast):
@@ -51,7 +53,7 @@ class GEN:
                             fileContent += str(data).replace("'",'"')
                     if len(self.ast.data["ano"]) > 1:
                         fileContent += ']'
-
+                self.ast.data.pop('ano')
                 for index,data in enumerate(self.ast.data.keys()):
                     if data == "ano":
                         continue
@@ -114,6 +116,7 @@ class GEN:
                             fileContent += str(data).replace("'",'"')
                     if len(self.ast.data["ano"]) > 1:
                         fileContent += ' ]'
+                self.ast.data.pop('ano')
 
                 for index,data in enumerate(self.ast.data.keys()):
                     if data == "ano":
@@ -179,6 +182,7 @@ class GEN:
                             fileContent += str(data).replace("'",'"')
                     
                     fileContent += '\n'
+                self.ast.data.pop('ano')
 
                 for index,data in enumerate(self.ast.data.keys()):
                     if data == "ano":
@@ -218,18 +222,18 @@ class AST:
 
         for index, key in enumerate(self.par.data.keys()):
             if key != "ano":
+                print("KEY",key, self.par.data[key])
                 if isinstance(self.par.data[key], list):
-                    if self.par.data[key][0][0] not in structNames:
-                        raise Exception("parser error : struct type `"+structPair[0]+"` not expected")
-                    else:
-                        self.missingArgs(key, 0, self.par.data[key][0])
+                    for pair in self.par.data[key]:
+                        print("PAIR", pair)
+                        if pair[0] not in structNames:
+                            raise Exception("parser error : struct type `"+structPair[0]+"` not expected")
+                        else:
+                            self.missingArgs(key, 0, pair)
         
 
     def missingArgs(self, address ,index ,pair):
-        validStructs = []
-        for i in self.par.structs :
-            if i.structName == pair[0] : 
-                validStructs.append(i)
+        validStructs = [i for i in self.par.structs if i.structName == pair[0]]
         currentArgs = validStructs[0].idens
         argsLeft = set(currentArgs) - set(pair[1]) 
         if len(argsLeft):
@@ -265,7 +269,6 @@ class AST:
             print(key, " -> ", data[key])
     def functionDynamic(self, expression, argName, structsData):
 
-        validOperators = ['+','-','*','/','(',')']
         index = 0
         length = len(expression)
         finalExp = ""
@@ -274,7 +277,7 @@ class AST:
             currentSlice = ""
 
             # Get current iden and save it in currentSlice
-            while semi < length and expression[semi] not in validOperators:
+            while semi < length and expression[semi] not in consts.BASIC_ARITHMETIC:
                 currentSlice += expression[semi]
                 semi += 1
             index = semi
@@ -299,7 +302,7 @@ class AST:
             if semi != length:
                 finalExp += expression[semi]
             index += 1
-        if finalExp[-1] in validOperators:
+        if finalExp[-1] in consts.BASIC_ARITHMETIC:
             return ""
         return str(eval(finalExp))
         
@@ -317,7 +320,7 @@ class Parser:
     def restrcutureData(self, lexer):
         for chunk in lexer.chunks:
             for data in chunk.ano:
-                if "[" in data:
+                if "(" in data:
                     typeName = data[:data.index("[")]
                     if typeName not in [i.structName for i in lexer.structs]:
                         raise Exception("parser error : struct type `"+typeName+"` not expected")
@@ -331,12 +334,23 @@ class Parser:
                         self.data["ano"].append((typeName,fields))
                 else:
                     self.data["ano"].append(data)
+
             for key in chunk.chunkDict.keys():
                 data = chunk.chunkDict[key]
                 if "[" in data:
                     typeName = data[:data.index("[")]
-                    if typeName not in [i.structName for i in lexer.structs]:
+                    if typeName != '' and typeName not in [i.structName for i in lexer.structs]:
                         raise Exception("parser error : struct type `"+typeName+"` not expected")
+                    elif typeName == '':
+                        print("DATA SENT", data)
+                        values = self.getData(data, lexer)
+                        print("Chunk Data",key.strip().strip('"') ,values)
+                        for field in values:
+                            print(field)
+
+                        self.data[key.strip().strip('"')] = values
+
+
                     else:
                         fields = {}
                         self.data[key.strip().strip('"')] = []
@@ -346,6 +360,58 @@ class Parser:
                 else:
                     self.data[key.strip().strip('"')] = data
     
+    def getData(self, data, lexer):
+
+        def skipZero(string, index):
+            while index < len(string) and string[index] in consts.EMPTY_SPACE:
+                index += 1
+            return index
+        
+        
+        if "[" in data:
+            typeName = data[:data.index("[")]
+            if typeName != '' and typeName not in [i.structName for i in lexer.structs]:
+                raise Exception("parser error : struct type `"+typeName+"` not expected")
+            elif typeName == '':
+                data = data[1:].strip()
+                values = []
+                index = 0
+                current = ''
+                keyword = ""
+                while index < len(data) and current != ']':
+                    index = skipZero(data, index)
+                    current = data[index]
+                    keyword += current
+                    if current == '[' and keyword != '' and keyword[:-1] in [i.structName for i in lexer.structs]:
+                        index = skipZero(data, index)
+                        current = data[index]
+                        
+                        structWORD = keyword[:-1]
+                        while index < len(data) and current != ']':
+                            structWORD += current
+                            index += 1
+                            current = data[index]
+                        structWORD += ']'
+                        # `structWORD` will hold the struct creation line
+                        # Call getData again to get the value of structs creation
+                        values.append(self.getData(structWORD, lexer)[0])
+                        index += 1
+                        current = data[index]
+                        keyword = ""
+
+                    if index + 1 < len(data):
+                        index += 1
+                return values
+
+            else:
+                fields = {}
+                values = []
+                for field in data[data.index("[")+1:data.index("]")].split("|"):
+                    fields[field.split("=")[0].strip().strip('"')] = field.split("=")[1].strip().strip("'").strip('"')
+                values.append((typeName,fields))
+                return values
+        else:
+            return data
     def printData(self):
         for key in self.data.keys():
             print(key, " -> ", self.data[key])

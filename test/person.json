@@ -1,19 +1,17 @@
 {
-    "ano": [
-        "Hello",
-        17,
-        {
-            "first name": "Tom",
-            "last name": "Dahan",
-            "age": "20",
-            "year of birth": "2002"
-        }
-    ],
     "CurrentYear": 2022,
     "Sean": {
-        "first name": "Sean",
-        "last name": "Dahan",
-        "age": "17",
-        "year of birth": "2005"
-    }
+        "first name": "Hagai",
+        "last name": "Dahan"
+    },
+    "People": [
+        {
+            "first name": "Sean",
+            "last name": "Dahan"
+        },
+        {
+            "first name": "Tom",
+            "last name": "Dahan"
+        }
+    ]
 }
