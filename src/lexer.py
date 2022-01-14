@@ -58,8 +58,7 @@ class GEN:
                             fileContent += str(data).replace("'",'"')
                     if len(self.ast.data["ano"]) > 1:
                         fileContent += ']'
-                    fileContent += ','
-                self.ast.data.pop('ano')
+
                 for index,data in enumerate(self.ast.data.keys()):
                     if data == "ano":
                         continue
@@ -87,7 +86,6 @@ class GEN:
                     else:
                         fileContent += str(self.ast.data[data]).replace("'",'"')
                 fileContent += '}'
-                print("CONTENT", fileContent)
                 fileContent = eval(fileContent)
                 json.dump(fileContent, fileP, indent=4)
     def rawGEN(self):
@@ -116,24 +114,25 @@ class GEN:
                             for index1, section in enumerate(data):
                                 if index1 > 0:
                                     fileContent += ','
-                                values = [i for i in section[1].values() if i]
-                                fileContent += '[ ' + str(values).replace("'",'').replace('"','')[1:-1] + ' ]'
+                                if type(section) == tuple:
+                                    values = [i for i in section[1].values() if i]
+                                    fileContent += '[ ' + str(values).replace("'",'').replace('"','')[1:-1] + ' ]'
+                                else:
+                                    fileContent += " " + str(data).replace("'",'"')
                             if length:
                                 fileContent += ']'
                                 length = False
                         elif type(data) == tuple:
                             values = [i for i in data[1].values() if i]
-                            fileContent += '[ ' + str(values).replace("'",'').replace('"','')[1:-1] + ' ]'
+                            fileContent += '[ ' + str(section).replace("'",'').replace('"','')[1:-1] + ' ]'
 
                         else:
-                            fileContent += str(data).replace("'",'"')
+                            fileContent += " " + str(data).replace("'",'"')
                     if len(self.ast.data["ano"]) > 1:
                         fileContent += ' ]'
-                self.ast.data.pop('ano')
 
                 for index,data in enumerate(self.ast.data.keys()):
                     if data == "ano":
-                        index = 0
                         continue
                     if index:
                         fileContent += ',\n'
@@ -147,15 +146,21 @@ class GEN:
                         for index1, section in enumerate(self.ast.data[data]):
                             if index1:
                                 fileContent += ','
-                            values = [i for i in section[1].values() if i]
-                            fileContent += '[ ' + str(values).replace("'",'').replace('"','')[1:-1] + ' ]'
+                            print("SECTION", section)
+                            if type(section) == tuple:
+                                values = [i for i in section[1].values() if i]
+                                fileContent += '[ ' + str(values).replace("'",'').replace('"','')[1:-1] + ' ]'
+                            else:
+                                fileContent += " " + str(section).replace("'",'"')
                         if length:
                             fileContent += ']'
                             length = False
                     else:
-                        fileContent += str(self.ast.data[data]).replace("'",'').replace('"','')
+                        fileContent += " " + str(self.ast.data[data]).replace("'",'').replace('"','')
                 fileContent += '\n}'
                 fileP.write(fileContent)
+
+
     def yamlGEN(self):
         self.ast.par.filePath = self.ast.par.filePath.strip("\\").strip(".\\")
         fileContent = ""
@@ -182,9 +187,12 @@ class GEN:
                             for index1, section in enumerate(data):
                                 if index1:
                                     fileContent += '\n    - '
-                                fileFormat = "\n    - " + "\n    - ".join([str(i[0]) + ': ' + str(i[1]) for i in section[1].items()])
+                                if type(section) == tuple:
+                                    fileFormat = "\n    - " + "\n    - ".join([str(i[0]) + ': ' + str(i[1]) for i in section[1].items()])
+                                    fileContent += fileFormat
+                                else:
+                                    fileContent += str(section).replace("'",'"')
                                 
-                                fileContent += fileFormat
                             if length:
                                 fileContent += ']'
                                 length = False
@@ -195,7 +203,6 @@ class GEN:
                             fileContent += str(data).replace("'",'"')
                     
                     fileContent += '\n'
-                self.ast.data.pop('ano')
 
                 for index,data in enumerate(self.ast.data.keys()):
                     if data == "ano":
@@ -213,8 +220,11 @@ class GEN:
                         for index1, section in enumerate(self.ast.data[data]):
                             if index1:
                                 fileContent += '\n    - '
-                            fileFormat = "\n    - " + "\n    - ".join([str(i[0]) + ': ' + str(i[1]) for i in section[1].items() if i[1]])
-                            fileContent += fileFormat
+                            if type(section) == tuple:
+                                fileFormat = "\n    - " + "\n    - ".join([str(i[0]) + ': ' + str(i[1]) for i in section[1].items()])
+                                fileContent += fileFormat
+                            else:
+                                fileContent += str(self.ast.data[data]).replace("'",'').replace('"','')
                         if length:
                             length = False
                     else:

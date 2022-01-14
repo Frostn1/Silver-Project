@@ -8,8 +8,9 @@
 {
     'CurrentYear': 2022,
     'People' : [ "Yahav" 56 Person[first name='Sean' | last name= 'Dahan' | age=17] Person[first name='Tom' | last name= 'Dahan' | year of birth=2001] Person[first name='Niki' | last name= 'Dahan']], 
-    ano : "Hello",
+    ano : ["Hello", "World"],
     "Number" : 72
 }
 
-export json
+export json 
+export raw
