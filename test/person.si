@@ -2,13 +2,13 @@
     first name,
     last name,
     age => (CurrentYear - Person.year of birth),
-    year of birth
+    year of birth => (CurrentYear - Person.age)
 >
 
 {
     'CurrentYear': 2022,
     'Sean' : Person[first name='Hagai' | last name='Dahan'],
-    'People' : [ Person[first name='Sean' | last name= 'Dahan'] Person[first name='Tom' | last name= 'Dahan'] Person[first name='Niki' | last name= 'Dahan']]
+    'People' : [ Person[first name='Sean' | last name= 'Dahan' | age=17] Person[first name='Tom' | last name= 'Dahan' | year of birth=2001] Person[first name='Niki' | last name= 'Dahan']]
 }
 
 export json

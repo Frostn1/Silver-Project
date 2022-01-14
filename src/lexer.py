@@ -286,18 +286,27 @@ class AST:
             currentSlice = currentSlice.strip()
 
             # Identifiy currentSlice
+            print("SLICE", currentSlice)
             if currentSlice in self.data.keys():
+                print("HERE 1")
                 finalExp += self.data[currentSlice]
             elif '.' in currentSlice and currentSlice[:currentSlice.index('.')] in [i.structName for i in self.par.structs]:
+                print("HERE 2")
                 fieldName = currentSlice[currentSlice.index('.')+1:]
-                if fieldName not in structsData[1].keys():
-                    return -1
-                finalExp += structsData[1][fieldName]
+                print("KEYS", structsData[1].keys(), [i for i in self.par.structs if i.structName == currentSlice[:currentSlice.index('.')]][0].idens)
+                if fieldName not in [i for i in self.par.structs if i.structName == currentSlice[:currentSlice.index('.')]][0].idens:
+                    raise Exception(f"semantic error : failed to calculate delta;\n{fieldName} is not a valid field name in {currentSlice[:currentSlice.index('.')]} struct;\nvalid Fields are {', '.join([i for i in structsData[1].keys()])}")  
+                elif fieldName not in structsData[1].keys():
+                    finalExp += ""
+                else:
+                    finalExp += structsData[1][fieldName]
             elif currentSlice.isnumeric() or ('.' in currentSlice and 
                 currentSlice[:currentSlice.index('.')].isnumeric() and
                 currentSlice[currentSlice.index('.')+1:].isnumeric()):
+                print("HERE 3")
                 finalExp += currentSlice
             elif (currentSlice[0] == '\'' and currentSlice[-1] == '\'') or (currentSlice[0] == '"' and currentSlice[-1] == '"'):
+                print("HERE 4")
                 finalExp += currentSlice
             else:
                 print("ERROR OCCURED", currentSlice)
