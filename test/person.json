@@ -3,8 +3,8 @@
     "Sean": {
         "first name": "Hagai",
         "last name": "Dahan",
-        "year of birth": "",
-        "age": ""
+        "age": "",
+        "year of birth": ""
     },
     "People": [
         {
@@ -16,14 +16,14 @@
         {
             "first name": "Tom",
             "last name": "Dahan",
-            "year of birth": "2001",
-            "age": "21"
+            "age": "21",
+            "year of birth": "2001"
         },
         {
             "first name": "Niki",
             "last name": "Dahan",
-            "year of birth": "",
-            "age": ""
+            "age": "",
+            "year of birth": ""
         }
     ]
 }
