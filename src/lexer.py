@@ -43,7 +43,9 @@ class GEN:
                             for index1, section in enumerate(data):
                                 if index1 > 0:
                                     fileContent += ','
-                                fileContent += str(section[1]).replace("'",'"')
+                                    
+                                keys = [i.idens for i in self.ast.par.structs if i.structName == section[0]][0]
+                                fileContent += str(dict(sorted(section[1].items(), key= lambda x : keys.index(x[0])))).replace("'",'"')
                             if length:
                                 fileContent += ']'
                                 length = False
@@ -68,7 +70,9 @@ class GEN:
                         for index1, section in enumerate(self.ast.data[data]):
                             if index1 > 0:
                                 fileContent += ','
-                            fileContent += str(section[1]).replace("'",'"')
+
+                            keys = [i.idens for i in self.ast.par.structs if i.structName == section[0]][0]
+                            fileContent += str(dict(sorted(section[1].items(), key= lambda x : keys.index(x[0])))).replace("'",'"')
                         if length:
                             fileContent += ']'
                             length = False
@@ -222,14 +226,14 @@ class AST:
 
         for index, key in enumerate(self.par.data.keys()):
             if key != "ano":
-                print("KEY",key, self.par.data[key])
+                # print("KEY",key, self.par.data[key])
                 if isinstance(self.par.data[key], list):
-                    for pair in self.par.data[key]:
-                        print("PAIR", pair)
+                    for pairIndex, pair in enumerate(self.par.data[key]):
+                        # print("PAIR", pair)
                         if pair[0] not in structNames:
                             raise Exception("parser error : struct type `"+structPair[0]+"` not expected")
                         else:
-                            self.missingArgs(key, 0, pair)
+                            self.missingArgs(key, pairIndex, pair)
         
 
     def missingArgs(self, address ,index ,pair):
@@ -247,7 +251,9 @@ class AST:
 
             for arg in argsLeft:
                 if arg in callbackValues.keys():
+                    # print("\nARG", callbackValues[arg].expr, callbackValues[arg].name, self.data[address][index])
                     valueFlagCheck = self.functionDynamic(callbackValues[arg].expr, callbackValues[arg].name, self.data[address][index])
+                    
                     # Dynamic value gather
                     if valueFlagCheck == -1:
                         dynamicSave.append([address, index, arg])
@@ -284,13 +290,17 @@ class AST:
             currentSlice = currentSlice.strip()
 
             # Identifiy currentSlice
+
             if currentSlice in self.data.keys():
                 finalExp += self.data[currentSlice]
             elif '.' in currentSlice and currentSlice[:currentSlice.index('.')] in [i.structName for i in self.par.structs]:
                 fieldName = currentSlice[currentSlice.index('.')+1:]
-                if fieldName not in structsData[1].keys():
-                    return -1
-                finalExp += structsData[1][fieldName]
+                if fieldName not in [i for i in self.par.structs if i.structName == currentSlice[:currentSlice.index('.')]][0].idens:
+                    raise Exception(f"semantic error : failed to calculate delta;\n{fieldName} is not a valid field name in {currentSlice[:currentSlice.index('.')]} struct;\nvalid Fields are {', '.join([i for i in structsData[1].keys()])}")  
+                elif fieldName not in structsData[1].keys():
+                    finalExp += ""
+                else:
+                    finalExp += structsData[1][fieldName]
             elif currentSlice.isnumeric() or ('.' in currentSlice and 
                 currentSlice[:currentSlice.index('.')].isnumeric() and
                 currentSlice[currentSlice.index('.')+1:].isnumeric()):
@@ -342,11 +352,11 @@ class Parser:
                     if typeName != '' and typeName not in [i.structName for i in lexer.structs]:
                         raise Exception("parser error : struct type `"+typeName+"` not expected")
                     elif typeName == '':
-                        print("DATA SENT", data)
+                        # print("DATA SENT", data)
                         values = self.getData(data, lexer)
-                        print("Chunk Data",key.strip().strip('"') ,values)
-                        for field in values:
-                            print(field)
+                        # print("Chunk Data",key.strip().strip('"') ,values)
+                        # for field in values:
+                        #     print(field)
 
                         self.data[key.strip().strip('"')] = values
 
