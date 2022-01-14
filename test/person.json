@@ -1,19 +1,29 @@
 {
-    "ano": [
-        "Hello",
-        17,
+    "CurrentYear": 2022,
+    "Sean": {
+        "first name": "Hagai",
+        "last name": "Dahan",
+        "age": "",
+        "year of birth": ""
+    },
+    "People": [
+        {
+            "first name": "Sean",
+            "last name": "Dahan",
+            "age": "17",
+            "year of birth": "2005"
+        },
         {
             "first name": "Tom",
             "last name": "Dahan",
-            "age": "20",
-            "year of birth": "2002"
+            "age": "21",
+            "year of birth": "2001"
+        },
+        {
+            "first name": "Niki",
+            "last name": "Dahan",
+            "age": "",
+            "year of birth": ""
         }
-    ],
-    "CurrentYear": 2022,
-    "Sean": {
-        "first name": "Sean",
-        "last name": "Dahan",
-        "age": "17",
-        "year of birth": "2005"
-    }
+    ]
 }

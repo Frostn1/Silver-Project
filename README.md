@@ -96,8 +96,6 @@ As we can see, the Silver code is exported to different file types, while having
 ## <b>Milestones</b>
 ### Current
 
-- [ ] Data arrays<br>
-- [ ] Miss order of delta<br> 
 
 ### Done
 
@@ -111,9 +109,9 @@ As we can see, the Silver code is exported to different file types, while having
 - [x] Added exports : yaml, raw<br>
 - [x] Recursive fields in Delta<br> 
 - [x] Constant Values in ano<br> 
-
-
 - [x] Fix empty values in raw export<br> 
+- [x] Data arrays<br>
+- [x] Miss order of delta<br> 
 
 ## <b>Similar Projects</b>
 - <i><b>The Dhall Configuration Language</b></i><br>

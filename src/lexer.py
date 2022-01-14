@@ -1,8 +1,10 @@
 from os import write
 import struct as _struct
 import chunk as _chunk
+from unittest import skip
 import link as _link
 import json
+import consts
 
 class GEN:
     def __init__(self, ast):
@@ -41,7 +43,9 @@ class GEN:
                             for index1, section in enumerate(data):
                                 if index1 > 0:
                                     fileContent += ','
-                                fileContent += str(section[1]).replace("'",'"')
+                                    
+                                keys = [i.idens for i in self.ast.par.structs if i.structName == section[0]][0]
+                                fileContent += str(dict(sorted(section[1].items(), key= lambda x : keys.index(x[0])))).replace("'",'"')
                             if length:
                                 fileContent += ']'
                                 length = False
@@ -51,7 +55,7 @@ class GEN:
                             fileContent += str(data).replace("'",'"')
                     if len(self.ast.data["ano"]) > 1:
                         fileContent += ']'
-
+                self.ast.data.pop('ano')
                 for index,data in enumerate(self.ast.data.keys()):
                     if data == "ano":
                         continue
@@ -66,7 +70,9 @@ class GEN:
                         for index1, section in enumerate(self.ast.data[data]):
                             if index1 > 0:
                                 fileContent += ','
-                            fileContent += str(section[1]).replace("'",'"')
+
+                            keys = [i.idens for i in self.ast.par.structs if i.structName == section[0]][0]
+                            fileContent += str(dict(sorted(section[1].items(), key= lambda x : keys.index(x[0])))).replace("'",'"')
                         if length:
                             fileContent += ']'
                             length = False
@@ -114,6 +120,7 @@ class GEN:
                             fileContent += str(data).replace("'",'"')
                     if len(self.ast.data["ano"]) > 1:
                         fileContent += ' ]'
+                self.ast.data.pop('ano')
 
                 for index,data in enumerate(self.ast.data.keys()):
                     if data == "ano":
@@ -179,6 +186,7 @@ class GEN:
                             fileContent += str(data).replace("'",'"')
                     
                     fileContent += '\n'
+                self.ast.data.pop('ano')
 
                 for index,data in enumerate(self.ast.data.keys()):
                     if data == "ano":
@@ -218,18 +226,18 @@ class AST:
 
         for index, key in enumerate(self.par.data.keys()):
             if key != "ano":
+                # print("KEY",key, self.par.data[key])
                 if isinstance(self.par.data[key], list):
-                    if self.par.data[key][0][0] not in structNames:
-                        raise Exception("parser error : struct type `"+structPair[0]+"` not expected")
-                    else:
-                        self.missingArgs(key, 0, self.par.data[key][0])
+                    for pairIndex, pair in enumerate(self.par.data[key]):
+                        # print("PAIR", pair)
+                        if pair[0] not in structNames:
+                            raise Exception("parser error : struct type `"+structPair[0]+"` not expected")
+                        else:
+                            self.missingArgs(key, pairIndex, pair)
         
 
     def missingArgs(self, address ,index ,pair):
-        validStructs = []
-        for i in self.par.structs :
-            if i.structName == pair[0] : 
-                validStructs.append(i)
+        validStructs = [i for i in self.par.structs if i.structName == pair[0]]
         currentArgs = validStructs[0].idens
         argsLeft = set(currentArgs) - set(pair[1]) 
         if len(argsLeft):
@@ -243,7 +251,9 @@ class AST:
 
             for arg in argsLeft:
                 if arg in callbackValues.keys():
+                    # print("\nARG", callbackValues[arg].expr, callbackValues[arg].name, self.data[address][index])
                     valueFlagCheck = self.functionDynamic(callbackValues[arg].expr, callbackValues[arg].name, self.data[address][index])
+                    
                     # Dynamic value gather
                     if valueFlagCheck == -1:
                         dynamicSave.append([address, index, arg])
@@ -265,7 +275,6 @@ class AST:
             print(key, " -> ", data[key])
     def functionDynamic(self, expression, argName, structsData):
 
-        validOperators = ['+','-','*','/','(',')']
         index = 0
         length = len(expression)
         finalExp = ""
@@ -274,20 +283,24 @@ class AST:
             currentSlice = ""
 
             # Get current iden and save it in currentSlice
-            while semi < length and expression[semi] not in validOperators:
+            while semi < length and expression[semi] not in consts.BASIC_ARITHMETIC:
                 currentSlice += expression[semi]
                 semi += 1
             index = semi
             currentSlice = currentSlice.strip()
 
             # Identifiy currentSlice
+
             if currentSlice in self.data.keys():
                 finalExp += self.data[currentSlice]
             elif '.' in currentSlice and currentSlice[:currentSlice.index('.')] in [i.structName for i in self.par.structs]:
                 fieldName = currentSlice[currentSlice.index('.')+1:]
-                if fieldName not in structsData[1].keys():
-                    return -1
-                finalExp += structsData[1][fieldName]
+                if fieldName not in [i for i in self.par.structs if i.structName == currentSlice[:currentSlice.index('.')]][0].idens:
+                    raise Exception(f"semantic error : failed to calculate delta;\n{fieldName} is not a valid field name in {currentSlice[:currentSlice.index('.')]} struct;\nvalid Fields are {', '.join([i for i in structsData[1].keys()])}")  
+                elif fieldName not in structsData[1].keys():
+                    finalExp += ""
+                else:
+                    finalExp += structsData[1][fieldName]
             elif currentSlice.isnumeric() or ('.' in currentSlice and 
                 currentSlice[:currentSlice.index('.')].isnumeric() and
                 currentSlice[currentSlice.index('.')+1:].isnumeric()):
@@ -299,7 +312,7 @@ class AST:
             if semi != length:
                 finalExp += expression[semi]
             index += 1
-        if finalExp[-1] in validOperators:
+        if finalExp[-1] in consts.BASIC_ARITHMETIC:
             return ""
         return str(eval(finalExp))
         
@@ -317,7 +330,7 @@ class Parser:
     def restrcutureData(self, lexer):
         for chunk in lexer.chunks:
             for data in chunk.ano:
-                if "[" in data:
+                if "(" in data:
                     typeName = data[:data.index("[")]
                     if typeName not in [i.structName for i in lexer.structs]:
                         raise Exception("parser error : struct type `"+typeName+"` not expected")
@@ -331,12 +344,23 @@ class Parser:
                         self.data["ano"].append((typeName,fields))
                 else:
                     self.data["ano"].append(data)
+
             for key in chunk.chunkDict.keys():
                 data = chunk.chunkDict[key]
                 if "[" in data:
                     typeName = data[:data.index("[")]
-                    if typeName not in [i.structName for i in lexer.structs]:
+                    if typeName != '' and typeName not in [i.structName for i in lexer.structs]:
                         raise Exception("parser error : struct type `"+typeName+"` not expected")
+                    elif typeName == '':
+                        # print("DATA SENT", data)
+                        values = self.getData(data, lexer)
+                        # print("Chunk Data",key.strip().strip('"') ,values)
+                        # for field in values:
+                        #     print(field)
+
+                        self.data[key.strip().strip('"')] = values
+
+
                     else:
                         fields = {}
                         self.data[key.strip().strip('"')] = []
@@ -346,6 +370,58 @@ class Parser:
                 else:
                     self.data[key.strip().strip('"')] = data
     
+    def getData(self, data, lexer):
+
+        def skipZero(string, index):
+            while index < len(string) and string[index] in consts.EMPTY_SPACE:
+                index += 1
+            return index
+        
+        
+        if "[" in data:
+            typeName = data[:data.index("[")]
+            if typeName != '' and typeName not in [i.structName for i in lexer.structs]:
+                raise Exception("parser error : struct type `"+typeName+"` not expected")
+            elif typeName == '':
+                data = data[1:].strip()
+                values = []
+                index = 0
+                current = ''
+                keyword = ""
+                while index < len(data) and current != ']':
+                    index = skipZero(data, index)
+                    current = data[index]
+                    keyword += current
+                    if current == '[' and keyword != '' and keyword[:-1] in [i.structName for i in lexer.structs]:
+                        index = skipZero(data, index)
+                        current = data[index]
+                        
+                        structWORD = keyword[:-1]
+                        while index < len(data) and current != ']':
+                            structWORD += current
+                            index += 1
+                            current = data[index]
+                        structWORD += ']'
+                        # `structWORD` will hold the struct creation line
+                        # Call getData again to get the value of structs creation
+                        values.append(self.getData(structWORD, lexer)[0])
+                        index += 1
+                        current = data[index]
+                        keyword = ""
+
+                    if index + 1 < len(data):
+                        index += 1
+                return values
+
+            else:
+                fields = {}
+                values = []
+                for field in data[data.index("[")+1:data.index("]")].split("|"):
+                    fields[field.split("=")[0].strip().strip('"')] = field.split("=")[1].strip().strip("'").strip('"')
+                values.append((typeName,fields))
+                return values
+        else:
+            return data
     def printData(self):
         for key in self.data.keys():
             print(key, " -> ", self.data[key])
