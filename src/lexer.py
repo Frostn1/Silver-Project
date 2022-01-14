@@ -222,18 +222,18 @@ class AST:
 
         for index, key in enumerate(self.par.data.keys()):
             if key != "ano":
+                print("KEY",key, self.par.data[key])
                 if isinstance(self.par.data[key], list):
-                    if self.par.data[key][0][0] not in structNames:
-                        raise Exception("parser error : struct type `"+structPair[0]+"` not expected")
-                    else:
-                        self.missingArgs(key, 0, self.par.data[key][0])
+                    for pair in self.par.data[key]:
+                        print("PAIR", pair)
+                        if pair[0] not in structNames:
+                            raise Exception("parser error : struct type `"+structPair[0]+"` not expected")
+                        else:
+                            self.missingArgs(key, 0, pair)
         
 
     def missingArgs(self, address ,index ,pair):
-        validStructs = []
-        for i in self.par.structs :
-            if i.structName == pair[0] : 
-                validStructs.append(i)
+        validStructs = [i for i in self.par.structs if i.structName == pair[0]]
         currentArgs = validStructs[0].idens
         argsLeft = set(currentArgs) - set(pair[1]) 
         if len(argsLeft):
@@ -302,7 +302,7 @@ class AST:
             if semi != length:
                 finalExp += expression[semi]
             index += 1
-        if finalExp[-1] in validOperators:
+        if finalExp[-1] in consts.BASIC_ARITHMETIC:
             return ""
         return str(eval(finalExp))
         
@@ -342,13 +342,13 @@ class Parser:
                     if typeName != '' and typeName not in [i.structName for i in lexer.structs]:
                         raise Exception("parser error : struct type `"+typeName+"` not expected")
                     elif typeName == '':
-
-                        values = []
                         print("DATA SENT", data)
-                        newData = self.getData(data, lexer)
-                        print("Chunk Data",newData)
-                        for field in newData:
+                        values = self.getData(data, lexer)
+                        print("Chunk Data",key.strip().strip('"') ,values)
+                        for field in values:
                             print(field)
+
+                        self.data[key.strip().strip('"')] = values
 
 
                     else:
