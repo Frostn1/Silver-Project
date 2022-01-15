@@ -108,19 +108,28 @@ For example this Silver code, which clearly has an error
 export json
 export yaml
 export raw
-
 ```
 Will lead to a crash when Silver will try to export the code to json, with the following error:
 `SyntaxError: invalid syntax - {"People":["John",56"Name"]}`<br>
 As we can see Silver fails to find the values in the data arrays, because the had no spaces between values, after all there is a limit to Silver's power.<br>
 
-Further more, exporting to yaml and raw for example, won't make Silver crash, but as Silver can't find the values by himself, the solution he will make for the export code won't be a clean\good one.
+Further more, exporting to yaml and raw for example, won't make Silver crash, but as Silver can't find the values by himself, the solution it will make for the export code won't be a clean\good one.<br>
+Just to show the yaml, raw exports for reference:
 ```js
 // Raw export code
 {
 	People : [ "John", 56"Name"]
 }
 ```
+```yaml
+// Yaml export code
+- People: 
+    - John
+    - 56Name
+```
+----
+<br>
+As the Silver language is all about being dynamic and taking the load of the user, all of the data arrays can hold any value that is present in the current code ( i.e. created structs ), and/or primitive types that are present in the language itself ( string, numbers ).
 
 
 ## <b>Milestones</b>
