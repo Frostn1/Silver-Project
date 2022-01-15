@@ -35,7 +35,7 @@ class GEN:
                         if index:
                             fileContent += ','
                         if isinstance(data, list):
-                            print(data)
+
                             length = False
                             if len(data) > 1 or len(data) == 0:
                                 length = True
@@ -43,9 +43,11 @@ class GEN:
                             for index1, section in enumerate(data):
                                 if index1 > 0:
                                     fileContent += ','
-                                    
-                                keys = [i.idens for i in self.ast.par.structs if i.structName == section[0]][0]
-                                fileContent += str(dict(sorted(section[1].items(), key= lambda x : keys.index(x[0])))).replace("'",'"')
+                                if type(section) == tuple:
+                                    keys = [i.idens for i in self.ast.par.structs if i.structName == section[0]][0]
+                                    fileContent += str(dict(sorted(section[1].items(), key= lambda x : keys.index(x[0])))).replace("'",'"')
+                                else:
+                                    fileContent += str(section).replace("'",'"')
                             if length:
                                 fileContent += ']'
                                 length = False
@@ -55,7 +57,7 @@ class GEN:
                             fileContent += str(data).replace("'",'"')
                     if len(self.ast.data["ano"]) > 1:
                         fileContent += ']'
-                self.ast.data.pop('ano')
+
                 for index,data in enumerate(self.ast.data.keys()):
                     if data == "ano":
                         continue
@@ -63,6 +65,7 @@ class GEN:
                         fileContent += ','
                     fileContent += '"' + str(data) + '":'
                     if isinstance(self.ast.data[data], list):
+                        
                         length = False
                         if len(self.ast.data[data]) > 1 or len(self.ast.data[data]) == 0:
                             length = True
@@ -70,9 +73,14 @@ class GEN:
                         for index1, section in enumerate(self.ast.data[data]):
                             if index1 > 0:
                                 fileContent += ','
-
-                            keys = [i.idens for i in self.ast.par.structs if i.structName == section[0]][0]
-                            fileContent += str(dict(sorted(section[1].items(), key= lambda x : keys.index(x[0])))).replace("'",'"')
+                            # print([i.idens for i in self.ast.par.structs if i.structName == section[0]])
+                            # print(section)
+                            if type(section) == tuple:
+                                keys = [i.idens for i in self.ast.par.structs if i.structName == section[0]][0]
+                                # print("NEW VAL", str(dict(sorted(section[1].items(), key= lambda x : keys.index(x[0])))).replace("'",'"'))
+                                fileContent += str(dict(sorted(section[1].items(), key= lambda x : keys.index(x[0])))).replace("'",'"')
+                            else:
+                                fileContent += str(section).replace("'",'"')
                         if length:
                             fileContent += ']'
                             length = False
@@ -107,24 +115,25 @@ class GEN:
                             for index1, section in enumerate(data):
                                 if index1 > 0:
                                     fileContent += ','
-                                values = [i for i in section[1].values() if i]
-                                fileContent += '[ ' + str(values).replace("'",'').replace('"','')[1:-1] + ' ]'
+                                if type(section) == tuple:
+                                    values = [i for i in section[1].values() if i]
+                                    fileContent += '[ ' + str(values).replace("'",'').replace('"','')[1:-1] + ' ]'
+                                else:
+                                    fileContent += " " + str(section).replace("'",'"')
                             if length:
                                 fileContent += ']'
                                 length = False
                         elif type(data) == tuple:
                             values = [i for i in data[1].values() if i]
-                            fileContent += '[ ' + str(values).replace("'",'').replace('"','')[1:-1] + ' ]'
+                            fileContent += '[ ' + str(section).replace("'",'').replace('"','')[1:-1] + ' ]'
 
                         else:
-                            fileContent += str(data).replace("'",'"')
+                            fileContent += " " + str(data).replace("'",'"')
                     if len(self.ast.data["ano"]) > 1:
                         fileContent += ' ]'
-                self.ast.data.pop('ano')
 
                 for index,data in enumerate(self.ast.data.keys()):
                     if data == "ano":
-                        index = 0
                         continue
                     if index:
                         fileContent += ',\n'
@@ -138,15 +147,20 @@ class GEN:
                         for index1, section in enumerate(self.ast.data[data]):
                             if index1:
                                 fileContent += ','
-                            values = [i for i in section[1].values() if i]
-                            fileContent += '[ ' + str(values).replace("'",'').replace('"','')[1:-1] + ' ]'
+                            if type(section) == tuple:
+                                values = [i for i in section[1].values() if i]
+                                fileContent += '[ ' + str(values).replace("'",'').replace('"','')[1:-1] + ' ]'
+                            else:
+                                fileContent += " " + str(section).replace("'",'"')
                         if length:
                             fileContent += ']'
                             length = False
                     else:
-                        fileContent += str(self.ast.data[data]).replace("'",'').replace('"','')
+                        fileContent += " " + str(self.ast.data[data]).replace("'",'').replace('"','')
                 fileContent += '\n}'
                 fileP.write(fileContent)
+
+
     def yamlGEN(self):
         self.ast.par.filePath = self.ast.par.filePath.strip("\\").strip(".\\")
         fileContent = ""
@@ -173,11 +187,13 @@ class GEN:
                             for index1, section in enumerate(data):
                                 if index1:
                                     fileContent += '\n    - '
-                                fileFormat = "\n    - " + "\n    - ".join([str(i[0]) + ': ' + str(i[1]) for i in section[1].items()])
+                                if type(section) == tuple:
+                                    fileFormat = "\n    - " + "\n    - ".join([str(i[0]) + ': ' + str(i[1]) for i in section[1].items()])
+                                    fileContent += fileFormat
+                                else:
+                                    fileContent += str(section).replace("'",'"')
                                 
-                                fileContent += fileFormat
                             if length:
-                                fileContent += ']'
                                 length = False
                         elif type(data) == tuple:
                             fileContent += str(data[1]).replace("'",'"')
@@ -186,7 +202,6 @@ class GEN:
                             fileContent += str(data).replace("'",'"')
                     
                     fileContent += '\n'
-                self.ast.data.pop('ano')
 
                 for index,data in enumerate(self.ast.data.keys()):
                     if data == "ano":
@@ -204,8 +219,11 @@ class GEN:
                         for index1, section in enumerate(self.ast.data[data]):
                             if index1:
                                 fileContent += '\n    - '
-                            fileFormat = "\n    - " + "\n    - ".join([str(i[0]) + ': ' + str(i[1]) for i in section[1].items() if i[1]])
-                            fileContent += fileFormat
+                            if type(section) == tuple:
+                                fileFormat = "\n    - " + "\n    - ".join([str(i[0]) + ': ' + str(i[1]) for i in section[1].items()])
+                                fileContent += fileFormat
+                            else:
+                                fileContent += str(section).replace("'",'').replace('"','')
                         if length:
                             length = False
                     else:
@@ -220,7 +238,7 @@ class AST:
         structNames = [i.structName for i in self.par.structs]
         for index, structPair in enumerate(self.par.data["ano"]):
             if type(structPair) == tuple and structPair[0] not in structNames:
-                raise Exception("parser error : struct type `"+structPair[0]+"` not expected")
+                raise Exception("zparser error : struct type `"+structPair[0]+"` not expected")
             elif type(structPair) == tuple:
                 self.missingArgs("ano", index, structPair)
 
@@ -229,10 +247,10 @@ class AST:
                 # print("KEY",key, self.par.data[key])
                 if isinstance(self.par.data[key], list):
                     for pairIndex, pair in enumerate(self.par.data[key]):
-                        # print("PAIR", pair)
-                        if pair[0] not in structNames:
-                            raise Exception("parser error : struct type `"+structPair[0]+"` not expected")
-                        else:
+                        if type(pair) == tuple and pair[0] not in structNames:
+                            raise Exception("eparser error : struct type `"+pair[0]+"` not expected")
+                        elif type(pair) == tuple:
+                            # print("PAIR", pair)
                             self.missingArgs(key, pairIndex, pair)
         
 
@@ -251,7 +269,6 @@ class AST:
 
             for arg in argsLeft:
                 if arg in callbackValues.keys():
-                    # print("\nARG", callbackValues[arg].expr, callbackValues[arg].name, self.data[address][index])
                     valueFlagCheck = self.functionDynamic(callbackValues[arg].expr, callbackValues[arg].name, self.data[address][index])
                     
                     # Dynamic value gather
@@ -330,17 +347,22 @@ class Parser:
     def restrcutureData(self, lexer):
         for chunk in lexer.chunks:
             for data in chunk.ano:
-                if "(" in data:
+                if "[" in data:
                     typeName = data[:data.index("[")]
-                    if typeName not in [i.structName for i in lexer.structs]:
+                    if typeName != '' and typeName not in [i.structName for i in lexer.structs]:
                         raise Exception("parser error : struct type `"+typeName+"` not expected")
+                    elif typeName == '':
+                        # print("DATA SENT", data)
+                        values = self.getData(data, lexer)
+                        # print("Chunk Data - ANO",values)
+                        # for field in values:
+                        #     print(field)
+
+                        self.data["ano"].append(values)
                     else:
                         fields = {}
                         for field in data[data.index("[")+1:data.index("]")].split("|"):
-                            try:
-                                fields[field.split("=")[0].strip().strip("'").strip('"')] = field.split("=")[1].strip().strip("'").strip('"')
-                            except:
-                                raise Exception("parser error : missing `=` at data chunk")
+                            fields[field.split("=")[0].strip().strip('"')] = field.split("=")[1].strip().strip("'").strip('"')
                         self.data["ano"].append((typeName,fields))
                 else:
                     self.data["ano"].append(data)
@@ -359,8 +381,6 @@ class Parser:
                         #     print(field)
 
                         self.data[key.strip().strip('"')] = values
-
-
                     else:
                         fields = {}
                         self.data[key.strip().strip('"')] = []
@@ -408,7 +428,27 @@ class Parser:
                         index += 1
                         current = data[index]
                         keyword = ""
+                    elif current == '"' or current == '\'':
+                        starter = current
+                        index += 1
+                        current = data[index]
+                        foundString = "'"
+                        while index < len(data) and current != starter:
+                            foundString += current
+                            index += 1
+                            current = data[index]
+                        foundString += "'"
+                        values.append(foundString)
+                        keyword = ""
+                    elif current.isnumeric():
+                        endNumber = ""
 
+                        while index < len(data) and current not in consts.EMPTY_SPACE and current != ']':
+                            endNumber += current
+                            index += 1
+                            current = data[index]
+                        values.append(endNumber)
+                        keyword = ""
                     if index + 1 < len(data):
                         index += 1
                 return values

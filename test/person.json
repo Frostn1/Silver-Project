@@ -1,12 +1,12 @@
 {
+    "ano": [
+        "Hello",
+        "World"
+    ],
     "CurrentYear": 2022,
-    "Sean": {
-        "first name": "Hagai",
-        "last name": "Dahan",
-        "age": "",
-        "year of birth": ""
-    },
     "People": [
+        "Yahav",
+        56,
         {
             "first name": "Sean",
             "last name": "Dahan",
@@ -25,5 +25,6 @@
             "age": "",
             "year of birth": ""
         }
-    ]
+    ],
+    "Number": 72
 }
