@@ -244,13 +244,13 @@ class AST:
 
         for index, key in enumerate(self.par.data.keys()):
             if key != "ano":
-                print("KEY",key, self.par.data[key])
+                # print("KEY",key, self.par.data[key])
                 if isinstance(self.par.data[key], list):
                     for pairIndex, pair in enumerate(self.par.data[key]):
                         if type(pair) == tuple and pair[0] not in structNames:
                             raise Exception("eparser error : struct type `"+pair[0]+"` not expected")
                         elif type(pair) == tuple:
-                            print("PAIR", pair)
+                            # print("PAIR", pair)
                             self.missingArgs(key, pairIndex, pair)
         
 
