@@ -13,10 +13,10 @@ Run said file using python 3.8 or higher while giving it with args a file to com
 ## <b>Docs</b>
 The Silver Language is focused on the data itself and how we can manipulate and rewrite it in different ways.
 
-### Structs
+### <b>Structs</b>
 You can create various structs that can represents chunks of different data, and have it classified as one unit.
 For example we can create a Person struct
-```go
+```js
 < Person:
     first name,
     last name,
@@ -81,7 +81,7 @@ Which will export to .json, .yaml .txt files:
     - age: 24
     - pre age: 23
 ```
-```txt
+```js
 // Person.txt
 {
 	CurrentYear : 2022,
@@ -91,6 +91,36 @@ Which will export to .json, .yaml .txt files:
 
 As we can see, the Silver code is exported to different file types, while having a special format that related to the file type itself, while that data is up to date with the delta calculation that Silver could deduct.
 
+### <b>Data Arrays</b>
+
+As pretty much any developed programming language has arrays, Silver has its own arrays too.<br>
+Here we call them `data arrays` ( how unique I know ), as they entire language is centerly on the data itself.<br>
+They can be initiated with a simple brackets and values inside same as any other language you might know, the only difference being is that instead of separating the values in the array with `,` ( i.e. commas ), in Silver we just separate with spaces between value to value.<br>
+Not following this structure won't always lead to a visible error, as Silver will try and solve your mistake for you by continuing to parse through the data and coming up with a viable export.<br>
+Heads up, it won't always be a pretty one...<br>
+
+For example this Silver code, which clearly has an error
+```js
+{
+    'People' : [ "John"56"Name"]
+}
+
+export json
+export yaml
+export raw
+
+```
+Will lead to a crash when Silver will try to export the code to json, with the following error:
+`SyntaxError: invalid syntax - {"People":["John",56"Name"]}`<br>
+As we can see Silver fails to find the values in the data arrays, because the had no spaces between values, after all there is a limit to Silver's power.<br>
+
+Further more, exporting to yaml and raw for example, won't make Silver crash, but as Silver can't find the values by himself, the solution he will make for the export code won't be a clean\good one.
+```js
+// Raw export code
+{
+	People : [ "John", 56"Name"]
+}
+```
 
 
 ## <b>Milestones</b>

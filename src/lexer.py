@@ -61,7 +61,7 @@ class GEN:
                 for index,data in enumerate(self.ast.data.keys()):
                     if data == "ano":
                         continue
-                    if index:
+                    if index > 1:
                         fileContent += ','
                     fileContent += '"' + str(data) + '":'
                     if isinstance(self.ast.data[data], list):
@@ -135,7 +135,7 @@ class GEN:
                 for index,data in enumerate(self.ast.data.keys()):
                     if data == "ano":
                         continue
-                    if index:
+                    if index > 1:
                         fileContent += ',\n'
                     fileContent += '\t' + str(data)
                     fileContent += ' : '
@@ -207,7 +207,7 @@ class GEN:
                     if data == "ano":
                         index = 0
                         continue
-                    if index:
+                    if index > 1:
                         fileContent += '\n- '
                     fileContent += str(data)
                     fileContent += ': '
