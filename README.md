@@ -108,8 +108,8 @@ export json
 export yaml
 export raw
 ```
-Will lead to a crash when Silver will try to export the code to json, with the following error:
-`SyntaxError: invalid syntax - {"People":["John",56"Name"]}`<br>
+Will lead to a crash when Silver will try to export the code to json, with the following error:<br>
+```SyntaxError: invalid syntax - {"People":["John",56"Name"]}```<br>
 As we can see Silver fails to find the values in the data arrays, because the had no spaces between values, after all there is a limit to Silver's power.<br>
 
 Further more, exporting to yaml and raw for example, won't make Silver crash, but as Silver can't find the values by himself, the solution it will make for the export code won't be a clean\good one.<br>
@@ -130,10 +130,27 @@ Just to show the yaml, raw exports for reference:
 <br>
 As the Silver language is all about being dynamic and taking the load of the user, all of the data arrays can hold any value that is present in the current code ( i.e. created structs ), and/or primitive types that are present in the language itself ( string, numbers ).
 
+Example for the capabilities of the data arrays in Silver:
+```js
+< Person:
+    first name,
+    last name,
+    age => (CurrentYear - Person.year of birth),
+    year of birth
+>
+
+{
+    'CurrentYear' : 2022,
+    'Data' : ["Current Date" "Hello world"  Person[first name='John' | last name= 'Doe' | year of birth=1998] 2017]
+}
+```
+`Note:`
+So far Silver doesn't support multi dimensional data arrays, but it is WIP, so you may hope to see it in future updates coming to Silver. 
+
 
 ## <b>Milestones</b>
 ### Current
-
+- [ ] Multi Dimensional Data arrays
 
 ### Done
 
