@@ -100,18 +100,10 @@ As we can see, the Silver code is exported to different file types, while having
 ### Done
 
 - [x] Data structs<br>
-- [x] Ano data<br>
-- [x] Export to json<br>
+- [x] Export to json, yaml, raw<br>
 - [x] Constant data<br>
-- [x] Data chunks
 - [x] Delta Calculation<br>
-- [x] Multiple data chunks<br>
-- [x] Added exports : yaml, raw<br>
-- [x] Recursive fields in Delta<br> 
-- [x] Constant Values in ano<br> 
-- [x] Fix empty values in raw export<br> 
 - [x] Data arrays<br>
-- [x] Miss order of delta<br> 
 
 ## <b>Similar Projects</b>
 - <i><b>The Dhall Configuration Language</b></i><br>
