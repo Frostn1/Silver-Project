@@ -77,6 +77,7 @@ class GEN:
                             # print(section)
                             if type(section) == tuple:
                                 keys = [i.idens for i in self.ast.par.structs if i.structName == section[0]][0]
+                                print("NEW VAL", str(dict(sorted(section[1].items(), key= lambda x : keys.index(x[0])))).replace("'",'"'))
                                 fileContent += str(dict(sorted(section[1].items(), key= lambda x : keys.index(x[0])))).replace("'",'"')
                             else:
                                 fileContent += str(section).replace("'",'"')
@@ -103,7 +104,6 @@ class GEN:
                     fileContent += '\tano : '
                     if len(self.ast.data["ano"]) > 1:
                         fileContent += '[ '
-                    print(self.ast.data["ano"])
                     for index, data in enumerate(self.ast.data["ano"]):
                         if index:
                             fileContent += ', '
@@ -194,7 +194,6 @@ class GEN:
                                     fileContent += str(section).replace("'",'"')
                                 
                             if length:
-                                fileContent += ']'
                                 length = False
                         elif type(data) == tuple:
                             fileContent += str(data[1]).replace("'",'"')
