@@ -223,7 +223,7 @@ class GEN:
                                 fileFormat = "\n    - " + "\n    - ".join([str(i[0]) + ': ' + str(i[1]) for i in section[1].items()])
                                 fileContent += fileFormat
                             else:
-                                fileContent += str(self.ast.data[data]).replace("'",'').replace('"','')
+                                fileContent += str(section).replace("'",'').replace('"','')
                         if length:
                             length = False
                     else:

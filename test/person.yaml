@@ -4,8 +4,8 @@
 
 - CurrentYear: 2022
 - People: 
-    - [Yahav, 56, (Person, {first name: Sean, last name: Dahan, age: 17, year of birth: 2005}), (Person, {first name: Tom, last name: Dahan, year of birth: 2001, age: 21}), (Person, {first name: Niki, last name: Dahan, age: , year of birth: })]
-    - [Yahav, 56, (Person, {first name: Sean, last name: Dahan, age: 17, year of birth: 2005}), (Person, {first name: Tom, last name: Dahan, year of birth: 2001, age: 21}), (Person, {first name: Niki, last name: Dahan, age: , year of birth: })]
+    - Yahav
+    - 56
     - 
     - first name: Sean
     - last name: Dahan
@@ -19,6 +19,6 @@
     - 
     - first name: Niki
     - last name: Dahan
-    - age: 
     - year of birth: 
+    - age: 
 - Number: 72
