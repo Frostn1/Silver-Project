@@ -325,7 +325,7 @@ class AST:
             elif (currentSlice[0] == '\'' and currentSlice[-1] == '\'') or (currentSlice[0] == '"' and currentSlice[-1] == '"'):
                 finalExp += currentSlice
             else:
-                print("ERROR OCCURED", currentSlice)
+                raise Exception(f"semantic error : unknown identifier < {currentSlice} > referenced in delta of `{argName}`;on `{structsData[0]}` structs")
             if semi != length:
                 finalExp += expression[semi]
             index += 1
@@ -426,6 +426,8 @@ class Parser:
                         # Call getData again to get the value of structs creation
                         values.append(self.getData(structWORD, lexer)[0])
                         index += 1
+                        if index >= len(data):
+                            raise Exception(f'lexer error : failed while lexing terms, unclosed lbracket ( `]` ) at < {data} >')
                         current = data[index]
                         keyword = ""
                     elif current == '"' or current == '\'':
@@ -446,11 +448,15 @@ class Parser:
                         while index < len(data) and current not in consts.EMPTY_SPACE and current != ']':
                             endNumber += current
                             index += 1
+                            if index >= len(data):
+                                raise Exception(f'lexer error : failed while lexing terms, unclosed lbracket ( `]` ) at < {data} >')
                             current = data[index]
                         values.append(endNumber)
                         keyword = ""
                     if index + 1 < len(data):
                         index += 1
+                if current != ']':
+                    raise Exception(f'lexer error : failed while lexing terms, unclosed lbracket ( `]` ) at < {data} >')
                 return values
 
             else:

@@ -37,17 +37,17 @@ When creating a new Person struct, all of the fields will be initiated with the 
 We can see the delta power in action in the following example: 
 ```js
 // Person.si
+
 < Person:
     first name,
     last name,
-    pre age => (Person.age - 1),
     age => (CurrentYear - Person.year of birth),
     year of birth
 >
 
 {
-    'CurrentYear': 2022,
-    'Sean' : Person[first name='Sean' | last name= 'Dahan' | year of birth=1998]
+    'CurrentYear' : 2022,
+    'John' : Person[first name='John' | last name= 'Doe' | year of birth=1998]
 }
 
 
@@ -61,35 +61,34 @@ Which will export to .json, .yaml .txt files:
 // Person.json
 {
     "CurrentYear": 2022,
-    "Sean": {
-        "first name": "Sean",
-        "last name": "Dahan",
-        "year of birth": "1998",
+    "Data": {
+        "first name": "John",
+        "last name": "Doe",
         "age": "24",
-        "pre age": "23"
-
+        "year of birth": "1998"
     }
 }
 ```
 ```yaml
 // Person.yaml
 - CurrentYear: 2022
-- Sean: 
-    - first name: Sean
-    - last name: Dahan
+- John: 
+    - first name: John
+    - last name: Doe
     - year of birth: 1998
     - age: 24
-    - pre age: 23
 ```
 ```js
 // Person.txt
 {
-	CurrentYear : 2022,
-	Sean : [ Sean, Dahan, 1998, 24, 23 ]
+	CurrentYear :  2022,
+	John : [ John, Doe, 1998, 24 ]
 }
 ```
 
-As we can see, the Silver code is exported to different file types, while having a special format that related to the file type itself, while that data is up to date with the delta calculation that Silver could deduct.
+As we can see, the Silver code is exported to different file types, while having a special format that related to the file type itself, while that data is up to date with the delta calculation that Silver could deduct.<br>
+
+Futher more, this might have gone unnoticed but Silver will also keep the formatting of struct's keys order when exporting to another file type, as you can see all the key-value pairs in the json file are all have the same order for key-value pair, for better code visibility.
 
 ### <b>Data Arrays</b>
 

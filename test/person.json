@@ -1,30 +1,13 @@
 {
-    "ano": [
-        "Hello",
-        "World"
-    ],
     "CurrentYear": 2022,
-    "People": [
-        "Yahav",
-        56,
+    "Data": [
+        "Current Date",
+        "Hello world",
         {
-            "first name": "Sean",
-            "last name": "Dahan",
-            "age": "17",
-            "year of birth": "2005"
-        },
-        {
-            "first name": "Tom",
-            "last name": "Dahan",
-            "age": "21",
-            "year of birth": "2001"
-        },
-        {
-            "first name": "Niki",
-            "last name": "Dahan",
-            "age": "",
-            "year of birth": ""
+            "first name": "John",
+            "last name": "Doe",
+            "age": "24",
+            "year of birth": "1998"
         }
-    ],
-    "Number": 72
+    ]
 }

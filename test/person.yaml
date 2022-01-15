@@ -1,23 +1,9 @@
-- ano: 
-    - "Hello"
-    - "World"
-CurrentYear: 2022
-- People: 
-    - Yahav
-    - 56
+- CurrentYear: 2022
+- Data: 
+    - Current Date
+    - Hello world
     - 
-    - first name: Sean
-    - last name: Dahan
-    - age: 17
-    - year of birth: 2005
-    - 
-    - first name: Tom
-    - last name: Dahan
-    - year of birth: 2001
-    - age: 21
-    - 
-    - first name: Niki
-    - last name: Dahan
-    - year of birth: 
-    - age: 
-- Number: 72
+    - first name: John
+    - last name: Doe
+    - year of birth: 1998
+    - age: 24
