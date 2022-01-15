@@ -10,16 +10,20 @@
         {
             "first name": "Sean",
             "last name": "Dahan",
-            "age": "17"
+            "age": "17",
+            "year of birth": "2005"
         },
         {
             "first name": "Tom",
             "last name": "Dahan",
+            "age": "21",
             "year of birth": "2001"
         },
         {
             "first name": "Niki",
-            "last name": "Dahan"
+            "last name": "Dahan",
+            "age": "",
+            "year of birth": ""
         }
     ],
     "Number": 72

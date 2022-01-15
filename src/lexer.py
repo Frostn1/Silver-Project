@@ -77,7 +77,7 @@ class GEN:
                             # print(section)
                             if type(section) == tuple:
                                 keys = [i.idens for i in self.ast.par.structs if i.structName == section[0]][0]
-                                print("NEW VAL", str(dict(sorted(section[1].items(), key= lambda x : keys.index(x[0])))).replace("'",'"'))
+                                # print("NEW VAL", str(dict(sorted(section[1].items(), key= lambda x : keys.index(x[0])))).replace("'",'"'))
                                 fileContent += str(dict(sorted(section[1].items(), key= lambda x : keys.index(x[0])))).replace("'",'"')
                             else:
                                 fileContent += str(section).replace("'",'"')
@@ -244,13 +244,13 @@ class AST:
 
         for index, key in enumerate(self.par.data.keys()):
             if key != "ano":
-                # print("KEY",key, self.par.data[key])
+                print("KEY",key, self.par.data[key])
                 if isinstance(self.par.data[key], list):
                     for pairIndex, pair in enumerate(self.par.data[key]):
-                        # print("PAIR", pair)
-                        if type(structPair) == tuple and pair[0] not in structNames:
+                        if type(pair) == tuple and pair[0] not in structNames:
                             raise Exception("eparser error : struct type `"+pair[0]+"` not expected")
-                        elif type(structPair) == tuple:
+                        elif type(pair) == tuple:
+                            print("PAIR", pair)
                             self.missingArgs(key, pairIndex, pair)
         
 
