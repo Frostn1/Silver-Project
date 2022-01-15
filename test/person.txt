@@ -1,5 +1,4 @@
 {
-	ano : [ "Hello", 17, [ Tom, Dahan, 20, 2002 ] ],
-	CurrentYear : 2022,
-	Sean : [ Sean, Dahan, 17, 2005 ]
+	CurrentYear :  2022,
+	Data : [ Current Date, Hello world,[ John, Doe, 1998, 24 ], 2017, 1, 2, 3]
 }
