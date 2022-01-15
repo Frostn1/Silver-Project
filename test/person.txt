@@ -1,3 +1,3 @@
 {
-	People : [ "John", 56, "Name"]
+	People : [ John, 56, Name]
 }

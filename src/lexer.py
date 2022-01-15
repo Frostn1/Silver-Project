@@ -119,7 +119,7 @@ class GEN:
                                     values = [i for i in section[1].values() if i]
                                     fileContent += '[ ' + str(values).replace("'",'').replace('"','')[1:-1] + ' ]'
                                 else:
-                                    fileContent += " " + str(section).replace("'",'"')
+                                    fileContent += " " + str(section).replace("'",'').replace('"','')
                             if length:
                                 fileContent += ']'
                                 length = False
@@ -151,7 +151,7 @@ class GEN:
                                 values = [i for i in section[1].values() if i]
                                 fileContent += '[ ' + str(values).replace("'",'').replace('"','')[1:-1] + ' ]'
                             else:
-                                fileContent += " " + str(section).replace("'",'"')
+                                fileContent += " " + str(section).replace("'",'').replace('"','')
                         if length:
                             fileContent += ']'
                             length = False
