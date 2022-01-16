@@ -41,7 +41,8 @@ class Tester():
     def formatStart(self):
         self.checkPaths()
         formatP(HEADER, f"Running tests for Silver v{SILVER_VERSION}\n")
-        formatP(BOLD, f"\tTotal of {self.numOfTests} test\n\n")
+        formatP(BOLD, f"\tTotal of {self.numOfTests} test cases given\n\n")
+        self.numOfTests = 0
 
     def outTest(self, path, status, timeElapsed):
 
@@ -61,6 +62,7 @@ class Tester():
                 self.startTesting(self.getDirPaths(path))
             elif path.endswith('si'):
                 try:
+                    self.numOfTests += 1
                     with open(path, "r") as fileP:
                         if not fileP.readable():
                             raise Exception("file error : file not readable")
@@ -90,16 +92,21 @@ class Tester():
     def endTest(self):
         self.cleanFiles(self.paths.keys())
         print()
-        formatP(UNDERLINE, "Test ended\n\n")
+        formatP(UNDERLINE, "Test ended")
 
-        formatP(BOLD, f"{self.passed} ")
-        formatP(SUCCESS, "Passed ")
+        formatP(RESET, f" - {self.numOfTests} tests\n\n")
+        if self.passed:
+            formatP(BOLD, f"{self.passed} ")
+            formatP(SUCCESS, "Passed ")
 
-        formatP(BOLD, f"{self.failed} ")
-        formatP(FAIL, "Failed ")
+        if self.failed:
+            formatP(BOLD, f"{self.failed} ")
+            formatP(FAIL, "Failed ")
+            
+        if self.passed:
+            formatP(BOLD, "\nAverage time of ")
+            formatP(WARNING, "%.3f" % (self.times / (self.passed))) 
 
-        formatP(BOLD, "\nAverage time of ")
-        formatP(WARNING, "%.3f" % (self.times / (self.passed))) 
 
 
 class TestCallback(argparse.Action):
