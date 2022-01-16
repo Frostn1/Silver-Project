@@ -1,5 +1,8 @@
 {
     'Age' : 25,
     'num' : 5,
-    'CurrentYear' : 2022,
+    'CurrentYear' : 2022
 }
+
+export yaml
+export json

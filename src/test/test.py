@@ -79,6 +79,7 @@ class Tester():
 
                         self.outTest(path, "Passed", time.time() - currentTime)
                 except Exception as e:
+                    print(e)
                     self.outTest(path, "Failed", -1)
 
 
