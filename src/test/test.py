@@ -57,7 +57,7 @@ class Tester():
 
     def startTesting(self, paths):
         for path in paths:
-            if (path in self.paths.keys() and self.paths[path] == 2):
+            if (path in self.paths.keys() and self.paths[path] == 2) or pathModule.isdir(path):
                 self.startTesting(self.getDirPaths(path))
             elif path.endswith('si'):
                 try:
@@ -80,9 +80,15 @@ class Tester():
                     self.outTest(path, "Failed", -1)
 
 
-    def cleanFiles(self):
-        pass
+    def cleanFiles(self, paths):
+        for path in paths:
+            if (path in self.paths.keys() and self.paths[path] == 2) or pathModule.isdir(path):
+                self.cleanFiles(self.getDirPaths(path))
+            elif not path.endswith('si'):
+                os.remove(path)
+    
     def endTest(self):
+        self.cleanFiles(self.paths.keys())
         print()
         formatP(UNDERLINE, "Test ended\n\n")
 
