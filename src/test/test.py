@@ -17,7 +17,7 @@ class Tester():
 
         self.passed = 0
         self.failed = 0
-        self.times = []
+        self.times = 0
 
 
     def getDirPaths(self, dirName):
@@ -48,8 +48,11 @@ class Tester():
         formatP(BOLD, f"{path} ... ")
         if status == "Passed":
             formatP(SUCCESS, f"{status}")
+            self.times += timeElapsed
+            self.passed += 1
         else:
             formatP(FAIL, f"{status}")
+            self.failed += 1
         formatP(RESET, f"; in %.3fs\n" % timeElapsed)
 
     def startTesting(self, paths):
@@ -76,6 +79,23 @@ class Tester():
                 except Exception as e:
                     self.outTest(path, "Failed", -1)
 
+
+    def cleanFiles(self):
+        pass
+    def endTest(self):
+        print()
+        formatP(UNDERLINE, "Test ended\n\n")
+
+        formatP(BOLD, f"{self.passed} ")
+        formatP(SUCCESS, "Passed ")
+
+        formatP(BOLD, f"{self.failed} ")
+        formatP(FAIL, "Failed ")
+
+        formatP(BOLD, "\nAverage time of ")
+        formatP(WARNING, "%.3f" % (self.times / (self.passed))) 
+
+
 class TestCallback(argparse.Action):
     def __init__(self, option_strings, dest, nargs=None, **kwargs):
         if nargs is None:
@@ -86,6 +106,7 @@ class TestCallback(argparse.Action):
         tester = Tester(values)
         tester.formatStart()
         tester.startTesting(tester.paths.keys())
+        tester.endTest()
         # print('%r %r %r' % (namespace, values, option_string))
         setattr(namespace, self.dest, values)
 
