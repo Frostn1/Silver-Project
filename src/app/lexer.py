@@ -4,7 +4,7 @@ import chunk as _chunk
 from unittest import skip
 import link as _link
 import json
-import consts
+from ..tools import consts
 
 class GEN:
     def __init__(self, ast):
