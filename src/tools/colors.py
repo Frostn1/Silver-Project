@@ -4,6 +4,5 @@ class bcolors:
     FAIL = '\033[91m' #RED
     RESET = '\033[0m' #RESET COLOR
 
-    @staticmethod
-    def formatP(color, string):
-        print(f"{color}{string}{bcolors.RESET}")
+def formatP(color, string):
+    print(f"{color}{string}{bcolors.RESET}")

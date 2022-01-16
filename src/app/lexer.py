@@ -1,10 +1,8 @@
-from os import write
 import struct as _struct
 import chunk as _chunk
-from unittest import skip
 import link as _link
 import json
-from ..tools import consts
+from src.tools import consts
 
 class GEN:
     def __init__(self, ast):
