@@ -3,7 +3,8 @@ from src.tools.colors import *
 import os.path
 from os import path as pathModule
 from src.app.link import *
-from src.app.lexer import Lexer, Parser, AST, GEN   
+from src.app.lexer import Lexer, Parser, AST, GEN
+import time
 
 SILVER_VERSION = '1.0.0'
 
@@ -16,6 +17,7 @@ class Tester():
 
         self.passed = 0
         self.failed = 0
+        self.times = []
 
 
     def getDirPaths(self, dirName):
@@ -29,8 +31,7 @@ class Tester():
     def checkPaths(self):
         for path in self.paths.keys():
             if pathModule.exists(path):
-                print("Path exists")
-                self.paths[path] = 1
+                self.paths[path] = int(path.endswith('.si'))
                 if not pathModule.isfile(path):
                     self.paths[path] = 2
         self.numOfTests = len([key for key in self.paths.keys() if self.paths[key]])
@@ -39,35 +40,41 @@ class Tester():
 
     def formatStart(self):
         self.checkPaths()
-        formatP(HEADER, f"Running tests for Silver v{SILVER_VERSION}")
-        formatP(BOLD, f"\tTotal of {self.numOfTests} test")
+        formatP(HEADER, f"Running tests for Silver v{SILVER_VERSION}\n")
+        formatP(BOLD, f"\tTotal of {self.numOfTests} test\n\n")
 
+    def outTest(self, path, status, timeElapsed):
+
+        formatP(BOLD, f"{path} ... ")
+        if status == "Passed":
+            formatP(SUCCESS, f"{status}")
+        else:
+            formatP(FAIL, f"{status}")
+        formatP(RESET, f"; in %.3fs\n" % timeElapsed)
 
     def startTesting(self, paths):
         for path in paths:
-            if (path in self.paths.keys() and (self.paths[path] == 2 and self.paths[path])):
+            if (path in self.paths.keys() and self.paths[path] == 2):
                 self.startTesting(self.getDirPaths(path))
-            else:
+            elif path.endswith('si'):
                 try:
-                    print("Current path", path)
                     with open(path, "r") as fileP:
                         if not fileP.readable():
                             raise Exception("file error : file not readable")
+                        currentTime = time.time()
                         fileContent = fileP.read()
-                        print("CONTENT", fileContent)
                         lex = Lexer(fileContent, path)
                         lex.lexify()
-                        lex.printStructs()
                         par = Parser()
                         par.parse(lex)
-                        par.printData()
                         ast = AST(par)
                         ast.semanticAnalysis()
                         gen = GEN(ast)
                         gen.generateCode()
+
+                        self.outTest(path, "Passed", time.time() - currentTime)
                 except Exception as e:
-                    print("ERROR", e)
-                    raise e
+                    self.outTest(path, "Failed", -1)
 
 class TestCallback(argparse.Action):
     def __init__(self, option_strings, dest, nargs=None, **kwargs):

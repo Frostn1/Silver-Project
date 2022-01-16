@@ -11,4 +11,4 @@ UNDERLINE = '\033[4m'
 
 
 def formatP(color, string):
-    print(f"{color}{string}{RESET}")
+    print(f"{color}{string}{RESET}", end = '')
