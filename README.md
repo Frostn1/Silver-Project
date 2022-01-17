@@ -45,7 +45,7 @@ py -m src.app.main <FILE>
 For block testing of folders check [Silver's Test-Agent](#testing).
 
 ## <b>Testing</b>
-As of v1.0.1 Silver has an automated tester.
+As of v2 Silver has an automated tester.
 In order to run it, you will need to run `test.py`, as follows ( while sitting in main dir ):
 ```
 py -m src.test.test --test [FOLDER | FILE ...]
