@@ -82,7 +82,6 @@ class Tester():
                         ast.semanticAnalysis()
                         gen = GEN(ast)
                         gen.generateCode()
-
                         self.outTest(path, "Passed", time.time() - currentTime)
                 except Exception as msg:
                     self.outTest(path, "Failed", -1)

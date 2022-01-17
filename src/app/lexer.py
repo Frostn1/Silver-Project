@@ -382,10 +382,11 @@ class Parser:
                             fields[field.split("=")[0].strip().strip('"')] = field.split("=")[1].strip().strip("'").strip('"')
                         self.data[key.strip().strip('"')].append((typeName,fields))
                 else:
-                    if tooling.isNumber(data) or tooling.isString(data):
+                    if tooling.isNumber(data) or tooling.isString(data) or tooling.isBoolean(data):
                         self.data[key.strip().strip('"')] = data
                     else:
-                        raise Exception(f"parser error : unknown identifer < {data} > refernenced in value")
+                        message = f"'{key}' : {data}"
+                        raise Exception(f'parser error : unknown identifer < {data} > refernenced in value;\nin line < {message} >')
     
     def getData(self, data, lexer):
 

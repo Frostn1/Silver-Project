@@ -7,3 +7,6 @@ def isNumber(number):
 
 def isString(string):
     return string[0] == '\'' and string[-1] == '\'' or string[0] == '"' and string[-1] == '"'
+
+def isBoolean(string):
+    return string == 'True' or string == 'False'

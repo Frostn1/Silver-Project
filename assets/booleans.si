@@ -1,6 +1,8 @@
 {
     'True' : True,
-    'False' : Hey,
+    'False' : False,
     'BoolList' : [True True False],
     ano : True
 }
+
+export json
