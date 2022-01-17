@@ -1,6 +1,6 @@
 {
     'True' : True,
-    'False' : False,
+    'False' : Hey,
     'BoolList' : [True True False],
     ano : True
 }

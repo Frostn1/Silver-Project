@@ -45,8 +45,8 @@ class Tester():
 
     def formatStart(self):
         self.checkPaths()
-        formatP(HEADER, f"Running tests for Silver v{SILVER_VERSION}\n")
-        formatP(BOLD, f"Total of {self.numOfTests} test cases given\n\n")
+        formatP(BOLD, f"Running tests for Silver v{SILVER_VERSION}\n")
+        formatP(RESET, f"Total of {self.numOfTests} test cases given\n\n")
         self.numOfTests = 0
 
     def outTest(self, path, status, timeElapsed):
@@ -103,7 +103,7 @@ class Tester():
         print()
         formatP(UNDERLINE, "Test ended")
 
-        formatP(RESET, f" - {self.numOfTests} tests\n\n")
+        formatP(RESET, f" - {self.numOfTests} cases\n\n")
         if self.passed:
             formatP(BOLD, f"{self.passed} ")
             formatP(SUCCESS, "Passed ")

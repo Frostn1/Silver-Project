@@ -3,6 +3,7 @@ import src.app.link as _link
 import src.app.chunk as _chunk
 import json
 from src.tools import consts
+from src.tools import tooling
 
 class GEN:
     def __init__(self, ast):
@@ -372,12 +373,7 @@ class Parser:
                     if typeName != '' and typeName not in [i.structName for i in lexer.structs]:
                         raise Exception("parser error : struct type `"+typeName+"` not expected")
                     elif typeName == '':
-                        # print("DATA SENT", data)
                         values = self.getData(data, lexer)
-                        # print("Chunk Data",key.strip().strip('"') ,values)
-                        # for field in values:
-                        #     print(field)
-
                         self.data[key.strip().strip('"')] = values
                     else:
                         fields = {}
@@ -386,7 +382,10 @@ class Parser:
                             fields[field.split("=")[0].strip().strip('"')] = field.split("=")[1].strip().strip("'").strip('"')
                         self.data[key.strip().strip('"')].append((typeName,fields))
                 else:
-                    self.data[key.strip().strip('"')] = data
+                    if tooling.isNumber(data) or tooling.isString(data):
+                        self.data[key.strip().strip('"')] = data
+                    else:
+                        raise Exception(f"parser error : unknown identifer < {data} > refernenced in value")
     
     def getData(self, data, lexer):
 
@@ -465,6 +464,7 @@ class Parser:
                 values.append((typeName,fields))
                 return values
         else:
+            print("Got here", data)
             return data
     def printData(self):
         for key in self.data.keys():
