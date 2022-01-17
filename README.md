@@ -154,6 +154,7 @@ So far Silver doesn't support multi dimensional data arrays, but it is WIP, so y
 - [ ] Reference Past Keys
 - [ ] Boolean data type
 - [ ] Export to definitions < Code Info >
+- [x] Silver Auto Tester
 
 ### Done
 

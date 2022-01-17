@@ -7,6 +7,9 @@ from src.app.lexer import Lexer, Parser, AST, GEN
 import time
 
 SILVER_VERSION = '1.0.0'
+VERBOSE_FLAG = False
+parser = argparse.ArgumentParser(prog='py -m src.test.test')
+
 
 class Tester():
     def __init__(self, paths=[]) -> None:
@@ -19,6 +22,7 @@ class Tester():
         self.failed = 0
         self.times = 0
 
+        # -----------------
 
     def getDirPaths(self, dirName):
         full_path = []
@@ -41,7 +45,7 @@ class Tester():
     def formatStart(self):
         self.checkPaths()
         formatP(HEADER, f"Running tests for Silver v{SILVER_VERSION}\n")
-        formatP(BOLD, f"\tTotal of {self.numOfTests} test cases given\n\n")
+        formatP(BOLD, f"Total of {self.numOfTests} test cases given\n\n")
         self.numOfTests = 0
 
     def outTest(self, path, status, timeElapsed):
@@ -55,6 +59,7 @@ class Tester():
             formatP(FAIL, f"{status}")
             self.failed += 1
         formatP(RESET, f"; in %.3fs\n" % timeElapsed)
+
 
     def startTesting(self, paths):
         for path in paths:
@@ -78,8 +83,7 @@ class Tester():
                         gen.generateCode()
 
                         self.outTest(path, "Passed", time.time() - currentTime)
-                except Exception as e:
-                    print(e)
+                except Exception as msg:
                     self.outTest(path, "Failed", -1)
 
 
@@ -121,17 +125,19 @@ class TestCallback(argparse.Action):
         tester.formatStart()
         tester.startTesting(tester.paths.keys())
         tester.endTest()
-        # print('%r %r %r' % (namespace, values, option_string))
         setattr(namespace, self.dest, values)
 
 
 
 
 def main():
-    parser = argparse.ArgumentParser(prog='py -m src.test.test')
-    parser.add_argument('--test',help='Run test on folders and/or .si files' , nargs='+', action=TestCallback)
-    parser.add_argument('--version', action='version', version=f'Silver-Test v{SILVER_VERSION}')
-    args = parser.parse_args()
     
+    parser.add_argument('--version', help='Returns the version of the current Silver', action='version', version=f'Silver-Test v{SILVER_VERSION}')
+    parser.add_argument('--verbose', help='Outputs failed cases errors inline', action='store_true', default=False)
+    parser.add_argument('--test',help='Run test on folders and/or .si files' , nargs='+', action=TestCallback)
+    args = parser.parse_args()
+
 if __name__ == "__main__":
     main()
+
+# 
