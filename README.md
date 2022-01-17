@@ -5,19 +5,18 @@
 
 ### Data language used to create better file formatting and dynamic usage.<br><br>![Language](https://img.shields.io/badge/language-Python-6A7FC8.svg?style=for-the-badge)   [![Build Status](https://img.shields.io/github/workflow/status/arturo-lang/arturo/Linux?style=for-the-badge)](https://github.com/arturo-lang/arturo/actions)
 
----
+--- 
 
-<!--ts-->
-    * [The Language](#the-language)
-    * [Usage](#usage)
-    * [Testeing](#testing)
-    * [Documentation](#docs)
-        * [Structs](#structs)
-        * [Data Arrays](#data-arrays)
-    * [MileStones](#milestones)
-<!--te-->
+* [The Language](#the-language)<br>
+* [Usage](#usage)
+* [Testing](#testing)
+* [Documentation](#docs)
+    * [Structs](#structs)
+    * [Data Arrays](#data-arrays)
+* [MileStones](#milestones)
 
 ---
+
 
 ## <b>The Language</b> 
 
