@@ -45,7 +45,7 @@ py -m src.app.main <FILE>
 For block testing of folders check [Silver's Test-Agent](#testing).
 
 ## <b>Testing</b>
-As of v1.0.1 Silver has an automated tester.
+As of v2.0.0 Silver has an automated tester.
 In order to run it, you will need to run `test.py`, as follows ( while sitting in main dir ):
 ```
 py -m src.test.test --test [FOLDER | FILE ...]
@@ -212,6 +212,15 @@ So far Silver doesn't support multi dimensional data arrays, but it is WIP, so y
 - [ ] Reference Past Keys
 - [ ] Boolean data type
 - [ ] Export to definitions < Code Info >
+- [ ] Links to other .si files
+- [ ] Rebase entire compiler
+  - [ ] Lexer
+  - [ ] Parser
+  - [ ] Ast
+  - [ ] Generator
+  - [ ] Structs
+  - [ ] Exports
+  - [ ] Links
 - [x] Silver Auto Tester
 
 ### Done
