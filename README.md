@@ -1,4 +1,4 @@
-![GitHub Logo](/images/Silver-Logo.jpg)
+![GitHub Logo](/images/Silver-Logo-2.jpg)
 
 
 # Silver Project
