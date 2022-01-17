@@ -1,5 +1,5 @@
 import sys
-import lexer as _lexer
+import src.app.lexer as _lexer
 OVERRIDE_FLAG = False
 OVERRIDE_PATH = "test\person.si"
 def main(argv : list):

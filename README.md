@@ -1,3 +1,6 @@
+![GitHub Logo](/images/Silver-Logo.jpg)
+
+
 # Silver Project
 Data language used to create better file formatting and dynamic usage.<br>
 Its main purpose is to generalize dynamic data written and being able to export it to different file types.
@@ -6,9 +9,23 @@ There is a current updated syntax highlighter for the language for vs code.
 You can find it at - https://github.com/Frostn1/SilverProject-SyntaxHighlight -.
 
 ## <b>Usage</b>
-Git clone the files to your computer.  
-Under the `src` folder you will see `main.py` file.  
-Run said file using python 3.8 or higher while giving it with args a file to compile.
+Git clone the files to your computer.
+```
+git clone "https://github.com/Frostn1/Silver-Project"
+```
+Cd inside of the repo folder itself
+```
+cd Silver-Project
+```
+Under the `src` folder you will see `app` folder, this folder holds all of the core code for Silver.<br>
+Inside of it there will be a `main.py` file, which can be used to run Silver on any <b>file</b> of you choosing.  
+Run said file using python 3.8 or higher while giving it ( with args ) a file to compile.<br>
+
+For block testing of folders check [Silver's Test-Agent](README.md#Data%20Arrays).
+
+## <b>Testing</b>
+As of v1.0.1 Silver has an automated tester.
+In order to run it, you will need to run
 
 ## <b>Docs</b>
 The Silver Language is focused on the data itself and how we can manipulate and rewrite it in different ways.
