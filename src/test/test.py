@@ -6,7 +6,7 @@ from src.app.link import *
 from src.app.lexer import Lexer, Parser, AST, GEN
 import time
 
-SILVER_VERSION = '1.0.0'
+SILVER_VERSION = '2.0.0'
 VERBOSE_FLAG = False
 parser = argparse.ArgumentParser(prog='py -m src.test.test')
 
