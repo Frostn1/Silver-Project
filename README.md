@@ -1,8 +1,26 @@
-![GitHub Logo](/images/Silver-Logo-2.jpg)
+<img align="left" width="190" src="/images/Silver-Logo-2.jpg"/>
 
 
-# Silver Project
-Data language used to create better file formatting and dynamic usage.<br>
+<h1>Silver Project</h1>
+
+### Data language used to create better file formatting and dynamic usage.<br><br>![Language](https://img.shields.io/badge/language-Python-6A7FC8.svg?style=for-the-badge)   [![Build Status](https://img.shields.io/github/workflow/status/arturo-lang/arturo/Linux?style=for-the-badge)](https://github.com/arturo-lang/arturo/actions)
+
+---
+
+<!--ts-->
+    * [The Language](#the-language)
+    * [Usage](#usage)
+    * [Testeing](#testing)
+    * [Documentation](#docs)
+        * [Structs](#structs)
+        * [Data Arrays](#data-arrays)
+    * [MileStones](#milestones)
+<!--te-->
+
+---
+
+## <b>The Language</b> 
+
 Its main purpose is to generalize dynamic data written and being able to export it to different file types.
 
 There is a current updated syntax highlighter for the language for vs code.
