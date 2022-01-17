@@ -1,3 +1,4 @@
+
 class Link:
     def __init__(self):
         self.linkedFiles = []

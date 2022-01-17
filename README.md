@@ -1,14 +1,72 @@
-# Silver Project
-Data language used to create better file formatting and dynamic usage.<br>
+<img align="left" width="190" src="/images/Silver-Logo-2.jpg"/>
+
+
+<h1>Silver Project</h1>
+
+### Data language used to create better file formatting and dynamic usage.<br><br>![Language](https://img.shields.io/badge/language-Python-6A7FC8.svg?style=for-the-badge)   [![Build Status](https://img.shields.io/github/workflow/status/arturo-lang/arturo/Linux?style=for-the-badge)](https://github.com/arturo-lang/arturo/actions)
+
+--- 
+
+* [The Language](#the-language)<br>
+* [Installation](#installation)
+* [Testing](#testing)
+* [Documentation](#docs)
+    * [Structs](#structs)
+    * [Data Arrays](#data-arrays)
+* [MileStones](#milestones)
+
+---
+
+
+## <b>The Language</b> 
+
 Its main purpose is to generalize dynamic data written and being able to export it to different file types.
 
 There is a current updated syntax highlighter for the language for vs code.
 You can find it at - https://github.com/Frostn1/SilverProject-SyntaxHighlight -.
 
-## <b>Usage</b>
-Git clone the files to your computer.  
-Under the `src` folder you will see `main.py` file.  
-Run said file using python 3.8 or higher while giving it with args a file to compile.
+## <b>Installation</b>
+Git clone the files to your computer.
+```
+git clone "https://github.com/Frostn1/Silver-Project"
+```
+Cd inside of the repo folder itself
+```
+cd Silver-Project
+```
+Make sure you have python 3.8 or higher installed, in order to run the code.<br>
+
+Under the `src` folder you will see `app` folder, this folder holds all of the core code for Silver.<br>
+Inside of it there will be a `main.py` file, which can be used to run Silver on any <b>file</b> of you choosing.  
+As follows ( while sitting in main dir ):
+```
+py -m src.app.main <FILE>
+```
+For block testing of folders check [Silver's Test-Agent](#testing).
+
+## <b>Testing</b>
+As of v1.0.1 Silver has an automated tester.
+In order to run it, you will need to run `test.py`, as follows ( while sitting in main dir ):
+```
+py -m src.test.test --test [FOLDER | FILE ...]
+```
+
+Silver's testers will run on the folder/files given and return an output based of each case return, e.g.
+```
+D:\Programming\Projects\Silver-Project(develop)> py -m src.test.test --test assets/
+Running tests for Silver v1.0.0
+Total of 1 test cases given
+
+assets/const.si ... Passed; in 0.001s
+assets/data_arrays.si ... Passed; in 0.000s
+assets/person.si ... Passed; in 0.002s
+assets/struct.si ... Passed; in 0.000s
+
+Test ended - 4 tests
+
+4 Passed
+Average time of 0.001
+```
 
 ## <b>Docs</b>
 The Silver Language is focused on the data itself and how we can manipulate and rewrite it in different ways.
@@ -154,6 +212,7 @@ So far Silver doesn't support multi dimensional data arrays, but it is WIP, so y
 - [ ] Reference Past Keys
 - [ ] Boolean data type
 - [ ] Export to definitions < Code Info >
+- [x] Silver Auto Tester
 
 ### Done
 

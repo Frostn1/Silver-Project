@@ -1,10 +1,8 @@
-from os import write
-import struct as _struct
-import chunk as _chunk
-from unittest import skip
-import link as _link
+import src.app.struct as _struct
+import src.app.link as _link 
+import src.app.chunk as _chunk
 import json
-import consts
+from src.tools import consts
 
 class GEN:
     def __init__(self, ast):
@@ -482,8 +480,7 @@ class Parser:
                     print(" => [Callback]")
                     print("\t[Func Name]", struct.callbacks[iden].name)
                     print("\t[Func Args] =>")
-                    for arg in struct.callbacks[iden].args:
-                        print("\t\t",arg)
+                    print("\t\t",struct.callbacks[iden].expr)
                 else:
                     print()
 class Lexer:
@@ -527,7 +524,6 @@ class Lexer:
                     print(" => [Callback]")
                     print("\t[Func Name]", struct.callbacks[iden].name)
                     print("\t[Func Args] =>")
-                    for arg in struct.callbacks[iden].args:
-                        print("\t\t",arg)
+                    print("\t\t",struct.callbacks[iden].expr)
                 else:
                     print()
