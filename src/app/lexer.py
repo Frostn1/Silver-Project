@@ -413,7 +413,6 @@ class Parser:
                     if current == '[' and keyword != '' and keyword[:-1] in [i.structName for i in lexer.structs]:
                         index = skipZero(data, index)
                         current = data[index]
-                        
                         structWORD = keyword[:-1]
                         while index < len(data) and current != ']':
                             structWORD += current
@@ -451,6 +450,25 @@ class Parser:
                             current = data[index]
                         values.append(endNumber)
                         keyword = ""
+                    else:
+                        endExp = ""
+                        while index < len(data) and current not in consts.EMPTY_SPACE and current not in ['[',']']:
+                            endExp += current
+                            index += 1
+                            if index >= len(data):
+                                raise Exception(f'lexer error : failed while lexing terms, unclosed lbracket ( `]` ) at < {data} >')
+                            current = data[index]
+                        
+                        
+                        
+                        if tooling.isBoolean(endExp):
+                            values.append(endExp)
+                            keyword = ""
+                        else:
+                            keyword = keyword[:-1] + endExp
+                            index -= 1
+                        # else :
+                        #     raise Exception(f'eparser error : unknown identifer < {endExp} > refernenced in value;\nin line < {data} >')
                     if index + 1 < len(data):
                         index += 1
                 if current != ']':
