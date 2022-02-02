@@ -1,0 +1,10 @@
+{
+    'True' : True,
+    'False' : False,
+    'BoolList' : [True True False],
+    ano : True
+}
+
+export json
+export yaml
+export raw

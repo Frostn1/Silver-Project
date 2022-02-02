@@ -3,6 +3,7 @@ import src.app.link as _link
 import src.app.chunk as _chunk
 import json
 from src.tools import consts
+from src.tools import tooling
 
 class GEN:
     def __init__(self, ast):
@@ -372,12 +373,7 @@ class Parser:
                     if typeName != '' and typeName not in [i.structName for i in lexer.structs]:
                         raise Exception("parser error : struct type `"+typeName+"` not expected")
                     elif typeName == '':
-                        # print("DATA SENT", data)
                         values = self.getData(data, lexer)
-                        # print("Chunk Data",key.strip().strip('"') ,values)
-                        # for field in values:
-                        #     print(field)
-
                         self.data[key.strip().strip('"')] = values
                     else:
                         fields = {}
@@ -386,7 +382,11 @@ class Parser:
                             fields[field.split("=")[0].strip().strip('"')] = field.split("=")[1].strip().strip("'").strip('"')
                         self.data[key.strip().strip('"')].append((typeName,fields))
                 else:
-                    self.data[key.strip().strip('"')] = data
+                    if tooling.isNumber(data) or tooling.isString(data) or tooling.isBoolean(data):
+                        self.data[key.strip().strip('"')] = data
+                    else:
+                        message = f"'{key}' : {data}"
+                        raise Exception(f'parser error : unknown identifer < {data} > refernenced in value;\nin line < {message} >')
     
     def getData(self, data, lexer):
 
@@ -413,7 +413,6 @@ class Parser:
                     if current == '[' and keyword != '' and keyword[:-1] in [i.structName for i in lexer.structs]:
                         index = skipZero(data, index)
                         current = data[index]
-                        
                         structWORD = keyword[:-1]
                         while index < len(data) and current != ']':
                             structWORD += current
@@ -451,6 +450,25 @@ class Parser:
                             current = data[index]
                         values.append(endNumber)
                         keyword = ""
+                    else:
+                        endExp = ""
+                        while index < len(data) and current not in consts.EMPTY_SPACE and current not in ['[',']']:
+                            endExp += current
+                            index += 1
+                            if index >= len(data):
+                                raise Exception(f'lexer error : failed while lexing terms, unclosed lbracket ( `]` ) at < {data} >')
+                            current = data[index]
+                        
+                        
+                        
+                        if tooling.isBoolean(endExp):
+                            values.append(endExp)
+                            keyword = ""
+                        else:
+                            keyword = keyword[:-1] + endExp
+                            index -= 1
+                        # else :
+                        #     raise Exception(f'eparser error : unknown identifer < {endExp} > refernenced in value;\nin line < {data} >')
                     if index + 1 < len(data):
                         index += 1
                 if current != ']':
@@ -465,6 +483,7 @@ class Parser:
                 values.append((typeName,fields))
                 return values
         else:
+            print("Got here", data)
             return data
     def printData(self):
         for key in self.data.keys():

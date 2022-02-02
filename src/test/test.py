@@ -1,15 +1,16 @@
 import argparse
+from re import VERBOSE
 from src.tools.colors import *
 import os.path
 from os import path as pathModule
-from src.app.link import *
-from src.app.lexer import Lexer, Parser, AST, GEN
+from src.app.lexer import *
 import time
+from  src.tools.consts import *
 
-SILVER_VERSION = '2.0.0'
-VERBOSE_FLAG = False
 parser = argparse.ArgumentParser(prog='py -m src.test.test')
-
+VERBOSE_FLAG = False
+FORCE_FLAG = False
+TEST_VALUES = []
 
 class Tester():
     def __init__(self, paths=[]) -> None:
@@ -44,8 +45,8 @@ class Tester():
 
     def formatStart(self):
         self.checkPaths()
-        formatP(HEADER, f"Running tests for Silver v{SILVER_VERSION}\n")
-        formatP(BOLD, f"Total of {self.numOfTests} test cases given\n\n")
+        formatP(BOLD, f"Running tests for Silver v{SILVER_VERSION}\n")
+        formatP(RESET, f"Total of {self.numOfTests} test cases given\n\n")
         self.numOfTests = 0
 
     def outTest(self, path, status, timeElapsed):
@@ -81,10 +82,11 @@ class Tester():
                         ast.semanticAnalysis()
                         gen = GEN(ast)
                         gen.generateCode()
-
                         self.outTest(path, "Passed", time.time() - currentTime)
                 except Exception as msg:
                     self.outTest(path, "Failed", -1)
+                    if VERBOSE_FLAG:
+                        formatP(RESET, f'\t{msg}\n')
 
 
     def cleanFiles(self, paths):
@@ -95,11 +97,12 @@ class Tester():
                 os.remove(path)
     
     def endTest(self):
-        self.cleanFiles(self.paths.keys())
+        if not FORCE_FLAG:
+            self.cleanFiles(self.paths.keys())
         print()
         formatP(UNDERLINE, "Test ended")
 
-        formatP(RESET, f" - {self.numOfTests} tests\n\n")
+        formatP(RESET, f" - {self.numOfTests} cases\n\n")
         if self.passed:
             formatP(BOLD, f"{self.passed} ")
             formatP(SUCCESS, "Passed ")
@@ -112,7 +115,12 @@ class Tester():
             formatP(BOLD, "\nAverage time of ")
             formatP(WARNING, "%.3f" % (self.times / (self.passed))) 
 
-
+    def testValues(values):
+        for value in values:
+            tester = Tester(value)
+            tester.formatStart()
+            tester.startTesting(tester.paths.keys())
+            tester.endTest()
 
 class TestCallback(argparse.Action):
     def __init__(self, option_strings, dest, nargs=None, **kwargs):
@@ -121,22 +129,25 @@ class TestCallback(argparse.Action):
         super().__init__(option_strings, dest, nargs, **kwargs)
 
     def __call__(self, parser, namespace, values, option_string=None):
-        tester = Tester(values)
-        tester.formatStart()
-        tester.startTesting(tester.paths.keys())
-        tester.endTest()
+        TEST_VALUES.append(values)  
         setattr(namespace, self.dest, values)
+        return
+        
 
 
 
 
 def main():
-    
+    global VERBOSE_FLAG, FORCE_FLAG
     parser.add_argument('--version', help='Returns the version of the current Silver', action='version', version=f'Silver-Test v{SILVER_VERSION}')
     parser.add_argument('--verbose', help='Outputs failed cases errors inline', action='store_true', default=False)
+    parser.add_argument('--force', '-f', help='Forces to keep output files from exports', action='store_true', default=False)
     parser.add_argument('--test',help='Run test on folders and/or .si files' , nargs='+', action=TestCallback)
     args = parser.parse_args()
-
+    VERBOSE_FLAG = args.verbose
+    FORCE_FLAG = args.force
+    Tester.testValues(TEST_VALUES)
+    
 if __name__ == "__main__":
     main()
 
