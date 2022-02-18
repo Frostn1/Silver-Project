@@ -9,6 +9,11 @@ class GEN:
     def __init__(self, ast):
         self.ast = ast
     def generateCode(self):
+        # Clear empty ano
+        if self.ast.data["ano"] == []:
+            self.ast.data.pop("ano")
+
+        # Check for all exports
         for export in self.ast.par.exports:
             if export.exportName == "json":
                 self.jsonGEN()
@@ -58,90 +63,67 @@ class GEN:
                 raise Exception("gen error : can't create export file")
             else:
                 fileContent += '{'
-                if "ano" in self.ast.data.keys() and self.ast.data["ano"] != []:
-                    # Write ano to file
-                    fileContent += '"ano":'
-                    fileContent = jsonWRITE(self.ast.data["ano"], fileContent)
-                    fileContent += ','
                 for index,data in enumerate(self.ast.data.keys()):
-                    if data == "ano":
-                        continue
-                    if index > 1:
+                    if index:
                         fileContent += ','
                     fileContent += '"' + str(data) + '":'
-                    print("Calling json write", data, self.ast.data[data])
                     fileContent = jsonWRITE(self.ast.data[data], fileContent)
                 fileContent += '}'
                 fileContent = eval(fileContent)
                 json.dump(fileContent, fileP, indent=4)
+
+
     def rawGEN(self):
+
+        def rawWRITE(dataDict, fileContent):
+            if isinstance(dataDict, list):
+                fileContent += '[ '
+                for index, data in enumerate(dataDict):
+                    if index:
+                        fileContent += ', '
+                    fileContent = rawWRITE(data, fileContent)
+            elif type(dataDict) == tuple:
+                keys = [i.idens for i in self.ast.par.structs if i.structName == dataDict[0]][0]
+                perDict = dict(sorted(dataDict[1].items(), key= lambda x : keys.index(x[0])))
+                fileContent += '[ ' + str(list(perDict.values())).replace("'",'').replace('"','')[1:-1] + ' ]'
+            else:
+                fileContent += " " + str(dataDict).replace("'",'').replace('"','')
+            
+            if isinstance(dataDict, list):
+                fileContent += ' ]'
+            return fileContent
+
+        # ------------------------
         self.ast.par.filePath = self.ast.par.filePath.strip("\\").strip(".\\")
         fileContent = ""
         with open(self.ast.par.filePath[:self.ast.par.filePath.index(".")]+".txt", "w") as fileP:
             if not fileP.writable() :
                 raise Exception("gen error : can't create export file")
             else:
-
                 fileContent += '{\n'
-                if "ano" in self.ast.data.keys() and self.ast.data["ano"] != []:
-                    # Write ano to file
-                        
-                    fileContent += '\tano : '
-                    if len(self.ast.data["ano"]) > 1:
-                        fileContent += '[ '
-                    for index, data in enumerate(self.ast.data["ano"]):
-                        if index:
-                            fileContent += ', '
-                        if isinstance(data, list):
-                            length = False
-                            if len(data) > 1 or len(data) == 0:
-                                length = True
-                                fileContent += '['
-                            for index1, section in enumerate(data):
-                                if index1 > 0:
-                                    fileContent += ','
-                                if type(section) == tuple:
-                                    values = [i for i in section[1].values() if i]
-                                    fileContent += '[ ' + str(values).replace("'",'').replace('"','')[1:-1] + ' ]'
-                                else:
-                                    fileContent += " " + str(section).replace("'",'').replace('"','')
-                            if length:
-                                fileContent += ']'
-                                length = False
-                        elif type(data) == tuple:
-                            values = [i for i in data[1].values() if i]
-                            fileContent += '[ ' + str(section).replace("'",'').replace('"','')[1:-1] + ' ]'
-
-                        else:
-                            fileContent += " " + str(data).replace("'",'"')
-                    if len(self.ast.data["ano"]) > 1:
-                        fileContent += ' ]'
-                    fileContent += ',\n'
                 for index,data in enumerate(self.ast.data.keys()):
-                    if data == "ano":
-                        continue
-                    if index > 1:
+                    if index:
                         fileContent += ',\n'
-                    fileContent += '\t' + str(data)
-                    fileContent += ' : '
-                    if isinstance(self.ast.data[data], list):
-                        length = False
-                        if len(self.ast.data[data]) > 1 or len(self.ast.data[data]) == 0:
-                            length = True
-                            fileContent += '['
-                        for index1, section in enumerate(self.ast.data[data]):
-                            if index1:
-                                fileContent += ','
-                            if type(section) == tuple:
-                                values = [i for i in section[1].values() if i]
-                                fileContent += '[ ' + str(values).replace("'",'').replace('"','')[1:-1] + ' ]'
-                            else:
-                                fileContent += " " + str(section).replace("'",'').replace('"','')
-                        if length:
-                            fileContent += ']'
-                            length = False
-                    else:
-                        fileContent += " " + str(self.ast.data[data]).replace("'",'').replace('"','')
+                    fileContent += '\t' + str(data) + ' : '
+                    fileContent = rawWRITE(self.ast.data[data], fileContent)
+                    # if isinstance(self.ast.data[data], list):
+                    #     length = False
+                    #     if len(self.ast.data[data]) > 1 or len(self.ast.data[data]) == 0:
+                    #         length = True
+                    #         fileContent += '['
+                    #     for index1, section in enumerate(self.ast.data[data]):
+                    #         if index1:
+                    #             fileContent += ','
+                    #         if type(section) == tuple:
+                    #             values = [i for i in section[1].values() if i]
+                    #             fileContent += '[ ' + str(values).replace("'",'').replace('"','')[1:-1] + ' ]'
+                    #         else:
+                    #             fileContent += " " + str(section).replace("'",'').replace('"','')
+                    #     if length:
+                    #         fileContent += ']'
+                    #         length = False
+                    # else:
+                    #     fileContent += " " + str(self.ast.data[data]).replace("'",'').replace('"','')
                 fileContent += '\n}'
                 fileP.write(fileContent)
 

@@ -1,0 +1,5 @@
+{
+	ano : [  2021 ],
+	CurrentYear :  2022,
+	Data : [  Current Date,  Hello world, [ John, Doe, 24, 1998 ],  2017 ]
+}
