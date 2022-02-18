@@ -16,7 +16,51 @@ class GEN:
                 self.rawGEN()
             elif export.exportName == "yaml":
                 self.yamlGEN()
+            elif export.exportName == "base":
+                self.baseGEN()
+    
+    def baseGEN(self):
+        self.ast.par.filePath = self.ast.par.filePath.strip("\\").strip(".\\")
+        fileContent = ""
+        with open(self.ast.par.filePath[:self.ast.par.filePath.index(".")]+".json", "w") as fileP:
+            if not fileP.writable() :
+                raise Exception("gen error : can't create export file")
+            else:
+                pass
+
     def jsonGEN(self):
+        def jsonWRITE(dataDict, fileContent):
+            if len(dataDict) > 1:
+                fileContent += '['
+            for index, data in enumerate(dataDict):
+                if index:
+                    fileContent += ','
+                if isinstance(data, list):
+
+                    length = False
+                    if len(data) > 1 or len(data) == 0:
+                        length = True
+                        fileContent += '['
+                    for index1, section in enumerate(data):
+                        if index1 > 0:
+                            fileContent += ','
+                        if type(section) == tuple:
+                            keys = [i.idens for i in self.ast.par.structs if i.structName == section[0]][0]
+                            fileContent += str(dict(sorted(section[1].items(), key= lambda x : keys.index(x[0])))).replace("'",'"')
+                        else:
+                            fileContent += str(section).replace("'",'"')
+                    if length:
+                        fileContent += ']'
+                        length = False
+                elif type(data) == tuple:
+                    fileContent += str(data[1]).replace("'",'"')
+                else:
+                    fileContent += str(data).replace("'",'"')
+            if len(dataDict) > 1:
+                fileContent += ']'
+
+        # ----------------------------
+
         self.ast.par.filePath = self.ast.par.filePath.strip("\\").strip(".\\")
         fileContent = ""
         with open(self.ast.par.filePath[:self.ast.par.filePath.index(".")]+".json", "w") as fileP:
@@ -26,36 +70,8 @@ class GEN:
                 fileContent += '{'
                 if "ano" in self.ast.data.keys() and self.ast.data["ano"] != []:
                     # Write ano to file
-                        
                     fileContent += '"ano":'
-                    if len(self.ast.data["ano"]) > 1:
-                        fileContent += '['
-                    for index, data in enumerate(self.ast.data["ano"]):
-                        if index:
-                            fileContent += ','
-                        if isinstance(data, list):
-
-                            length = False
-                            if len(data) > 1 or len(data) == 0:
-                                length = True
-                                fileContent += '['
-                            for index1, section in enumerate(data):
-                                if index1 > 0:
-                                    fileContent += ','
-                                if type(section) == tuple:
-                                    keys = [i.idens for i in self.ast.par.structs if i.structName == section[0]][0]
-                                    fileContent += str(dict(sorted(section[1].items(), key= lambda x : keys.index(x[0])))).replace("'",'"')
-                                else:
-                                    fileContent += str(section).replace("'",'"')
-                            if length:
-                                fileContent += ']'
-                                length = False
-                        elif type(data) == tuple:
-                            fileContent += str(data[1]).replace("'",'"')
-                        else:
-                            fileContent += str(data).replace("'",'"')
-                    if len(self.ast.data["ano"]) > 1:
-                        fileContent += ']'
+                    jsonWRITE(self.ast.data["ano"], fileContent)
                     fileContent += ','
                 for index,data in enumerate(self.ast.data.keys()):
                     if data == "ano":
@@ -63,28 +79,7 @@ class GEN:
                     if index > 1:
                         fileContent += ','
                     fileContent += '"' + str(data) + '":'
-                    if isinstance(self.ast.data[data], list):
-                        
-                        length = False
-                        if len(self.ast.data[data]) > 1 or len(self.ast.data[data]) == 0:
-                            length = True
-                            fileContent += '['
-                        for index1, section in enumerate(self.ast.data[data]):
-                            if index1 > 0:
-                                fileContent += ','
-                            # print([i.idens for i in self.ast.par.structs if i.structName == section[0]])
-                            # print(section)
-                            if type(section) == tuple:
-                                keys = [i.idens for i in self.ast.par.structs if i.structName == section[0]][0]
-                                # print("NEW VAL", str(dict(sorted(section[1].items(), key= lambda x : keys.index(x[0])))).replace("'",'"'))
-                                fileContent += str(dict(sorted(section[1].items(), key= lambda x : keys.index(x[0])))).replace("'",'"')
-                            else:
-                                fileContent += str(section).replace("'",'"')
-                        if length:
-                            fileContent += ']'
-                            length = False
-                    else:
-                        fileContent += str(self.ast.data[data]).replace("'",'"')
+                    jsonWRITE(self.ast.data[data], fileContent)
                 fileContent += '}'
                 fileContent = eval(fileContent)
                 json.dump(fileContent, fileP, indent=4)
