@@ -37,14 +37,11 @@ class GEN:
         def jsonWRITE(dataDict, fileContent):
             if isinstance(dataDict, list):
                 fileContent += '['
-                print('Got here')
                 for index, data in enumerate(dataDict):
                     if index:
                         fileContent += ','
-                    print('DATA', data)
                     fileContent = jsonWRITE(data, fileContent)
             elif type(dataDict) == tuple:
-                print('TUPLE', dataDict)
                 keys = [i.idens for i in self.ast.par.structs if i.structName == dataDict[0]][0]
                 fileContent += str(dict(sorted(dataDict[1].items(), key= lambda x : keys.index(x[0])))).replace("'",'"')
             else:
@@ -84,8 +81,8 @@ class GEN:
                     fileContent = rawWRITE(data, fileContent)
             elif type(dataDict) == tuple:
                 keys = [i.idens for i in self.ast.par.structs if i.structName == dataDict[0]][0]
-                perDict = dict(sorted(dataDict[1].items(), key= lambda x : keys.index(x[0])))
-                fileContent += '[ ' + str(list(perDict.values())).replace("'",'').replace('"','')[1:-1] + ' ]'
+                preDict = dict(sorted(dataDict[1].items(), key= lambda x : keys.index(x[0])))
+                fileContent += '[ ' + str(list(preDict.values())).replace("'",'').replace('"','')[1:-1] + ' ]'
             else:
                 fileContent += " " + str(dataDict).replace("'",'').replace('"','')
             
@@ -94,6 +91,7 @@ class GEN:
             return fileContent
 
         # ------------------------
+
         self.ast.par.filePath = self.ast.par.filePath.strip("\\").strip(".\\")
         fileContent = ""
         with open(self.ast.par.filePath[:self.ast.par.filePath.index(".")]+".txt", "w") as fileP:
@@ -106,29 +104,30 @@ class GEN:
                         fileContent += ',\n'
                     fileContent += '\t' + str(data) + ' : '
                     fileContent = rawWRITE(self.ast.data[data], fileContent)
-                    # if isinstance(self.ast.data[data], list):
-                    #     length = False
-                    #     if len(self.ast.data[data]) > 1 or len(self.ast.data[data]) == 0:
-                    #         length = True
-                    #         fileContent += '['
-                    #     for index1, section in enumerate(self.ast.data[data]):
-                    #         if index1:
-                    #             fileContent += ','
-                    #         if type(section) == tuple:
-                    #             values = [i for i in section[1].values() if i]
-                    #             fileContent += '[ ' + str(values).replace("'",'').replace('"','')[1:-1] + ' ]'
-                    #         else:
-                    #             fileContent += " " + str(section).replace("'",'').replace('"','')
-                    #     if length:
-                    #         fileContent += ']'
-                    #         length = False
-                    # else:
-                    #     fileContent += " " + str(self.ast.data[data]).replace("'",'').replace('"','')
                 fileContent += '\n}'
                 fileP.write(fileContent)
 
 
     def yamlGEN(self):
+
+
+        def yamlWRITE(dataDict, fileContent):
+            print('DATA', dataDict)
+            if isinstance(dataDict, list):
+                for index, data in enumerate(dataDict):
+                    
+                    fileContent += '\n    - '
+                    fileContent = yamlWRITE(data, fileContent)
+            elif type(dataDict) == tuple:
+                keys = [i.idens for i in self.ast.par.structs if i.structName == dataDict[0]][0]
+                preDict = dict(sorted(dataDict[1].items(), key= lambda x : keys.index(x[0])))
+                fileContent += "\n    - ".join([str(i[0]) + ': ' + str(i[1]) for i in preDict.items()])
+            else:
+                fileContent += str(dataDict).replace("'",'').replace('"','')
+            return fileContent
+
+        # ------------------------------
+        
         self.ast.par.filePath = self.ast.par.filePath.strip("\\").strip(".\\")
         fileContent = ""
         with open(self.ast.par.filePath[:self.ast.par.filePath.index(".")]+".yaml", "w") as fileP:
@@ -137,64 +136,11 @@ class GEN:
             else:
                 if len(self.ast.data.keys()) > 1:
                     fileContent += '- '
-                if "ano" in self.ast.data.keys() and self.ast.data["ano"] != []:
-                    # Write ano to file
-                        
-                    fileContent += 'ano: '
-                    if len(self.ast.data["ano"]) > 1:
-                        fileContent += '\n    - '
-                    for index, data in enumerate(self.ast.data["ano"]):
-                        if index:
-                            fileContent += '\n    - '
-                        if isinstance(data, list):
-                            length = False
-                            if len(data) > 1 or len(data) == 0:
-                                length = True
-                                fileContent += '\n    - '
-                            for index1, section in enumerate(data):
-                                if index1:
-                                    fileContent += '\n    - '
-                                if type(section) == tuple:
-                                    fileFormat = "\n    - " + "\n    - ".join([str(i[0]) + ': ' + str(i[1]) for i in section[1].items()])
-                                    fileContent += fileFormat
-                                else:
-                                    fileContent += str(section).replace("'",'"')
-                                
-                            if length:
-                                length = False
-                        elif type(data) == tuple:
-                            fileContent += str(data[1]).replace("'",'"')
-
-                        else:
-                            fileContent += str(data).replace("'",'"')
-                    
-                    fileContent += '\n'
-
                 for index,data in enumerate(self.ast.data.keys()):
-                    if data == "ano":
-                        index = 0
-                        continue
-                    if index > 1:
+                    if index:
                         fileContent += '\n- '
-                    fileContent += str(data)
-                    fileContent += ': '
-                    if isinstance(self.ast.data[data], list):
-                        length = False
-                        if len(self.ast.data[data]) > 1 or len(self.ast.data[data]) == 0:
-                            length = True
-                            fileContent += '\n    - '
-                        for index1, section in enumerate(self.ast.data[data]):
-                            if index1:
-                                fileContent += '\n    - '
-                            if type(section) == tuple:
-                                fileFormat = "\n    - " + "\n    - ".join([str(i[0]) + ': ' + str(i[1]) for i in section[1].items()])
-                                fileContent += fileFormat
-                            else:
-                                fileContent += str(section).replace("'",'').replace('"','')
-                        if length:
-                            length = False
-                    else:
-                        fileContent += str(self.ast.data[data]).replace("'",'').replace('"','')
+                    fileContent += str(data) + ': '
+                    fileContent = yamlWRITE(self.ast.data[data], fileContent)
                 fileP.write(fileContent)
 
 class AST:
