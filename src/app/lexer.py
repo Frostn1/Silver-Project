@@ -30,34 +30,24 @@ class GEN:
 
     def jsonGEN(self):
         def jsonWRITE(dataDict, fileContent):
-            if len(dataDict) > 1:
+            if isinstance(dataDict, list):
                 fileContent += '['
-            for index, data in enumerate(dataDict):
-                if index:
-                    fileContent += ','
-                if isinstance(data, list):
-
-                    length = False
-                    if len(data) > 1 or len(data) == 0:
-                        length = True
-                        fileContent += '['
-                    for index1, section in enumerate(data):
-                        if index1 > 0:
-                            fileContent += ','
-                        if type(section) == tuple:
-                            keys = [i.idens for i in self.ast.par.structs if i.structName == section[0]][0]
-                            fileContent += str(dict(sorted(section[1].items(), key= lambda x : keys.index(x[0])))).replace("'",'"')
-                        else:
-                            fileContent += str(section).replace("'",'"')
-                    if length:
-                        fileContent += ']'
-                        length = False
-                elif type(data) == tuple:
-                    fileContent += str(data[1]).replace("'",'"')
-                else:
-                    fileContent += str(data).replace("'",'"')
-            if len(dataDict) > 1:
+                print('Got here')
+                for index, data in enumerate(dataDict):
+                    if index:
+                        fileContent += ','
+                    print('DATA', data)
+                    fileContent = jsonWRITE(data, fileContent)
+            elif type(dataDict) == tuple:
+                print('TUPLE', dataDict)
+                keys = [i.idens for i in self.ast.par.structs if i.structName == dataDict[0]][0]
+                fileContent += str(dict(sorted(dataDict[1].items(), key= lambda x : keys.index(x[0])))).replace("'",'"')
+            else:
+                fileContent += str(dataDict).replace("'",'"')
+            
+            if isinstance(dataDict, list):
                 fileContent += ']'
+            return fileContent
 
         # ----------------------------
 
@@ -71,7 +61,7 @@ class GEN:
                 if "ano" in self.ast.data.keys() and self.ast.data["ano"] != []:
                     # Write ano to file
                     fileContent += '"ano":'
-                    jsonWRITE(self.ast.data["ano"], fileContent)
+                    fileContent = jsonWRITE(self.ast.data["ano"], fileContent)
                     fileContent += ','
                 for index,data in enumerate(self.ast.data.keys()):
                     if data == "ano":
@@ -79,7 +69,8 @@ class GEN:
                     if index > 1:
                         fileContent += ','
                     fileContent += '"' + str(data) + '":'
-                    jsonWRITE(self.ast.data[data], fileContent)
+                    print("Calling json write", data, self.ast.data[data])
+                    fileContent = jsonWRITE(self.ast.data[data], fileContent)
                 fileContent += '}'
                 fileContent = eval(fileContent)
                 json.dump(fileContent, fileP, indent=4)
