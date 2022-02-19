@@ -208,7 +208,7 @@ So far Silver doesn't support multi dimensional data arrays, but it is WIP, so y
 
 ## <b>Milestones</b>
 ### Current
-- [ ] Multi Dimensional Data arrays
+- [x] Multi Dimensional Data arrays
 - [ ] Reference Past Keys
 - [x] Boolean data type
 - [x] Export to definitions < Code Info >
