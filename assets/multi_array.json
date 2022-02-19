@@ -8,7 +8,9 @@
             [
                 "Idk what this is",
                 17,
-                "Sean Dahan"
+                "Sean Dahan",
+                true,
+                12.2
             ],
             true,
             12.2

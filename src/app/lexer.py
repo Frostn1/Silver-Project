@@ -351,7 +351,6 @@ class Parser:
             elif data[index] == '[' and current:
                 if current not in [i.structName for i in lexer.structs]:
                     raise Exception(f"parser error : struct type `{current}` not expected")
-
                 bracketCount = 0
                 dowhile = True
                 while index < len(data) and bracketCount or dowhile:
@@ -381,6 +380,7 @@ class Parser:
                     index += 1
                 foundString += "'"
                 values.append(foundString)
+                index += 1
                 current = ''
 
             elif data[index].isnumeric():
@@ -404,9 +404,7 @@ class Parser:
                 values.append(endNumber)
                 index -= 1
                 current = ''
-            else:
-                print("ELSE_", current)
-            if index < len(data):
+            if index < len(data) and data[index] not in consts.EMPTY_SPACE:
                 current += data[index]
             index += 1
         # print('GOT TO END',values)
