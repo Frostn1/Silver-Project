@@ -1,1 +1,1 @@
-[ Dates [ Text, Text, Text ] : List ]
+[ Dates [  [ Text, Text, Text ] : List, Text, Text, Text ] : List ]

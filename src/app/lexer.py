@@ -290,7 +290,7 @@ class Parser:
         if "[" in data:
             typeName = data[:data.index("[")]
             if typeName != '' and typeName not in [i.structName for i in lexer.structs]:
-                raise Exception("parser error : struct type `"+typeName+"` not expected")
+                raise Exception(f"parser error : struct type `{typeName}` not expected")
             elif typeName == '':
                 values = self.newGet(data, lexer)
                 if key == 'ano':
@@ -330,12 +330,14 @@ class Parser:
 
 
     def newGet(self, data, lexer):
+        print('NEW GET', data)
         current = ''
         index = 0
         fields = {}
         values = []
         while index < len(data):
             if data[index] in consts.EMPTY_SPACE:
+                index += 1
                 continue
             if data[index] == '[' and not current:
                 values.append(self.newGet(data[index + 1:], lexer))
@@ -377,6 +379,7 @@ class Parser:
                 values.append(current)
                 current = ''
             current += data[index]
+            index += 1
 
     def getData(self, data, lexer):
 
