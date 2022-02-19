@@ -1,3 +1,4 @@
+from xml.dom.expatbuilder import FilterCrutch
 import src.app.struct as _struct
 import src.app.link as _link 
 import src.app.chunk as _chunk
@@ -25,13 +26,47 @@ class GEN:
                 self.baseGEN()
     
     def baseGEN(self):
+
+
+        def baseWRITE(dataDict, fileContent, listFlag):
+            if isinstance(dataDict, list):
+                fileContent += ' [ '
+                for index, data in enumerate(dataDict):
+                    if index:
+                        fileContent += ', '
+                    fileContent = baseWRITE(data, fileContent, True)
+                fileContent += ' ] : List'
+            elif type(dataDict) == tuple:
+                if not listFlag:
+                    fileContent += ' : '
+                fileContent += f'{dataDict[0]}'
+            else:
+                if not listFlag:
+                    fileContent += ' : '
+                if tooling.isString(dataDict) :
+                    fileContent += 'Text'
+                elif tooling.isNumber(dataDict) :
+                    fileContent += 'Number'
+                elif tooling.isBoolean(dataDict) :
+                    fileContent += 'Bool'
+            return fileContent
+
         self.ast.par.filePath = self.ast.par.filePath.strip("\\").strip(".\\")
         fileContent = ""
-        with open(self.ast.par.filePath[:self.ast.par.filePath.index(".")]+".json", "w") as fileP:
+        with open(self.ast.par.filePath[:self.ast.par.filePath.index(".")]+".base", "w") as fileP:
             if not fileP.writable() :
                 raise Exception("gen error : can't create export file")
             else:
-                pass
+                for struct in self.ast.par.structs:
+                    fileP.write(str(struct) + '\n')
+                fileContent += '[ '
+                for index,data in enumerate(self.ast.data.keys()):
+                    if index:
+                        fileContent += ', '
+                    fileContent += str(data)
+                    fileContent = baseWRITE(self.ast.data[data], fileContent, False)
+                fileContent += ' ]'
+                fileP.write(fileContent)
 
     def jsonGEN(self):
         def jsonWRITE(dataDict, fileContent):
@@ -112,10 +147,8 @@ class GEN:
 
 
         def yamlWRITE(dataDict, fileContent):
-            print('DATA', dataDict)
             if isinstance(dataDict, list):
                 for index, data in enumerate(dataDict):
-                    
                     fileContent += '\n    - '
                     fileContent = yamlWRITE(data, fileContent)
             elif type(dataDict) == tuple:
@@ -127,7 +160,7 @@ class GEN:
             return fileContent
 
         # ------------------------------
-        
+
         self.ast.par.filePath = self.ast.par.filePath.strip("\\").strip(".\\")
         fileContent = ""
         with open(self.ast.par.filePath[:self.ast.par.filePath.index(".")]+".yaml", "w") as fileP:
@@ -265,12 +298,7 @@ class Parser:
                     if typeName != '' and typeName not in [i.structName for i in lexer.structs]:
                         raise Exception("parser error : struct type `"+typeName+"` not expected")
                     elif typeName == '':
-                        # print("DATA SENT", data)
                         values = self.getData(data, lexer)
-                        # print("Chunk Data - ANO",values)
-                        # for field in values:
-                        #     print(field)
-
                         self.data["ano"].append(values)
                     else:
                         fields = {}
