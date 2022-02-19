@@ -339,7 +339,6 @@ class Parser:
                 continue
             if data[index] == '[' and current not in [i.structName for i in lexer.structs]:
                 values.append(self.newGet(data[index + 1:], lexer))
-                # print('VALUES', values)
                 bracketCount = 0
                 dowhile = True
                 while index < len(data) and bracketCount or dowhile:
@@ -374,16 +373,18 @@ class Parser:
                     foundString += data[index]
                     index += 1
                 foundString += "'"
-                # print('Added string', foundString)
                 values.append(foundString)
                 current = ''
 
             elif data[index].isnumeric():
                 endNumber = ''
-                while index < len(data) and data[index].isnumeric():
+                while index < len(data) and data[index] not in consts.EMPTY_SPACE and data[index] != ']':
                     endNumber += data[index]
                     index += 1
+                if not tooling.isNumber(endNumber):
+                    raise Exception(f'lexer error : failed while lexing terms, < {data} > is not a valid number value')
                 values.append(endNumber)
+                index -= 1
                 current = ''
 
             elif tooling.isBoolean(current):
