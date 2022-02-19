@@ -211,7 +211,7 @@ So far Silver doesn't support multi dimensional data arrays, but it is WIP, so y
 - [ ] Multi Dimensional Data arrays
 - [ ] Reference Past Keys
 - [x] Boolean data type
-- [ ] Export to definitions < Code Info >
+- [x] Export to definitions < Code Info >
 - [ ] Links to other .si files
 - [ ] Rebase entire compiler
   - [ ] Lexer
@@ -221,6 +221,7 @@ So far Silver doesn't support multi dimensional data arrays, but it is WIP, so y
   - [ ] Structs
   - [ ] Exports
   - [ ] Links
+- [ ] Struct type hints
 - [x] Silver Auto Tester
 
 ### Done

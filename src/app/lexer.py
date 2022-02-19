@@ -285,46 +285,99 @@ class Parser:
         self.exports = lexer.exports
         self.links = lexer.links
         self.restrcutureData(lexer)
+
+    def findData(self, key, data, lexer):
+        if "[" in data:
+            typeName = data[:data.index("[")]
+            if typeName != '' and typeName not in [i.structName for i in lexer.structs]:
+                raise Exception("parser error : struct type `"+typeName+"` not expected")
+            elif typeName == '':
+                values = self.newGet(data, lexer)
+                if key == 'ano':
+                    self.data["ano"].append(values)
+                else:
+                    self.data[key.strip().strip('"')] = values
+            else:
+                fields = {}
+                self.data[key.strip().strip('"')] = []
+                for field in data[data.index("[")+1:data.index("]")].split("|"):
+                    fields[field.split("=")[0].strip().strip('"')] = field.split("=")[1].strip().strip("'").strip('"')
+                self.data[key.strip().strip('"')].append((typeName,fields))
+        else:
+            if tooling.isNumber(data) or tooling.isString(data) or tooling.isBoolean(data):
+                if key == 'ano':
+                    self.data["ano"].append(data)
+                else:
+                    self.data[key.strip().strip('"')] = values
+            else:
+                message = f"'{key}' : {data}"
+                raise Exception(f'parser error : unknown identifer < {data} > refernenced in value;\nin line < {message} >')
+
     def restrcutureData(self, lexer):
+
+
+        
         for chunk in lexer.chunks:
             for data in chunk.ano:
-                if "[" in data:
-                    typeName = data[:data.index("[")]
-                    if typeName != '' and typeName not in [i.structName for i in lexer.structs]:
-                        raise Exception("parser error : struct type `"+typeName+"` not expected")
-                    elif typeName == '':
-                        values = self.getData(data, lexer)
-                        self.data["ano"].append(values)
-                    else:
-                        fields = {}
-                        for field in data[data.index("[")+1:data.index("]")].split("|"):
-                            fields[field.split("=")[0].strip().strip('"')] = field.split("=")[1].strip().strip("'").strip('"')
-                        self.data["ano"].append((typeName,fields))
-                else:
-                    self.data["ano"].append(data)
+                self.findData('ano',data,lexer)
 
             for key in chunk.chunkDict.keys():
                 data = chunk.chunkDict[key]
-                if "[" in data:
-                    typeName = data[:data.index("[")]
-                    if typeName != '' and typeName not in [i.structName for i in lexer.structs]:
-                        raise Exception("parser error : struct type `"+typeName+"` not expected")
-                    elif typeName == '':
-                        values = self.getData(data, lexer)
-                        self.data[key.strip().strip('"')] = values
-                    else:
-                        fields = {}
-                        self.data[key.strip().strip('"')] = []
-                        for field in data[data.index("[")+1:data.index("]")].split("|"):
-                            fields[field.split("=")[0].strip().strip('"')] = field.split("=")[1].strip().strip("'").strip('"')
-                        self.data[key.strip().strip('"')].append((typeName,fields))
-                else:
-                    if tooling.isNumber(data) or tooling.isString(data) or tooling.isBoolean(data):
-                        self.data[key.strip().strip('"')] = data
-                    else:
-                        message = f"'{key}' : {data}"
-                        raise Exception(f'parser error : unknown identifer < {data} > refernenced in value;\nin line < {message} >')
+                self.findData(key,data,lexer)
+                
+        self.printData()
     
+
+
+    def newGet(self, data, lexer):
+        current = ''
+        index = 0
+        fields = {}
+        values = []
+        while index < len(data):
+            if data[index] in consts.EMPTY_SPACE:
+                continue
+            if data[index] == '[' and not current:
+                values.append(self.newGet(data[index + 1:], lexer))
+            elif data[index] == '[' and current:
+                if current not in [i.structName for i in lexer.structs]:
+                    raise Exception(f"parser error : struct type `{current}` not expected")
+
+                while index < len(data) and data[index] != ']':
+                    current += data[index]
+                    index += 1
+                
+                for field in current[current.index("[")+1:current.index("]")].split("|"):
+                    fields[field.split("=")[0].strip().strip('"')] = field.split("=")[1].strip().strip("'").strip('"')
+                values.append((current[:current.index('[')],fields))
+                return values
+            elif data[index] == ']':
+                return values
+
+            elif data[index] == '"' or data[index] == '\'':
+                starter = data[index]
+                index += 1
+                foundString = "'"
+                while index < len(data) and data[index] != starter:
+                    foundString += data[index]
+                    index += 1
+                foundString += "'"
+                values.append(foundString)
+                current = ''
+
+            elif data[index].isnumeric():
+                endNumber = ''
+                while index < len(data) and data[index].isnumeric():
+                    endNumber += data[index]
+                    index += 1
+                values.append(endNumber)
+                current = ''
+
+            elif tooling.isBoolean(current):
+                values.append(current)
+                current = ''
+            current += data[index]
+
     def getData(self, data, lexer):
 
         def skipZero(string, index):
@@ -332,7 +385,7 @@ class Parser:
                 index += 1
             return index
         
-        
+        print('DATA', data)
         if "[" in data:
             typeName = data[:data.index("[")]
             if typeName != '' and typeName not in [i.structName for i in lexer.structs]:
