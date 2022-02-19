@@ -1,0 +1,8 @@
+{
+    'True' : True,
+    'False' : False,
+    'BoolList' : [True True False],
+    ano : True
+}
+
+export base

@@ -19,6 +19,13 @@ class Struct:
         self.callbacks = {}
         self.idens = []
         self.structName = ""
+    
+    def __str__(self) -> str:
+        return self.structName + ' [ ' + ' : Any, '.join(self.idens) + ' : Any ] : Struct'
+    
+    def __repr__(self) -> str:
+        return self.structName + ' [ ' + ' : Any, '.join(self.idens) + ' : Any ] : Struct'
+    
     def detectStructs(self, content, currentIndex):
         startIndex = currentIndex
         enderFlag = False

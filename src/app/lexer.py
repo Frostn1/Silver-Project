@@ -1,21 +1,88 @@
+from xml.dom.expatbuilder import FilterCrutch
 import src.app.struct as _struct
 import src.app.link as _link 
 import src.app.chunk as _chunk
 import json
 from src.tools import consts
+from src.tools import tooling
 
 class GEN:
     def __init__(self, ast):
         self.ast = ast
+        self.exportFuncs = {'json' : self.jsonGEN, 'raw' : self.rawGEN, 'yaml' : self.yamlGEN, 'base' : self.baseGEN}
     def generateCode(self):
+        # Clear empty ano
+        if self.ast.data["ano"] == []:
+            self.ast.data.pop("ano")
+
+        # Check for all exports
         for export in self.ast.par.exports:
-            if export.exportName == "json":
-                self.jsonGEN()
-            elif export.exportName == "raw":
-                self.rawGEN()
-            elif export.exportName == "yaml":
-                self.yamlGEN()
+            self.exportFuncs[export.exportName]()
+    
+    def baseGEN(self):
+        def baseWRITE(dataDict, fileContent, listFlag):
+            if isinstance(dataDict, list):
+                fileContent += ' [ '
+                for index, data in enumerate(dataDict):
+                    if index:
+                        fileContent += ', '
+                    fileContent = baseWRITE(data, fileContent, True)
+                fileContent += ' ] : List'
+            elif type(dataDict) == tuple:
+                if not listFlag:
+                    fileContent += ' : '
+                fileContent += f'{dataDict[0]}'
+            else:
+                if not listFlag:
+                    fileContent += ' : '
+                if tooling.isString(dataDict) :
+                    fileContent += 'Text'
+                elif tooling.isNumber(dataDict) :
+                    fileContent += 'Number'
+                elif tooling.isBoolean(dataDict) :
+                    fileContent += 'Bool'
+            return fileContent
+        
+
+        # -------------------------
+
+        self.ast.par.filePath = self.ast.par.filePath.strip("\\").strip(".\\")
+        fileContent = ""
+        with open(self.ast.par.filePath[:self.ast.par.filePath.index(".")]+".base", "w") as fileP:
+            if not fileP.writable() :
+                raise Exception("gen error : can't create export file")
+            else:
+                for struct in self.ast.par.structs:
+                    fileP.write(str(struct) + '\n')
+                fileContent += '[ '
+                for index,data in enumerate(self.ast.data.keys()):
+                    if index:
+                        fileContent += ', '
+                    fileContent += str(data)
+                    fileContent = baseWRITE(self.ast.data[data], fileContent, False)
+                fileContent += ' ]'
+                fileP.write(fileContent)
+
     def jsonGEN(self):
+        def jsonWRITE(dataDict, fileContent):
+            if isinstance(dataDict, list):
+                fileContent += '['
+                for index, data in enumerate(dataDict):
+                    if index:
+                        fileContent += ','
+                    fileContent = jsonWRITE(data, fileContent)
+            elif type(dataDict) == tuple:
+                keys = [i.idens for i in self.ast.par.structs if i.structName == dataDict[0]][0]
+                fileContent += str(dict(sorted(dataDict[1].items(), key= lambda x : keys.index(x[0])))).replace("'",'"')
+            else:
+                fileContent += str(dataDict).replace("'",'"')
+            
+            if isinstance(dataDict, list):
+                fileContent += ']'
+            return fileContent
+
+        # ----------------------------
+
         self.ast.par.filePath = self.ast.par.filePath.strip("\\").strip(".\\")
         fileContent = ""
         with open(self.ast.par.filePath[:self.ast.par.filePath.index(".")]+".json", "w") as fileP:
@@ -23,143 +90,72 @@ class GEN:
                 raise Exception("gen error : can't create export file")
             else:
                 fileContent += '{'
-                if "ano" in self.ast.data.keys() and self.ast.data["ano"] != []:
-                    # Write ano to file
-                        
-                    fileContent += '"ano":'
-                    if len(self.ast.data["ano"]) > 1:
-                        fileContent += '['
-                    for index, data in enumerate(self.ast.data["ano"]):
-                        if index:
-                            fileContent += ','
-                        if isinstance(data, list):
-
-                            length = False
-                            if len(data) > 1 or len(data) == 0:
-                                length = True
-                                fileContent += '['
-                            for index1, section in enumerate(data):
-                                if index1 > 0:
-                                    fileContent += ','
-                                if type(section) == tuple:
-                                    keys = [i.idens for i in self.ast.par.structs if i.structName == section[0]][0]
-                                    fileContent += str(dict(sorted(section[1].items(), key= lambda x : keys.index(x[0])))).replace("'",'"')
-                                else:
-                                    fileContent += str(section).replace("'",'"')
-                            if length:
-                                fileContent += ']'
-                                length = False
-                        elif type(data) == tuple:
-                            fileContent += str(data[1]).replace("'",'"')
-                        else:
-                            fileContent += str(data).replace("'",'"')
-                    if len(self.ast.data["ano"]) > 1:
-                        fileContent += ']'
-                    fileContent += ','
                 for index,data in enumerate(self.ast.data.keys()):
-                    if data == "ano":
-                        continue
-                    if index > 1:
+                    if index:
                         fileContent += ','
                     fileContent += '"' + str(data) + '":'
-                    if isinstance(self.ast.data[data], list):
-                        
-                        length = False
-                        if len(self.ast.data[data]) > 1 or len(self.ast.data[data]) == 0:
-                            length = True
-                            fileContent += '['
-                        for index1, section in enumerate(self.ast.data[data]):
-                            if index1 > 0:
-                                fileContent += ','
-                            # print([i.idens for i in self.ast.par.structs if i.structName == section[0]])
-                            # print(section)
-                            if type(section) == tuple:
-                                keys = [i.idens for i in self.ast.par.structs if i.structName == section[0]][0]
-                                # print("NEW VAL", str(dict(sorted(section[1].items(), key= lambda x : keys.index(x[0])))).replace("'",'"'))
-                                fileContent += str(dict(sorted(section[1].items(), key= lambda x : keys.index(x[0])))).replace("'",'"')
-                            else:
-                                fileContent += str(section).replace("'",'"')
-                        if length:
-                            fileContent += ']'
-                            length = False
-                    else:
-                        fileContent += str(self.ast.data[data]).replace("'",'"')
+                    fileContent = jsonWRITE(self.ast.data[data], fileContent)
                 fileContent += '}'
                 fileContent = eval(fileContent)
                 json.dump(fileContent, fileP, indent=4)
+
+
     def rawGEN(self):
+
+        def rawWRITE(dataDict, fileContent):
+            if isinstance(dataDict, list):
+                fileContent += '[ '
+                for index, data in enumerate(dataDict):
+                    if index:
+                        fileContent += ', '
+                    fileContent = rawWRITE(data, fileContent)
+            elif type(dataDict) == tuple:
+                keys = [i.idens for i in self.ast.par.structs if i.structName == dataDict[0]][0]
+                preDict = dict(sorted(dataDict[1].items(), key= lambda x : keys.index(x[0])))
+                fileContent += '[ ' + str(list(preDict.values())).replace("'",'').replace('"','')[1:-1] + ' ]'
+            else:
+                fileContent += " " + str(dataDict).replace("'",'').replace('"','')
+            
+            if isinstance(dataDict, list):
+                fileContent += ' ]'
+            return fileContent
+
+        # ------------------------
+
         self.ast.par.filePath = self.ast.par.filePath.strip("\\").strip(".\\")
         fileContent = ""
         with open(self.ast.par.filePath[:self.ast.par.filePath.index(".")]+".txt", "w") as fileP:
             if not fileP.writable() :
                 raise Exception("gen error : can't create export file")
             else:
-
                 fileContent += '{\n'
-                if "ano" in self.ast.data.keys() and self.ast.data["ano"] != []:
-                    # Write ano to file
-                        
-                    fileContent += '\tano : '
-                    if len(self.ast.data["ano"]) > 1:
-                        fileContent += '[ '
-                    for index, data in enumerate(self.ast.data["ano"]):
-                        if index:
-                            fileContent += ', '
-                        if isinstance(data, list):
-                            length = False
-                            if len(data) > 1 or len(data) == 0:
-                                length = True
-                                fileContent += '['
-                            for index1, section in enumerate(data):
-                                if index1 > 0:
-                                    fileContent += ','
-                                if type(section) == tuple:
-                                    values = [i for i in section[1].values() if i]
-                                    fileContent += '[ ' + str(values).replace("'",'').replace('"','')[1:-1] + ' ]'
-                                else:
-                                    fileContent += " " + str(section).replace("'",'').replace('"','')
-                            if length:
-                                fileContent += ']'
-                                length = False
-                        elif type(data) == tuple:
-                            values = [i for i in data[1].values() if i]
-                            fileContent += '[ ' + str(section).replace("'",'').replace('"','')[1:-1] + ' ]'
-
-                        else:
-                            fileContent += " " + str(data).replace("'",'"')
-                    if len(self.ast.data["ano"]) > 1:
-                        fileContent += ' ]'
-                    fileContent += ',\n'
                 for index,data in enumerate(self.ast.data.keys()):
-                    if data == "ano":
-                        continue
-                    if index > 1:
+                    if index:
                         fileContent += ',\n'
-                    fileContent += '\t' + str(data)
-                    fileContent += ' : '
-                    if isinstance(self.ast.data[data], list):
-                        length = False
-                        if len(self.ast.data[data]) > 1 or len(self.ast.data[data]) == 0:
-                            length = True
-                            fileContent += '['
-                        for index1, section in enumerate(self.ast.data[data]):
-                            if index1:
-                                fileContent += ','
-                            if type(section) == tuple:
-                                values = [i for i in section[1].values() if i]
-                                fileContent += '[ ' + str(values).replace("'",'').replace('"','')[1:-1] + ' ]'
-                            else:
-                                fileContent += " " + str(section).replace("'",'').replace('"','')
-                        if length:
-                            fileContent += ']'
-                            length = False
-                    else:
-                        fileContent += " " + str(self.ast.data[data]).replace("'",'').replace('"','')
+                    fileContent += '\t' + str(data) + ' : '
+                    fileContent = rawWRITE(self.ast.data[data], fileContent)
                 fileContent += '\n}'
                 fileP.write(fileContent)
 
 
     def yamlGEN(self):
+
+
+        def yamlWRITE(dataDict, fileContent):
+            if isinstance(dataDict, list):
+                for index, data in enumerate(dataDict):
+                    fileContent += '\n    - '
+                    fileContent = yamlWRITE(data, fileContent)
+            elif type(dataDict) == tuple:
+                keys = [i.idens for i in self.ast.par.structs if i.structName == dataDict[0]][0]
+                preDict = dict(sorted(dataDict[1].items(), key= lambda x : keys.index(x[0])))
+                fileContent += "\n    - ".join([str(i[0]) + ': ' + str(i[1]) for i in preDict.items()])
+            else:
+                fileContent += str(dataDict).replace("'",'').replace('"','')
+            return fileContent
+
+        # ------------------------------
+
         self.ast.par.filePath = self.ast.par.filePath.strip("\\").strip(".\\")
         fileContent = ""
         with open(self.ast.par.filePath[:self.ast.par.filePath.index(".")]+".yaml", "w") as fileP:
@@ -168,64 +164,11 @@ class GEN:
             else:
                 if len(self.ast.data.keys()) > 1:
                     fileContent += '- '
-                if "ano" in self.ast.data.keys() and self.ast.data["ano"] != []:
-                    # Write ano to file
-                        
-                    fileContent += 'ano: '
-                    if len(self.ast.data["ano"]) > 1:
-                        fileContent += '\n    - '
-                    for index, data in enumerate(self.ast.data["ano"]):
-                        if index:
-                            fileContent += '\n    - '
-                        if isinstance(data, list):
-                            length = False
-                            if len(data) > 1 or len(data) == 0:
-                                length = True
-                                fileContent += '\n    - '
-                            for index1, section in enumerate(data):
-                                if index1:
-                                    fileContent += '\n    - '
-                                if type(section) == tuple:
-                                    fileFormat = "\n    - " + "\n    - ".join([str(i[0]) + ': ' + str(i[1]) for i in section[1].items()])
-                                    fileContent += fileFormat
-                                else:
-                                    fileContent += str(section).replace("'",'"')
-                                
-                            if length:
-                                length = False
-                        elif type(data) == tuple:
-                            fileContent += str(data[1]).replace("'",'"')
-
-                        else:
-                            fileContent += str(data).replace("'",'"')
-                    
-                    fileContent += '\n'
-
                 for index,data in enumerate(self.ast.data.keys()):
-                    if data == "ano":
-                        index = 0
-                        continue
-                    if index > 1:
+                    if index:
                         fileContent += '\n- '
-                    fileContent += str(data)
-                    fileContent += ': '
-                    if isinstance(self.ast.data[data], list):
-                        length = False
-                        if len(self.ast.data[data]) > 1 or len(self.ast.data[data]) == 0:
-                            length = True
-                            fileContent += '\n    - '
-                        for index1, section in enumerate(self.ast.data[data]):
-                            if index1:
-                                fileContent += '\n    - '
-                            if type(section) == tuple:
-                                fileFormat = "\n    - " + "\n    - ".join([str(i[0]) + ': ' + str(i[1]) for i in section[1].items()])
-                                fileContent += fileFormat
-                            else:
-                                fileContent += str(section).replace("'",'').replace('"','')
-                        if length:
-                            length = False
-                    else:
-                        fileContent += str(self.ast.data[data]).replace("'",'').replace('"','')
+                    fileContent += str(data) + ': '
+                    fileContent = yamlWRITE(self.ast.data[data], fileContent)
                 fileP.write(fileContent)
 
 class AST:
@@ -342,52 +285,131 @@ class Parser:
         self.exports = lexer.exports
         self.links = lexer.links
         self.restrcutureData(lexer)
-    def restrcutureData(self, lexer):
+
+    def findData(self, key, data, lexer):
+        if "[" in data:
+            typeName = data[:data.index("[")]
+            if typeName != '' and typeName not in [i.structName for i in lexer.structs]:
+                raise Exception(f"parser error : struct type `{typeName}` not expected")
+            elif typeName == '':
+                values = self.newGet(data, lexer)[0]
+                if key == 'ano':
+                    self.data["ano"].append(values)
+                else:
+                    self.data[key.strip().strip('"')] = values
+            else:
+                fields = {}
+                self.data[key.strip().strip('"')] = []
+                for field in data[data.index("[")+1:data.index("]")].split("|"):
+                    fields[field.split("=")[0].strip().strip('"')] = field.split("=")[1].strip().strip("'").strip('"')
+                self.data[key.strip().strip('"')].append((typeName,fields))
+        else:
+            if tooling.isNumber(data) or tooling.isString(data) or tooling.isBoolean(data):
+                if key == 'ano':
+                    self.data["ano"].append(data)
+                else:
+                    self.data[key.strip().strip('"')] = data
+            else:
+                message = f"'{key}' : {data}"
+                raise Exception(f'parser error : unknown identifer < {data} > refernenced in value;\nin line < {message} >')
+
+    def restrcutureData(self, lexer):        
         for chunk in lexer.chunks:
             for data in chunk.ano:
-                if "[" in data:
-                    typeName = data[:data.index("[")]
-                    if typeName != '' and typeName not in [i.structName for i in lexer.structs]:
-                        raise Exception("parser error : struct type `"+typeName+"` not expected")
-                    elif typeName == '':
-                        # print("DATA SENT", data)
-                        values = self.getData(data, lexer)
-                        # print("Chunk Data - ANO",values)
-                        # for field in values:
-                        #     print(field)
-
-                        self.data["ano"].append(values)
-                    else:
-                        fields = {}
-                        for field in data[data.index("[")+1:data.index("]")].split("|"):
-                            fields[field.split("=")[0].strip().strip('"')] = field.split("=")[1].strip().strip("'").strip('"')
-                        self.data["ano"].append((typeName,fields))
-                else:
-                    self.data["ano"].append(data)
+                self.findData('ano',data,lexer)
 
             for key in chunk.chunkDict.keys():
                 data = chunk.chunkDict[key]
-                if "[" in data:
-                    typeName = data[:data.index("[")]
-                    if typeName != '' and typeName not in [i.structName for i in lexer.structs]:
-                        raise Exception("parser error : struct type `"+typeName+"` not expected")
-                    elif typeName == '':
-                        # print("DATA SENT", data)
-                        values = self.getData(data, lexer)
-                        # print("Chunk Data",key.strip().strip('"') ,values)
-                        # for field in values:
-                        #     print(field)
-
-                        self.data[key.strip().strip('"')] = values
-                    else:
-                        fields = {}
-                        self.data[key.strip().strip('"')] = []
-                        for field in data[data.index("[")+1:data.index("]")].split("|"):
-                            fields[field.split("=")[0].strip().strip('"')] = field.split("=")[1].strip().strip("'").strip('"')
-                        self.data[key.strip().strip('"')].append((typeName,fields))
-                else:
-                    self.data[key.strip().strip('"')] = data
+                self.findData(key,data,lexer)
+                
     
+
+
+    def newGet(self, data, lexer):
+        current = ''
+        index = 0
+        fields = {}
+        values = []
+        while index < len(data):
+            if data[index] in consts.EMPTY_SPACE:
+                index += 1
+                continue
+            if data[index] == '[' and current not in [i.structName for i in lexer.structs]:
+                current = ''
+                values.append(self.newGet(data[index + 1:], lexer))
+                bracketCount = 0
+                dowhile = True
+                while index < len(data) and bracketCount or dowhile:
+                    if data[index] == '[':
+                        bracketCount += 1
+                    elif data[index] == ']':
+                        bracketCount -= 1
+                    index += 1
+                    dowhile = False
+                if index == len(data):
+                    index -= 1
+            elif data[index] == '[' and current:
+                if current not in [i.structName for i in lexer.structs]:
+                    raise Exception(f"parser error : struct type `{current}` not expected")
+                bracketCount = 0
+                dowhile = True
+                while index < len(data) and bracketCount or dowhile:
+                    if data[index] == '[':
+                        bracketCount += 1
+                    elif data[index] == ']':
+                        bracketCount -= 1
+                    current += data[index]
+                    index += 1
+                    dowhile = False
+                if index == len(data):
+                    index -= 1
+                
+                for field in current[current.index("[")+1:current.index("]")].split("|"):
+                    fields[field.split("=")[0].strip().strip('"')] = field.split("=")[1].strip().strip("'").strip('"')
+                values.append((current[:current.index('[')],fields))
+                return values
+            elif data[index] == ']':
+                return values
+
+            elif data[index] == '"' or data[index] == '\'':
+                starter = data[index]
+                index += 1
+                foundString = "'"
+                while index < len(data) and data[index] != starter:
+                    foundString += data[index]
+                    index += 1
+                foundString += "'"
+                values.append(foundString)
+                index += 1
+                current = ''
+
+            elif data[index].isnumeric():
+                endNumber = ''
+                while index < len(data) and data[index] not in consts.EMPTY_SPACE and data[index] != ']':
+                    endNumber += data[index]
+                    index += 1
+                if not tooling.isNumber(endNumber):
+                    raise Exception(f'lexer error : failed while lexing terms, < {data} > is not a valid number value')
+                values.append(endNumber)
+                index -= 1
+                current = ''
+
+            elif data[index].lower() in ['t','f']:
+                endNumber = ''
+                while index < len(data) and data[index] not in consts.EMPTY_SPACE and data[index] != ']':
+                    endNumber += data[index]
+                    index += 1
+                if not tooling.isBoolean(endNumber):
+                    raise Exception(f'lexer error : failed while lexing terms, < {data} > is not a valid number value')
+                values.append(endNumber)
+                index -= 1
+                current = ''
+            if index < len(data) and data[index] not in consts.EMPTY_SPACE:
+                current += data[index]
+            index += 1
+        # print('GOT TO END',values)
+        return values
+
     def getData(self, data, lexer):
 
         def skipZero(string, index):
@@ -395,7 +417,7 @@ class Parser:
                 index += 1
             return index
         
-        
+        print('DATA', data)
         if "[" in data:
             typeName = data[:data.index("[")]
             if typeName != '' and typeName not in [i.structName for i in lexer.structs]:
@@ -413,7 +435,6 @@ class Parser:
                     if current == '[' and keyword != '' and keyword[:-1] in [i.structName for i in lexer.structs]:
                         index = skipZero(data, index)
                         current = data[index]
-                        
                         structWORD = keyword[:-1]
                         while index < len(data) and current != ']':
                             structWORD += current
@@ -451,6 +472,25 @@ class Parser:
                             current = data[index]
                         values.append(endNumber)
                         keyword = ""
+                    else:
+                        endExp = ""
+                        while index < len(data) and current not in consts.EMPTY_SPACE and current not in ['[',']']:
+                            endExp += current
+                            index += 1
+                            if index >= len(data):
+                                raise Exception(f'lexer error : failed while lexing terms, unclosed lbracket ( `]` ) at < {data} >')
+                            current = data[index]
+                        
+                        
+                        
+                        if tooling.isBoolean(endExp):
+                            values.append(endExp)
+                            keyword = ""
+                        else:
+                            keyword = keyword[:-1] + endExp
+                            index -= 1
+                        # else :
+                        #     raise Exception(f'eparser error : unknown identifer < {endExp} > refernenced in value;\nin line < {data} >')
                     if index + 1 < len(data):
                         index += 1
                 if current != ']':
@@ -465,6 +505,7 @@ class Parser:
                 values.append((typeName,fields))
                 return values
         else:
+            print("Got here", data)
             return data
     def printData(self):
         for key in self.data.keys():

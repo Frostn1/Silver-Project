@@ -1,0 +1,7 @@
+{
+    'Dates' : [ '11.7.2004' '4.7.2010'    '23.7.1973'  ["Hello" ['Idk what this is' 17 'Sean Dahan'] True 12.2 ] 2021],
+    'Date' : '17.12.2001'
+}
+
+export json
+export base

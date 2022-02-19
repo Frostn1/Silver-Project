@@ -6,6 +6,9 @@
 >
 
 {
+    ano : 2021,
     'CurrentYear' : 2022,
     'Data' : ["Current Date" "Hello world"  Person[first name='John' | last name= 'Doe' | year of birth=1998] 2017]
 }
+
+export base
