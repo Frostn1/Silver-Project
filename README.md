@@ -202,9 +202,121 @@ Example for the capabilities of the data arrays in Silver:
     'Data' : ["Current Date" "Hello world"  Person[first name='John' | last name= 'Doe' | year of birth=1998] 2017]
 }
 ```
-`Note:`
-So far Silver doesn't support multi dimensional data arrays, but it is WIP, so you may hope to see it in future updates coming to Silver. 
 
+As Silver supports data arrays, ( which are close to how they work in other languages ), it also supports data arrays as values in another array, aka multi dimensional arrays.<br>
+It works the same as any other type of value in Silver so far ( Text, Number, Boolean etc... ), and can still be exported to all supported file types.<br>
+A simple example of multi dimensional arrays in Silver:
+```js
+{
+    'Dates' : [ '11.7.2004' ["Silver" [ 17 False] True 12.2 ] 2021],
+}
+
+export json
+export base
+```
+
+Which will export to the following json code:
+```json
+// Json Export Code
+{
+    "Dates": [
+        "11.7.2004",
+        [
+            "Silver",
+            [
+                17,
+                false
+            ],
+            true,
+            12.2
+        ],
+        2021
+    ]
+}
+```
+
+And to the new type export ( also known as `base` exporting):
+```haskell
+// Base Export Code
+[ Dates [ Text,  [ Text,  [ Number, Bool ] : List, Bool, Number ] : List, Number ] : List ]
+```
+
+### Exports
+As the languages progresses it will have more and more official implemented export file extensions, which may include : json, yaml, raw, base etc...<br>
+Inorder to use each export ( including future ones that are not implemented at this point of writing ), you would just need to use the `export` keyword and the file type you want to export to.<br>
+This will create an output file, which will hold the same name as the original file name, but with a different file extension.<br>
+
+
+`Note : Currently the only supported file extension for exporting are few, but in  the future we plan on implementing a way for other to create their exports, for their own file extensions, either through a specific language api, or through the language itself.<br>
+Maybe through another file which will dictate how it is suppose to written in each way you can have.`
+
+#### __Officially supported file exports by Sillver__
+Side note, all of the exports will show the same example, to have some uniformity.
+```js
+// Example.si
+< Person:
+    first name,
+    last name,
+    age => (CurrentYear - Person.year of birth),
+    year of birth
+>
+
+{
+    ano : 2021,
+    'CurrentYear' : 2022,
+    'Data' : [True "Hello world"  Person[first name='John' | last name= 'Doe' | year of birth=1998] 2017]
+}
+```
+- _json_
+```json
+// Example.json
+{
+    "ano": [
+        2021
+    ],
+    "CurrentYear": 2022,
+    "Data": [
+        true,
+        "Hello world",
+        {
+            "first name": "John",
+            "last name": "Doe",
+            "age": "24",
+            "year of birth": "1998"
+        }
+    ]
+}
+```
+- _yaml_
+```yaml
+// Example.yaml
+- ano: 
+    - 2021
+- CurrentYear: 2022
+- Data: 
+    - True
+    - Hello world
+    - first name: John
+    - last name: Doe
+    - age: 24
+    - year of birth: 1998
+```
+- _raw_
+```js
+// Example.txt
+{
+	ano : [  2021 ],
+	CurrentYear :  2022,
+	Data : [  True,  Hello world, [ John, Doe, 24, 1998 ] ]
+}
+```
+- _base_<br>
+Catalogs all of the key's with their values type.<br>
+Can be mainly used for debugging.
+```haskell
+// Example.base
+[ Dates [ Text,  [ Text,  [ Number, Bool ] : List, Bool, Number ] : List, Number ] : List ]
+```
 
 ## <b>Milestones</b>
 ### Current
