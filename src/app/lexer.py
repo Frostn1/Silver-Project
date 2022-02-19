@@ -292,7 +292,7 @@ class Parser:
             if typeName != '' and typeName not in [i.structName for i in lexer.structs]:
                 raise Exception(f"parser error : struct type `{typeName}` not expected")
             elif typeName == '':
-                values = self.newGet(data, lexer)
+                values = self.newGet(data, lexer)[0]
                 if key == 'ano':
                     self.data["ano"].append(values)
                 else:
@@ -308,7 +308,7 @@ class Parser:
                 if key == 'ano':
                     self.data["ano"].append(data)
                 else:
-                    self.data[key.strip().strip('"')] = values
+                    self.data[key.strip().strip('"')] = data
             else:
                 message = f"'{key}' : {data}"
                 raise Exception(f'parser error : unknown identifer < {data} > refernenced in value;\nin line < {message} >')
@@ -325,12 +325,10 @@ class Parser:
                 data = chunk.chunkDict[key]
                 self.findData(key,data,lexer)
                 
-        self.printData()
     
 
 
     def newGet(self, data, lexer):
-        print('NEW GET', data)
         current = ''
         index = 0
         fields = {}
@@ -339,16 +337,20 @@ class Parser:
             if data[index] in consts.EMPTY_SPACE:
                 index += 1
                 continue
-            if data[index] == '[' and not current:
+            if data[index] == '[' and current not in [i.structName for i in lexer.structs]:
                 values.append(self.newGet(data[index + 1:], lexer))
-                print('VALUES', values)
-                bracketCount = 1
-                while index < len(data) and bracketCount:
+                # print('VALUES', values)
+                bracketCount = 0
+                dowhile = True
+                while index < len(data) and bracketCount or dowhile:
                     if data[index] == '[':
                         bracketCount += 1
                     elif data[index] == ']':
                         bracketCount -= 1
                     index += 1
+                    dowhile = False
+                if index == len(data):
+                    index -= 1
             elif data[index] == '[' and current:
                 if current not in [i.structName for i in lexer.structs]:
                     raise Exception(f"parser error : struct type `{current}` not expected")
@@ -372,7 +374,7 @@ class Parser:
                     foundString += data[index]
                     index += 1
                 foundString += "'"
-                print('Added string', foundString)
+                # print('Added string', foundString)
                 values.append(foundString)
                 current = ''
 
@@ -390,6 +392,8 @@ class Parser:
             if index < len(data):
                 current += data[index]
             index += 1
+        # print('GOT TO END',values)
+        return values
 
     def getData(self, data, lexer):
 
