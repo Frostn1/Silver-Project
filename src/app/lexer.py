@@ -313,10 +313,7 @@ class Parser:
                 message = f"'{key}' : {data}"
                 raise Exception(f'parser error : unknown identifer < {data} > refernenced in value;\nin line < {message} >')
 
-    def restrcutureData(self, lexer):
-
-
-        
+    def restrcutureData(self, lexer):        
         for chunk in lexer.chunks:
             for data in chunk.ano:
                 self.findData('ano',data,lexer)
@@ -338,6 +335,7 @@ class Parser:
                 index += 1
                 continue
             if data[index] == '[' and current not in [i.structName for i in lexer.structs]:
+                current = ''
                 values.append(self.newGet(data[index + 1:], lexer))
                 bracketCount = 0
                 dowhile = True
@@ -354,9 +352,18 @@ class Parser:
                 if current not in [i.structName for i in lexer.structs]:
                     raise Exception(f"parser error : struct type `{current}` not expected")
 
-                while index < len(data) and data[index] != ']':
+                bracketCount = 0
+                dowhile = True
+                while index < len(data) and bracketCount or dowhile:
+                    if data[index] == '[':
+                        bracketCount += 1
+                    elif data[index] == ']':
+                        bracketCount -= 1
                     current += data[index]
                     index += 1
+                    dowhile = False
+                if index == len(data):
+                    index -= 1
                 
                 for field in current[current.index("[")+1:current.index("]")].split("|"):
                     fields[field.split("=")[0].strip().strip('"')] = field.split("=")[1].strip().strip("'").strip('"')
@@ -387,9 +394,18 @@ class Parser:
                 index -= 1
                 current = ''
 
-            elif tooling.isBoolean(current):
-                values.append(current)
+            elif data[index].lower() in ['t','f']:
+                endNumber = ''
+                while index < len(data) and data[index] not in consts.EMPTY_SPACE and data[index] != ']':
+                    endNumber += data[index]
+                    index += 1
+                if not tooling.isBoolean(endNumber):
+                    raise Exception(f'lexer error : failed while lexing terms, < {data} > is not a valid number value')
+                values.append(endNumber)
+                index -= 1
                 current = ''
+            else:
+                print("ELSE_", current)
             if index < len(data):
                 current += data[index]
             index += 1
