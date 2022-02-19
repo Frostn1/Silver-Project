@@ -9,6 +9,7 @@ from src.tools import tooling
 class GEN:
     def __init__(self, ast):
         self.ast = ast
+        self.exportFuncs = {'json' : self.jsonGEN, 'raw' : self.rawGEN, 'yaml' : self.yamlGEN, 'base' : self.baseGEN}
     def generateCode(self):
         # Clear empty ano
         if self.ast.data["ano"] == []:
@@ -16,18 +17,9 @@ class GEN:
 
         # Check for all exports
         for export in self.ast.par.exports:
-            if export.exportName == "json":
-                self.jsonGEN()
-            elif export.exportName == "raw":
-                self.rawGEN()
-            elif export.exportName == "yaml":
-                self.yamlGEN()
-            elif export.exportName == "base":
-                self.baseGEN()
+            self.exportFuncs[export.exportName]()
     
     def baseGEN(self):
-
-
         def baseWRITE(dataDict, fileContent, listFlag):
             if isinstance(dataDict, list):
                 fileContent += ' [ '
@@ -50,6 +42,9 @@ class GEN:
                 elif tooling.isBoolean(dataDict) :
                     fileContent += 'Bool'
             return fileContent
+        
+
+        # -------------------------
 
         self.ast.par.filePath = self.ast.par.filePath.strip("\\").strip(".\\")
         fileContent = ""
