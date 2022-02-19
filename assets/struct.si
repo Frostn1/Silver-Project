@@ -4,3 +4,5 @@
     'John' : 'John doe',
     'float' : 2.5
 }
+
+export base
