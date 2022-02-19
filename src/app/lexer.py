@@ -341,6 +341,14 @@ class Parser:
                 continue
             if data[index] == '[' and not current:
                 values.append(self.newGet(data[index + 1:], lexer))
+                print('VALUES', values)
+                bracketCount = 1
+                while index < len(data) and bracketCount:
+                    if data[index] == '[':
+                        bracketCount += 1
+                    elif data[index] == ']':
+                        bracketCount -= 1
+                    index += 1
             elif data[index] == '[' and current:
                 if current not in [i.structName for i in lexer.structs]:
                     raise Exception(f"parser error : struct type `{current}` not expected")
@@ -364,6 +372,7 @@ class Parser:
                     foundString += data[index]
                     index += 1
                 foundString += "'"
+                print('Added string', foundString)
                 values.append(foundString)
                 current = ''
 
@@ -378,7 +387,8 @@ class Parser:
             elif tooling.isBoolean(current):
                 values.append(current)
                 current = ''
-            current += data[index]
+            if index < len(data):
+                current += data[index]
             index += 1
 
     def getData(self, data, lexer):
