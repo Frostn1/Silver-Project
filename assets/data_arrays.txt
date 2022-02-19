@@ -1,5 +1,0 @@
-{
-	ano : [  2021 ],
-	CurrentYear :  2022,
-	Data : [  True,  Hello world, [ John, Doe, 24, 1998 ] ]
-}
