@@ -380,6 +380,10 @@ class Parser:
                     elif char == '|' and readFlag and not levelCounter:
                         readFlag = not readFlag
                         fields[fieldName.strip()] = self.newGet(rawData, lexer)[0]
+
+                        # TODO : Make a neat function instead of double code
+                        # This check if we have a data array, and goes over checking if we a have a struct, 
+                        # if so it only gets the second part of it, so it doesnt come out as data in the export file
                         if isinstance(fields[fieldName.strip()], list):
                             for i, val in enumerate(fields[fieldName.strip()]):
                                 if isinstance(val, tuple):
