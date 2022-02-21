@@ -1,4 +1,5 @@
 from email.contentmanager import raw_data_manager
+import enum
 from xml.dom.expatbuilder import FilterCrutch
 import src.app.struct as _struct
 import src.app.link as _link 
@@ -73,8 +74,9 @@ class GEN:
                         fileContent += ','
                     fileContent = jsonWRITE(data, fileContent)
             elif type(dataDict) == tuple:
+                print('DICT', dataDict)
                 keys = [i.idens for i in self.ast.par.structs if i.structName == dataDict[0]][0]
-                fileContent += str(dict(sorted(dataDict[1].items(), key= lambda x : keys.index(x[0])))).replace("'",'"')
+                fileContent += str(dict(sorted(dataDict[1].items(), key= lambda x : keys.index(x[0])))).replace('"','').replace("'",'"')
             else:
                 fileContent += str(dataDict).replace("'",'"')
             
@@ -300,7 +302,7 @@ class Parser:
                     self.data[key.strip().strip('"')] = values
             else:
 
-                values = self.newGet(data, lexer)
+                values = self.newGet(data, lexer)[0][1]
                 print("VALUES =>", values)
                 self.data[key.strip().strip('"')] = []
                 if key == 'ano':
@@ -378,6 +380,11 @@ class Parser:
                     elif char == '|' and readFlag and not levelCounter:
                         readFlag = not readFlag
                         fields[fieldName.strip()] = self.newGet(rawData, lexer)[0]
+                        if isinstance(fields[fieldName.strip()], list):
+                            for i, val in enumerate(fields[fieldName.strip()]):
+                                if isinstance(val, tuple):
+                                    fields[fieldName.strip()][i] = val[1]
+                        print("FIELD", fields[fieldName.strip()])
                         fieldName = rawData = ""
 
                     elif char == '[' and readFlag:
@@ -392,6 +399,11 @@ class Parser:
                     elif readFlag:
                         rawData += char
                 fields[fieldName.strip()] = self.newGet(rawData, lexer)[0]
+                if isinstance(fields[fieldName.strip()], list):
+                    for i, val in enumerate(fields[fieldName.strip()]):
+                        if isinstance(val, tuple):
+                            fields[fieldName.strip()][i] = val[1]
+                print("FIELD", fields[fieldName.strip()])
                 # for field in current[current.index("[")+1:current.index("]")].split("|"):
                 #     fields[field.split("=")[0].strip().strip('"')] = field.split("=")[1].strip().strip("'").strip('"')
                 values.append((structName,fields))
