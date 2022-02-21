@@ -74,7 +74,6 @@ class GEN:
                         fileContent += ','
                     fileContent = jsonWRITE(data, fileContent)
             elif type(dataDict) == tuple:
-                print('DICT', dataDict)
                 keys = [i.idens for i in self.ast.par.structs if i.structName == dataDict[0]][0]
                 fileContent += str(dict(sorted(dataDict[1].items(), key= lambda x : keys.index(x[0])))).replace('"','').replace("'",'"')
             else:
@@ -303,7 +302,6 @@ class Parser:
             else:
 
                 values = self.newGet(data, lexer)[0][1]
-                print("VALUES =>", values)
                 self.data[key.strip().strip('"')] = []
                 if key == 'ano':
                     self.data["ano"].append((typeName,values))
@@ -388,7 +386,6 @@ class Parser:
                             for i, val in enumerate(fields[fieldName.strip()]):
                                 if isinstance(val, tuple):
                                     fields[fieldName.strip()][i] = val[1]
-                        print("FIELD", fields[fieldName.strip()])
                         fieldName = rawData = ""
 
                     elif char == '[' and readFlag:
@@ -407,11 +404,8 @@ class Parser:
                     for i, val in enumerate(fields[fieldName.strip()]):
                         if isinstance(val, tuple):
                             fields[fieldName.strip()][i] = val[1]
-                print("FIELD", fields[fieldName.strip()])
-                # for field in current[current.index("[")+1:current.index("]")].split("|"):
-                #     fields[field.split("=")[0].strip().strip('"')] = field.split("=")[1].strip().strip("'").strip('"')
+
                 values.append((structName,fields))
-                print('VALUES', values)
                 return values
             elif data[index] == ']':
                 return values
@@ -452,7 +446,6 @@ class Parser:
             if index < len(data) and data[index] not in consts.EMPTY_SPACE:
                 current += data[index]
             index += 1
-        # print('GOT TO END',values)
         return values
 
     def getData(self, data, lexer):
