@@ -1,3 +1,4 @@
+from email.contentmanager import raw_data_manager
 from xml.dom.expatbuilder import FilterCrutch
 import src.app.struct as _struct
 import src.app.link as _link 
@@ -300,6 +301,9 @@ class Parser:
                 else:
                     self.data[key.strip().strip('"')] = values
             else:
+
+                values = self.newGet(data, lexer)
+                print("VALUES =>", values)
                 fields = {}
                 self.data[key.strip().strip('"')] = []
                 for field in data[data.index("[")+1:data.index("]")].split("|"):
@@ -368,7 +372,39 @@ class Parser:
                     dowhile = False
                 if index == len(data):
                     index -= 1
-                
+                print("CURRENT", current, current[current.index("[")+1:current.index("]")].split("|"))
+                structName = current[:current.index('[')]
+                readFlag = False
+                levelCounter = 0
+                rawData = ""
+                fieldName = ""
+                for char in current[current.index('[') + 1:]:
+                    if char == '=' and not readFlag :
+                        readFlag = not readFlag
+                    elif char == '|' and readFlag and not levelCounter:
+                        readFlag = not readFlag
+                        print('Field Name ->',fieldName)
+                        # print('Raw Data ->', rawData)
+                        # print('Level Counter ->', levelCounter)
+                        fieldName = rawData = ""
+                        print('Extracted Data', self.newGet(rawData, lexer))
+                        # use newGet function on raw data and insert it into the fields list
+
+                    elif char == '[' and readFlag:
+                        rawData += char
+                        levelCounter += 1
+                    elif char == ']' and readFlag:
+                        if levelCounter:
+                            rawData += char
+                            levelCounter -= 1
+                    elif not readFlag:
+                        fieldName += char
+                    elif readFlag:
+                        rawData += char
+                print('Field Name ->',fieldName)
+                # print('Raw Data ->', rawData)
+                # print('Level Counter ->', levelCounter)
+                print('Extracted Data', self.newGet(rawData, lexer))
                 for field in current[current.index("[")+1:current.index("]")].split("|"):
                     fields[field.split("=")[0].strip().strip('"')] = field.split("=")[1].strip().strip("'").strip('"')
                 values.append((current[:current.index('[')],fields))
