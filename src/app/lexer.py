@@ -288,10 +288,8 @@ class Parser:
         self.restrcutureData(lexer)
 
     def findData(self, key, data, lexer):
-        print('FIND', key, data)
         if "[" in data:
             typeName = data[:data.index("[")]
-            print("TYPE", typeName)
             if typeName != '' and typeName not in [i.structName for i in lexer.structs]:
                 raise Exception(f"parser error : struct type `{typeName}` not expected")
             elif typeName == '':
@@ -304,14 +302,11 @@ class Parser:
 
                 values = self.newGet(data, lexer)
                 print("VALUES =>", values)
-                fields = {}
                 self.data[key.strip().strip('"')] = []
-                for field in data[data.index("[")+1:data.index("]")].split("|"):
-                    fields[field.split("=")[0].strip().strip('"')] = field.split("=")[1].strip().strip("'").strip('"')
                 if key == 'ano':
-                    self.data["ano"].append((typeName,fields))
+                    self.data["ano"].append((typeName,values))
                 else:
-                    self.data[key.strip().strip('"')] = (typeName,fields)
+                    self.data[key.strip().strip('"')] = (typeName,values)
         else:
             if tooling.isNumber(data) or tooling.isString(data) or tooling.isBoolean(data):
                 if key == 'ano':
