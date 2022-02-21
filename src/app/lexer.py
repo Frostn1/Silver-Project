@@ -372,7 +372,6 @@ class Parser:
                     dowhile = False
                 if index == len(data):
                     index -= 1
-                print("CURRENT", current, current[current.index("[")+1:current.index("]")].split("|"))
                 structName = current[:current.index('[')]
                 readFlag = False
                 levelCounter = 0
@@ -383,12 +382,8 @@ class Parser:
                         readFlag = not readFlag
                     elif char == '|' and readFlag and not levelCounter:
                         readFlag = not readFlag
-                        print('Field Name ->',fieldName)
-                        # print('Raw Data ->', rawData)
-                        # print('Level Counter ->', levelCounter)
+                        fields[fieldName.strip()] = self.newGet(rawData, lexer)[0]
                         fieldName = rawData = ""
-                        print('Extracted Data', self.newGet(rawData, lexer))
-                        # use newGet function on raw data and insert it into the fields list
 
                     elif char == '[' and readFlag:
                         rawData += char
@@ -401,13 +396,11 @@ class Parser:
                         fieldName += char
                     elif readFlag:
                         rawData += char
-                print('Field Name ->',fieldName)
-                # print('Raw Data ->', rawData)
-                # print('Level Counter ->', levelCounter)
-                print('Extracted Data', self.newGet(rawData, lexer))
-                for field in current[current.index("[")+1:current.index("]")].split("|"):
-                    fields[field.split("=")[0].strip().strip('"')] = field.split("=")[1].strip().strip("'").strip('"')
-                values.append((current[:current.index('[')],fields))
+                fields[fieldName.strip()] = self.newGet(rawData, lexer)[0]
+                # for field in current[current.index("[")+1:current.index("]")].split("|"):
+                #     fields[field.split("=")[0].strip().strip('"')] = field.split("=")[1].strip().strip("'").strip('"')
+                values.append((structName,fields))
+                print('VALUES', values)
                 return values
             elif data[index] == ']':
                 return values
