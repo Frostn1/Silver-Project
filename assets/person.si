@@ -1,7 +1,7 @@
 < Person:
-    first name,
+    first name . Text,
     last name,
-    age => (CurrentYear - Person.year of birth),
+    age . Number => (CurrentYear - Person.year of birth),
     year of birth
 >
 
