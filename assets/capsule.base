@@ -1,2 +1,0 @@
-Person [ first name : Any, last name : Any, age : Any, children : Any,  : Any ] : Struct
-[ Family : Person ]

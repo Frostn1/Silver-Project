@@ -1,2 +1,0 @@
-Person [ first name . Text : Any, last name : Any, age . Number : Any, year of birth : Any ] : Struct
-[ CurrentYear : Number, Data [ Text, Text, Person ] : List ]
