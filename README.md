@@ -315,7 +315,8 @@ Catalogs all of the key's with their values type.<br>
 Can be mainly used for debugging.
 ```haskell
 // Example.base
-[ Dates [ Text,  [ Text,  [ Number, Bool ] : List, Bool, Number ] : List, Number ] : List ]
+Person [ first name : Any, last name : Any, age : Any, year of birth : Any ] : Struct
+[ ano [ Number ] : List, CurrentYear : Number, Data [ Bool, Text, Person ] : List ]
 ```
 
 ## <b>Milestones</b>

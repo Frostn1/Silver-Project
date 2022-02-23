@@ -1,8 +1,14 @@
-{
-    'Date' : 2022
-}
-{
-    'IDK' : 'Python'
-}
 
-export json
+< Person:
+    first name,
+    last name,
+    age => (CurrentYear - Person.year of birth),
+    year of birth
+>
+
+{
+    ano : 2021,
+    'CurrentYear' : 2022,
+    'Data' : [True "Hello world"  Person[first name='John' | last name= 'Doe' | year of birth=1998] 2017]
+}
+export base
