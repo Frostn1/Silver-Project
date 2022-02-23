@@ -352,5 +352,5 @@ Person [ first name : Any, last name : Any, age : Any, year of birth : Any ] : S
 - <i><b>The Dhall Configuration Language</b></i><br>
     At - https://github.com/dhall-lang/dhall-lang/blob/master/README.md -
 
-
-* [Back to Top](#bthe-languageb)
+<br>
+[Back to Top](#bthe-languageb)
