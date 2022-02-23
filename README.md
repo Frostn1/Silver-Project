@@ -15,7 +15,6 @@
     * [Data Arrays](#data-arrays)
     * [Exports](#exports)
 * [MileStones](#milestones)
-* [Similar-Projects](#bsimilar-projectsb)
 
 ---
 
@@ -351,6 +350,4 @@ Person [ first name : Any, last name : Any, age : Any, year of birth : Any ] : S
 ## <b>Similar Projects</b>
 - <i><b>The Dhall Configuration Language</b></i><br>
     At - https://github.com/dhall-lang/dhall-lang/blob/master/README.md -
-
 <br>
-[Back to Top](#bthe-languageb)
