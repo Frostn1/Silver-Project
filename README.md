@@ -13,7 +13,9 @@
 * [Documentation](#docs)
     * [Structs](#structs)
     * [Data Arrays](#data-arrays)
+    * [Exports](#exports)
 * [MileStones](#milestones)
+* [Similar Projects](#bsimilar-projectsb)
 
 ---
 
@@ -84,7 +86,7 @@ For example we can create a Person struct
 ```
 As you can see, we created a new struct named `Person` that holds 4 fields.<br>
 The fields names can be what ever you want, and don't have any limitations, this make is so you can have spaces in the name too !<br><br>
-The keen eye of you have noticed that the `age` field is a bit special, as it holds a delta, i.e. ( `=> (CurrentYear - Person.year of birth) ).`<br><br>
+The keen eye of you have noticed that the `age` field is a bit special, as it holds a delta, i.e. ( `=> (CurrentYear - Person.year of birth)` ).<br><br>
 As this language is dynamic and wants to take the load off the user itself, when one or more of the fields is not given when creating a new struct, the lang will try and replace it with a new value, either using a delta or a blank value.<br>
 This feature makes it that the structure of the final file export is kept and can be safely read by a 3rd party.
 
@@ -315,7 +317,8 @@ Catalogs all of the key's with their values type.<br>
 Can be mainly used for debugging.
 ```haskell
 // Example.base
-[ Dates [ Text,  [ Text,  [ Number, Bool ] : List, Bool, Number ] : List, Number ] : List ]
+Person [ first name : Any, last name : Any, age : Any, year of birth : Any ] : Struct
+[ ano [ Number ] : List, CurrentYear : Number, Data [ Bool, Text, Person ] : List ]
 ```
 
 ## <b>Milestones</b>
@@ -334,7 +337,7 @@ Can be mainly used for debugging.
   - [ ] Exports
   - [ ] Links
 - [ ] Struct type hints
-- [x] Silver Auto Tester
+- [x] Struct Data Arrays as Structs Values
 
 ### Done
 
@@ -343,7 +346,11 @@ Can be mainly used for debugging.
 - [x] Constant data<br>
 - [x] Delta Calculation<br>
 - [x] Data arrays<br>
+- [x] Silver Auto Tester<br>
 
 ## <b>Similar Projects</b>
 - <i><b>The Dhall Configuration Language</b></i><br>
     At - https://github.com/dhall-lang/dhall-lang/blob/master/README.md -
+
+
+* [Back to Top](#bthe-languageb)

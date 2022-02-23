@@ -1,3 +1,5 @@
+from email.contentmanager import raw_data_manager
+import enum
 from xml.dom.expatbuilder import FilterCrutch
 import src.app.struct as _struct
 import src.app.link as _link 
@@ -73,7 +75,7 @@ class GEN:
                     fileContent = jsonWRITE(data, fileContent)
             elif type(dataDict) == tuple:
                 keys = [i.idens for i in self.ast.par.structs if i.structName == dataDict[0]][0]
-                fileContent += str(dict(sorted(dataDict[1].items(), key= lambda x : keys.index(x[0])))).replace("'",'"')
+                fileContent += str(dict(sorted(dataDict[1].items(), key= lambda x : keys.index(x[0])))).replace('"','').replace("'",'"')
             else:
                 fileContent += str(dataDict).replace("'",'"')
             
@@ -298,11 +300,13 @@ class Parser:
                 else:
                     self.data[key.strip().strip('"')] = values
             else:
-                fields = {}
+
+                values = self.newGet(data, lexer)[0][1]
                 self.data[key.strip().strip('"')] = []
-                for field in data[data.index("[")+1:data.index("]")].split("|"):
-                    fields[field.split("=")[0].strip().strip('"')] = field.split("=")[1].strip().strip("'").strip('"')
-                self.data[key.strip().strip('"')].append((typeName,fields))
+                if key == 'ano':
+                    self.data["ano"].append((typeName,values))
+                else:
+                    self.data[key.strip().strip('"')] = (typeName,values)
         else:
             if tooling.isNumber(data) or tooling.isString(data) or tooling.isBoolean(data):
                 if key == 'ano':
@@ -363,10 +367,45 @@ class Parser:
                     dowhile = False
                 if index == len(data):
                     index -= 1
-                
-                for field in current[current.index("[")+1:current.index("]")].split("|"):
-                    fields[field.split("=")[0].strip().strip('"')] = field.split("=")[1].strip().strip("'").strip('"')
-                values.append((current[:current.index('[')],fields))
+                structName = current[:current.index('[')]
+                readFlag = False
+                levelCounter = 0
+                rawData = ""
+                fieldName = ""
+                for char in current[current.index('[') + 1:]:
+                    if char == '=' and not readFlag :
+                        readFlag = not readFlag
+                    elif char == '|' and readFlag and not levelCounter:
+                        readFlag = not readFlag
+                        fields[fieldName.strip()] = self.newGet(rawData, lexer)[0]
+
+                        # TODO : Make a neat function instead of double code
+                        # This check if we have a data array, and goes over checking if we a have a struct, 
+                        # if so it only gets the second part of it, so it doesnt come out as data in the export file
+                        if isinstance(fields[fieldName.strip()], list):
+                            for i, val in enumerate(fields[fieldName.strip()]):
+                                if isinstance(val, tuple):
+                                    fields[fieldName.strip()][i] = val[1]
+                        fieldName = rawData = ""
+
+                    elif char == '[' and readFlag:
+                        rawData += char
+                        levelCounter += 1
+                    elif char == ']' and readFlag:
+                        if levelCounter:
+                            rawData += char
+                            levelCounter -= 1
+                    elif not readFlag:
+                        fieldName += char
+                    elif readFlag:
+                        rawData += char
+                fields[fieldName.strip()] = self.newGet(rawData, lexer)[0]
+                if isinstance(fields[fieldName.strip()], list):
+                    for i, val in enumerate(fields[fieldName.strip()]):
+                        if isinstance(val, tuple):
+                            fields[fieldName.strip()][i] = val[1]
+
+                values.append((structName,fields))
                 return values
             elif data[index] == ']':
                 return values
@@ -407,7 +446,6 @@ class Parser:
             if index < len(data) and data[index] not in consts.EMPTY_SPACE:
                 current += data[index]
             index += 1
-        # print('GOT TO END',values)
         return values
 
     def getData(self, data, lexer):

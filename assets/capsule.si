@@ -1,0 +1,14 @@
+< Person:
+    first name,
+    last name,
+    age,
+    children,
+>
+
+
+{
+    'Family' : Person[first name='John' | last name = 'Doe' | age = 35 | children=[Person[first name='Jamy' | last name='Doe' | age=10]]]
+}
+
+export base
+export json
