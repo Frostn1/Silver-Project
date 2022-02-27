@@ -248,7 +248,7 @@ Inorder to use each export ( including future ones that are not implemented at t
 This will create an output file, which will hold the same name as the original file name, but with a different file extension.<br>
 
 
-`Note : Currently the only supported file extension for exporting are few, but in  the future we plan on implementing a way for other to create their exports, for their own file extensions, either through a specific language api, or through the language itself.<br>
+`Note : Currently the only supported file extension for exporting are few, but in  the future we plan on implementing a way for other to create their exports, for their own file extensions, either through a specific language api, or through the language itself.
 Maybe through another file which will dictate how it is suppose to written in each way you can have.`
 
 #### __Officially supported file exports by Sillver__
@@ -322,21 +322,12 @@ Person [ first name : Any, last name : Any, age : Any, year of birth : Any ] : S
 
 ## <b>Milestones</b>
 ### Current
-- [x] Multi Dimensional Data arrays
 - [ ] Reference Past Keys
-- [x] Boolean data type
-- [x] Export to definitions < Code Info >
 - [ ] Links to other .si files
-- [ ] Rebase entire compiler
-  - [ ] Lexer
-  - [ ] Parser
-  - [ ] Ast
-  - [ ] Generator
-  - [ ] Structs
-  - [ ] Exports
-  - [ ] Links
-- [ ] Struct type hints
-- [x] Struct Data Arrays as Structs Values
+- [ ] Strict Struct Field Typing
+- [ ] Chunks As Data Types
+- [ ] Global Constants
+
 
 ### Done
 
@@ -346,6 +337,11 @@ Person [ first name : Any, last name : Any, age : Any, year of birth : Any ] : S
 - [x] Delta Calculation<br>
 - [x] Data arrays<br>
 - [x] Silver Auto Tester<br>
+- [x] Struct Data Arrays as Structs Values<br>
+- [x] Export to definitions < Code Info ><br>
+- [x] Multi Dimensional Data arrays<br>
+- [x] Boolean data type<br>
+
 
 ## <b>Similar Projects</b>
 - <i><b>The Dhall Configuration Language</b></i><br>
