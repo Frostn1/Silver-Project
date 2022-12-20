@@ -322,7 +322,7 @@ Side note, all of the exports will show the same example, to have some uniformit
 	Data : [  true,  Hello world, [ John, Doe, 24, 1998 ] ]
 }
 ```
-- _base_<br>
+- _base_
 Catalogs all of the key's with their values type.<br>
 Can be mainly used for debugging.
 ```json
