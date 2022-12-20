@@ -12,8 +12,10 @@
 * [Testing](#testing)
 * [Documentation](#docs)
     * [Structs](#structs)
+    * [Delta](#delta)
     * [Data Arrays](#data-arrays)
     * [Exports](#exports)
+    * [Data Types](#data-types)
 * [MileStones](#milestones)
 * [Similar Projects](#bsimilar-projectsb)
 
@@ -87,6 +89,10 @@ For example we can create a Person struct
 As you can see, we created a new struct named `Person` that holds 4 fields.<br>
 The fields names can be what ever you want, and don't have any limitations, this make is so you can have spaces in the name too !<br><br>
 The keen eye of you have noticed that the `age` field is a bit special, as it holds a delta, i.e. ( `=> (CurrentYear - Person.year of birth)` ).<br><br>
+
+<hr/>
+
+### <b>Lambda</b>
 As this language is dynamic and wants to take the load off the user itself, when one or more of the fields is not given when creating a new struct, the lang will try and replace it with a new value, either using a delta or a blank value.<br>
 This feature makes it that the structure of the final file export is kept and can be safely read by a 3rd party.
 
@@ -150,6 +156,8 @@ As we can see, the Silver code is exported to different file types, while having
 
 Futher more, this might have gone unnoticed but Silver will also keep the formatting of struct's keys order when exporting to another file type, as you can see all the key-value pairs in the json file are all have the same order for key-value pair, for better code visibility.
 
+<hr/>
+
 ### <b>Data Arrays</b>
 
 As pretty much any developed programming language has arrays, Silver has its own arrays too.<br>
@@ -210,7 +218,7 @@ It works the same as any other type of value in Silver so far ( Text, Number, Bo
 A simple example of multi dimensional arrays in Silver:
 ```js
 {
-    'Dates' : [ '11.7.2004' ["Silver" [ 17 False] True 12.2 ] 2021],
+    'Dates' : [ '11.7.2004' ["Silver" [ 17 False] true 12.2 ] 2021],
 }
 
 export json
@@ -243,6 +251,8 @@ And to the new type export ( also known as `base` exporting):
 [ Dates [ Text,  [ Text,  [ Number, Bool ] : List, Bool, Number ] : List, Number ] : List ]
 ```
 
+<hr/>
+
 ### Exports
 As the languages progresses it will have more and more official implemented export file extensions, which may include : json, yaml, raw, base etc...<br>
 Inorder to use each export ( including future ones that are not implemented at this point of writing ), you would just need to use the `export` keyword and the file type you want to export to.<br>
@@ -254,7 +264,7 @@ Maybe through another file which will dictate how it is suppose to written in ea
 
 #### __Officially supported file exports by Sillver__
 Side note, all of the exports will show the same example, to have some uniformity.
-```js
+```json
 // Example.si
 < Person:
     first name,
@@ -266,7 +276,7 @@ Side note, all of the exports will show the same example, to have some uniformit
 {
     ano : 2021,
     'CurrentYear' : 2022,
-    'Data' : [True "Hello world"  Person[first name='John' | last name= 'Doe' | year of birth=1998] 2017]
+    'Data' : [true "Hello world"  Person[first name='John' | last name= 'Doe' | year of birth=1998] 2017]
 }
 ```
 - _json_
@@ -296,7 +306,7 @@ Side note, all of the exports will show the same example, to have some uniformit
     - 2021
 - CurrentYear: 2022
 - Data: 
-    - True
+    - true
     - Hello world
     - first name: John
     - last name: Doe
@@ -304,22 +314,34 @@ Side note, all of the exports will show the same example, to have some uniformit
     - year of birth: 1998
 ```
 - _raw_
-```js
+```json
 // Example.txt
 {
 	ano : [  2021 ],
 	CurrentYear :  2022,
-	Data : [  True,  Hello world, [ John, Doe, 24, 1998 ] ]
+	Data : [  true,  Hello world, [ John, Doe, 24, 1998 ] ]
 }
 ```
 - _base_<br>
 Catalogs all of the key's with their values type.<br>
 Can be mainly used for debugging.
-```haskell
+```json
 // Example.base
 Person [ first name : Any, last name : Any, age : Any, year of birth : Any ] : Struct
 [ ano [ Number ] : List, CurrentYear : Number, Data [ Bool, Text, Person ] : List ]
 ```
+
+<hr/>
+
+### <b>Data Types</b>
+
+In Silver we have all kind of data types, from primitive ones up to user defined structures ( which are a collection of named defined fields, which can contain data types in them ).<br/>
+Primitive data types may include:
+- _Number_ - `1`, `-123`, `13.4`
+- _String_ - `"Silver"`, `'Lorem'`, `''`
+- _Bool_ - `true`, `False`
+
+<hr/>
 
 ## <b>Milestones</b>
 ### Current
