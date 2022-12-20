@@ -3,7 +3,7 @@
 
 <h1>Silver Project</h1>
 
-### Data language used to create better file formatting and dynamic usage.<br><br>![Language](https://img.shields.io/badge/language-Python-6A7FC8.svg?style=for-the-badge)   [![Build Status](https://img.shields.io/github/workflow/status/arturo-lang/arturo/Linux?style=for-the-badge)](https://github.com/arturo-lang/arturo/actions)
+### Data language used to create better file formatting and dynamic usage.<br><br>![Language](https://img.shields.io/badge/language-Python-6A7FC8.svg?style=for-the-badge)
 
 --- 
 
