@@ -6,6 +6,7 @@ def main() -> None:
     file_path: str = parse_args()
     file_content: str = read_file(file_path)
     tokens = lex(file_content)
+    print(tokens)
 
 if __name__ == '__main__':
     main()

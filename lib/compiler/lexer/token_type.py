@@ -8,6 +8,8 @@ class TokenType:
     representation: str
     short_representation: str
 
+    include_original: bool = False
+
     def __eq__(self, other: Any) -> bool:
         if isinstance(other, str):
             return self.raw == other
@@ -22,11 +24,14 @@ class TokenType:
         return TokenType(self.raw, self.representation, self.short_representation)
 
 
+IDENTIFIER_TOKEN_TYPE = TokenType('', 'Custom Identifier', 'IDENTIFIER', True)
+
 token_types: List[TokenType] = [
     TokenType('<', 'Left Chevron', 'LEFT_CHEVRON'),
     TokenType('>', 'Left Chevron', 'RIGHT_CHEVRON'),
     TokenType('{', 'Left Brace ', 'LEFT_BRACE'),
     TokenType('}', 'Right Brace', 'RIGHT_BRACE'),
 
+    IDENTIFIER_TOKEN_TYPE,
 
 ]

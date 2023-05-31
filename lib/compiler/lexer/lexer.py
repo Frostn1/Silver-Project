@@ -1,9 +1,8 @@
-from typing import List, Any
+from typing import List, Any, Tuple
 from string import whitespace, punctuation
 
 from lib.compiler.lexer.position import Position
-from lib.compiler.lexer.token import Token
-from lib.compiler.lexer.token_type import token_types, TokenType
+from lib.compiler.lexer.token import Token, get_token
 
 SPACE_CHARACTER = whitespace
 NEW_LINE_CHARACTER = '\n'
@@ -15,42 +14,50 @@ NEW_LINE_CHARACTER = '\n'
 #
 #
 #
+
+
 def _is_space(current_char: chr) -> bool:
     return current_char in SPACE_CHARACTER
 
 
-def get_next_token_type(current_slice: str) -> TokenType:
-    if current_slice in token_types:
-        return token_types[token_types.index(current_slice)]
-    else:
-        print(f'[ Token doesnt exist in file : {current_slice} ]')
-
-
-def idk(file_content: str) -> Any:
+def get_next_char(file_content: str) -> str:
     length = len(file_content)
     current_index = 0
-    current_slice = ''
-    current_position = Position(1, 1)
     while current_index < length:
-        current_char = file_content[current_index]
-        if _is_space(current_char) and current_slice:
-            get_next_token_type(current_slice)
-            current_slice = ''
-        elif current_char in punctuation:
-            current_slice += current_char
-            get_next_token_type(current_slice)
-            current_slice = ''
-        elif not _is_space(current_char):
-            current_slice += current_char
-
-        if current_char == NEW_LINE_CHARACTER:
-            current_position.row += 1
-            current_position.column = 1
-        else:
-            current_position.column += 1
+        yield file_content[current_index]
         current_index += 1
 
 
+def is_current_char_ending(current_char: str, current_slice: str) -> Tuple[str, bool]:
+    if _is_space(current_char) and current_slice:
+        return current_slice, True
+    elif current_char in punctuation:
+        current_slice += current_char
+        return current_slice, True
+    elif not _is_space(current_char):
+        current_slice += current_char
+    return current_slice, False
+
+
+def parse_new_position(old_position: Position, current_char: str) -> None:
+    if current_char == NEW_LINE_CHARACTER:
+        old_position.row += 1
+        old_position.column = 1
+    else:
+        old_position.column += 1
+
+
 def lex(file_content: str) -> List[Token]:
-    idk(file_content)
-    return []
+    current_slice = ''
+    tokens: List[Token] = []
+    current_position = Position(1, 1)
+    start_position = Position(1, 1)
+    for char in get_next_char(file_content):
+        current_slice, is_ending = is_current_char_ending(char, current_slice)
+        if is_ending:
+            tokens.append(get_token(current_slice, start_position))
+            current_slice = ''
+            start_position.row = current_position.row
+            start_position.column = current_position.column
+        parse_new_position(current_position, char)
+    return tokens
