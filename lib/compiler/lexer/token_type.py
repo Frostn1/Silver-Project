@@ -17,6 +17,8 @@ class TokenType:
             return self.raw == other
         elif isinstance(other, TokenType):
             return self.short_representation == other.short_representation
+        elif isinstance(other, EnumTokenType):
+            return self.short_representation == other
         return False
 
     def __ne__(self, other: Any) -> bool:
@@ -37,4 +39,5 @@ token_types: List[TokenType] = [
     IDENTIFIER_TOKEN_TYPE,
 
     TokenType(':', 'Colon', EnumTokenType.COLON),
+    TokenType(',', 'Comma', EnumTokenType.COMMA),
 ]

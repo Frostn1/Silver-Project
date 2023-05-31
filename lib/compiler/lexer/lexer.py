@@ -32,7 +32,8 @@ def is_current_char_ending(current_char: str, current_slice: str) -> Tuple[str, 
     if _is_space(current_char) and current_slice:
         return current_slice, True
     elif current_char in punctuation:
-        current_slice += current_char
+        if not current_slice:
+            current_slice += current_char
         return current_slice, True
     elif not _is_space(current_char):
         current_slice += current_char
@@ -59,8 +60,8 @@ def lex(file_content: str) -> List[Token]:
             if tokens:
                 tokens[-1].next = next_token
             tokens.append(next_token)
-            current_slice = ''
-            start_position.row = current_position.row
-            start_position.column = current_position.column
+
+            current_slice = char if char in punctuation and current_slice != char else ''
+            start_position = Position(current_position.row, current_position.column)
         parse_new_position(current_position, char)
     return tokens

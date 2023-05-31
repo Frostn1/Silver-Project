@@ -2,7 +2,6 @@ import dataclasses
 from typing import Optional
 
 from lib.compiler.lexer.position import Position
-from lib.compiler.lexer.token_type import TokenType
 from lib.compiler.lexer.token_type import token_types, TokenType, IDENTIFIER_TOKEN_TYPE
 
 EMPTY_SLICE = ''

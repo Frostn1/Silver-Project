@@ -8,3 +8,4 @@ class EnumTokenType(int, Enum):
     RIGHT_BRACE = 3
     IDENTIFIER = 4
     COLON = 5
+    COMMA = 6
