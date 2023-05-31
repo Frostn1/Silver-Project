@@ -1,12 +1,14 @@
 import dataclasses
 from typing import Any, List
 
+from lib.compiler.lexer.enum_token_type import EnumTokenType
+
 
 @dataclasses.dataclass
 class TokenType:
     raw: str
     representation: str
-    short_representation: str
+    short_representation: EnumTokenType
 
     include_original: bool = False
 
@@ -24,14 +26,15 @@ class TokenType:
         return TokenType(self.raw, self.representation, self.short_representation)
 
 
-IDENTIFIER_TOKEN_TYPE = TokenType('', 'Custom Identifier', 'IDENTIFIER', True)
+IDENTIFIER_TOKEN_TYPE = TokenType('', 'Custom Identifier', EnumTokenType.IDENTIFIER, True)
 
 token_types: List[TokenType] = [
-    TokenType('<', 'Left Chevron', 'LEFT_CHEVRON'),
-    TokenType('>', 'Left Chevron', 'RIGHT_CHEVRON'),
-    TokenType('{', 'Left Brace ', 'LEFT_BRACE'),
-    TokenType('}', 'Right Brace', 'RIGHT_BRACE'),
+    TokenType('<', 'Left Chevron', EnumTokenType.LEFT_CHEVRON),
+    TokenType('>', 'Left Chevron', EnumTokenType.RIGHT_CHEVRON),
+    TokenType('{', 'Left Brace ', EnumTokenType.LEFT_BRACE),
+    TokenType('}', 'Right Brace', EnumTokenType.RIGHT_BRACE),
 
     IDENTIFIER_TOKEN_TYPE,
 
+    TokenType(':', 'Colon', EnumTokenType.COLON),
 ]

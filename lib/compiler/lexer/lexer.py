@@ -55,7 +55,10 @@ def lex(file_content: str) -> List[Token]:
     for char in get_next_char(file_content):
         current_slice, is_ending = is_current_char_ending(char, current_slice)
         if is_ending:
-            tokens.append(get_token(current_slice, start_position))
+            next_token = get_token(current_slice, start_position)
+            if tokens:
+                tokens[-1].next = next_token
+            tokens.append(next_token)
             current_slice = ''
             start_position.row = current_position.row
             start_position.column = current_position.column
