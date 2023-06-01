@@ -63,5 +63,7 @@ def lex(file_content: str) -> List[Token]:
 
             current_slice = char if char in punctuation and current_slice != char else ''
             start_position = Position(current_position.row, current_position.column)
+        else:
+            start_position = Position(current_position.row, current_position.column)
         parse_new_position(current_position, char)
     return tokens

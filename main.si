@@ -3,6 +3,6 @@ date {
 }
 
 person {
-    name: Bool,
-    age
+    name,
+    age: date
 }
