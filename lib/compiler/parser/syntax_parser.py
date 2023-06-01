@@ -5,6 +5,7 @@ from lib.compiler.lexer.enum_token_type import EnumTokenType
 from lib.compiler.lexer.token import Token
 from lib.compiler.parser.parser import Parser
 from lib.compiler.parser.struct_parser import parse_struct
+from lib.compiler.parser.utils import try_get_next_token
 
 
 def identifier_top_level(parser: Parser) -> None:
@@ -26,4 +27,6 @@ def parse(tokens: List[Token]) -> Parser:
     parser = Parser(tokens[0])
     while parser.token.next:
         top_level(parser)
+        parser.token = try_get_next_token(parser.token)
+
     return parser

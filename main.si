@@ -1,4 +1,8 @@
+date {
+
+}
+
 person {
-    name: Bool
+    name: Bool,
     age
 }

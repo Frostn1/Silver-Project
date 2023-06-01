@@ -41,13 +41,12 @@ def parse_struct(parser: Parser) -> ParseResult:
     struct_name = parser.token.raw
     struct_symbol = StructSymbol(SymbolType.STRUCT_SYMBOL, struct_name, parser.token.position, [], [])
     struct_tree = ParseTree(ParseTreeType.STRUCT_DECLARATION)
-    parser.token = get_next_token(parser.token, expecting_msg='closing brace')
-    while parser.token.next and parser.token.next.type == EnumTokenType.IDENTIFIER:
-        parser.token = get_next_token(parser.token, expecting_msg='identifier')
+    parser.token = get_next_token(parser.token, expecting_msg='opening brace')
+    parser.token = get_next_token(parser.token, expecting_msg='identifier or closing brace')
+    while parser.token.type == EnumTokenType.IDENTIFIER:
         parse_result = parse_struct_field(parser)
         struct_symbol.add_field(parse_result.symbol)
         struct_tree.add_child(parse_result.tree)
     if parser.token.type != EnumTokenType.RIGHT_BRACE:
         raise_missing_term_error(parser.token, expecting_msg='closing brace')
-
     return ParseResult(struct_tree, struct_symbol)
