@@ -5,13 +5,11 @@ from lib.compiler.lexer.enum_token_type import EnumTokenType
 from lib.compiler.lexer.token import Token
 from lib.compiler.parser.parser import Parser
 from lib.compiler.parser.struct_parser import parse_struct
-from lib.compiler.parser.utils import get_next_token
 
 
 def identifier_top_level(parser: Parser) -> None:
     # struct block
-    parser.token = get_next_token(parser.token)
-    if parser.token.type == EnumTokenType.LEFT_BRACE:
+    if parser.token.next and parser.token.next.type == EnumTokenType.LEFT_BRACE:
         parse_result = parse_struct(parser)
         parser.tree.add_child(parse_result.tree)
         parser.table.add_symbol(parse_result.symbol.symbol_name, parse_result.symbol)

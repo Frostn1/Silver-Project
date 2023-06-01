@@ -20,5 +20,5 @@ class SymbolTable:
         representation += '= SYMBOL TABLE =\n'
         representation += '================\n'
         for _, symbol_value in self.symbols.items():
-            representation += str(symbol_value)
+            representation += f'{str(symbol_value)}\n'
         return representation
