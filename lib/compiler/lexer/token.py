@@ -14,6 +14,7 @@ class Token:
     raw: str
 
     next: Optional['Token']
+    prev: Optional['Token']
 
 
 def _get_token_type(current_slice: str) -> TokenType:
@@ -26,4 +27,4 @@ def _get_token_type(current_slice: str) -> TokenType:
 def get_token(current_slice: str, current_position: Position) -> Token:
     token_type = _get_token_type(current_slice)
     original_representation = current_slice if token_type.include_original else EMPTY_SLICE
-    return Token(position=current_position, type=token_type, raw=original_representation, next=None)
+    return Token(position=current_position, type=token_type, raw=original_representation, next=None, prev=None)

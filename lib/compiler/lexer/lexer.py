@@ -59,6 +59,7 @@ def lex(file_content: str) -> List[Token]:
             next_token = get_token(current_slice, start_position)
             if tokens:
                 tokens[-1].next = next_token
+                next_token.prev = tokens[-1]
             tokens.append(next_token)
 
             current_slice = char if char in punctuation and current_slice != char else ''

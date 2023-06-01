@@ -21,6 +21,8 @@ def _parse_start_of_block(parser: Parser, block_name: str = None) -> ParseResult
     block_symbol = BlockSymbol(SymbolType.BLOCK_SYMBOL, block_name, parser.token.position, [], [])
     block_tree = ParseTree(ParseTreeType.BLOCK_DECLARATION)
     parser.token = get_next_token(parser.token, expecting_msg='opening brace')
+    if parser.token.type != EnumTokenType.LEFT_BRACE:
+        raise_missing_term_error(parser.token, expecting_msg='opening brace')
     return ParseResult(block_tree, block_symbol)
 
 
