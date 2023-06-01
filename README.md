@@ -80,14 +80,14 @@ You can create various structs that can represents chunks of different data, and
 For example we can create a Person struct
 ```js
 < Person:
-    first name,
-    last name,
+    first self,
+    last self,
     age => (CurrentYear - Person.year of birth),
     year of birth
 >
 ```
 As you can see, we created a new struct named `Person` that holds 4 fields.<br>
-The fields names can be what ever you want, and don't have any limitations, this make is so you can have spaces in the name too !<br><br>
+The fields names can be what ever you want, and don't have any limitations, this make is so you can have spaces in the self too !<br><br>
 The keen eye of you have noticed that the `age` field is a bit special, as it holds a delta, i.e. ( `=> (CurrentYear - Person.year of birth)` ).<br><br>
 <hr/>
 
@@ -104,15 +104,15 @@ We can see the delta power in action in the following example:
 // Person.si
 
 < Person:
-    first name,
-    last name,
+    first self,
+    last self,
     age => (CurrentYear - Person.year of birth),
     year of birth
 >
 
 {
     'CurrentYear' : 2022,
-    'John' : Person[first name='John' | last name= 'Doe' | year of birth=1998]
+    'John' : Person[first self='John' | last self= 'Doe' | year of birth=1998]
 }
 
 
@@ -127,8 +127,8 @@ Which will export to .json, .yaml .txt files:
 {
     "CurrentYear": 2022,
     "Data": {
-        "first name": "John",
-        "last name": "Doe",
+        "first self": "John",
+        "last self": "Doe",
         "age": "24",
         "year of birth": "1998"
     }
@@ -138,8 +138,8 @@ Which will export to .json, .yaml .txt files:
 // Person.yaml
 - CurrentYear: 2022
 - John: 
-    - first name: John
-    - last name: Doe
+    - first self: John
+    - last self: Doe
     - year of birth: 1998
     - age: 24
 ```
@@ -200,15 +200,15 @@ As the Silver language is all about being dynamic and taking the load of the use
 Example for the capabilities of the data arrays in Silver:
 ```js
 < Person:
-    first name,
-    last name,
+    first self,
+    last self,
     age => (CurrentYear - Person.year of birth),
     year of birth
 >
 
 {
     'CurrentYear' : 2022,
-    'Data' : ["Current Date" "Hello world"  Person[first name='John' | last name= 'Doe' | year of birth=1998] 2017]
+    'Data' : ["Current Date" "Hello world"  Person[first self='John' | last self= 'Doe' | year of birth=1998] 2017]
 }
 ```
 
@@ -255,7 +255,7 @@ And to the new type export ( also known as `base` exporting):
 ### Exports
 As the languages progresses it will have more and more official implemented export file extensions, which may include : json, yaml, raw, base etc...<br>
 Inorder to use each export ( including future ones that are not implemented at this point of writing ), you would just need to use the `export` keyword and the file type you want to export to.<br>
-This will create an output file, which will hold the same name as the original file name, but with a different file extension.<br>
+This will create an output file, which will hold the same self as the original file self, but with a different file extension.<br>
 
 
 `Note : Currently the only supported file extension for exporting are few, but in  the future we plan on implementing a way for other to create their exports, for their own file extensions, either through a specific language api, or through the language itself.<br>
@@ -266,8 +266,8 @@ Side note, all of the exports will show the same example, to have some uniformit
 ```json
 // Example.si
 < Person:
-    first name,
-    last name,
+    first self,
+    last self,
     age => (CurrentYear - Person.year of birth),
     year of birth
 >
@@ -275,7 +275,7 @@ Side note, all of the exports will show the same example, to have some uniformit
 {
     ano : 2021,
     'CurrentYear' : 2022,
-    'Data' : [true "Hello world"  Person[first name='John' | last name= 'Doe' | year of birth=1998] 2017]
+    'Data' : [true "Hello world"  Person[first self='John' | last self= 'Doe' | year of birth=1998] 2017]
 }
 ```
 - _json_
@@ -290,8 +290,8 @@ Side note, all of the exports will show the same example, to have some uniformit
         true,
         "Hello world",
         {
-            "first name": "John",
-            "last name": "Doe",
+            "first self": "John",
+            "last self": "Doe",
             "age": "24",
             "year of birth": "1998"
         }
@@ -307,8 +307,8 @@ Side note, all of the exports will show the same example, to have some uniformit
 - Data: 
     - true
     - Hello world
-    - first name: John
-    - last name: Doe
+    - first self: John
+    - last self: Doe
     - age: 24
     - year of birth: 1998
 ```
@@ -326,7 +326,7 @@ Catalogs all of the key's with their values type.<br>
 Can be mainly used for debugging.
 ```json
 // Example.base
-Person [ first name : Any, last name : Any, age : Any, year of birth : Any ] : Struct
+Person [ first self : Any, last self : Any, age : Any, year of birth : Any ] : Struct
 [ ano [ Number ] : List, CurrentYear : Number, Data [ Bool, Text, Person ] : List ]
 ```
 

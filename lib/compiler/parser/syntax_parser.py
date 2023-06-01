@@ -24,7 +24,8 @@ def top_level(parser: Parser) -> None:
         identifier_top_level(parser)
 
 
-def parse(tokens: List[Token]):
+def parse(tokens: List[Token]) -> Parser:
     parser = Parser(tokens[0])
     while parser.token.next:
         top_level(parser)
+    return parser

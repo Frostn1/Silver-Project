@@ -9,9 +9,12 @@ def main() -> None:
     file_content: str = read_file(file_path)
     tokens = lex(file_content)
     try:
-        parse_tree = parse(tokens)
+        parser = parse(tokens)
+        print(parser.tree)
+        print(parser.table)
     except SilverException as e:
         print(e)
+
 
 if __name__ == '__main__':
     main()

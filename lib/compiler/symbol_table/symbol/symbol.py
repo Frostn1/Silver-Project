@@ -12,4 +12,8 @@ class Symbol:
     declaration_position: Position
     usage_positions: List[Position]
 
-
+    def __repr__(self) -> str:
+        representation = ''
+        representation += f'[ {self.symbol_name} ] ( {self.symbol_type} )\n'
+        representation += f'> DECLARATION {self.declaration_position}\n'
+        return representation

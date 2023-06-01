@@ -13,3 +13,12 @@ class SymbolTable:
 
     def __getitem__(self, key):
         return self.symbols.get(key)
+
+    def __repr__(self) -> str:
+        representation = ''
+        representation += '================\n'
+        representation += '= SYMBOL TABLE =\n'
+        representation += '================\n'
+        for _, symbol_value in self.symbols.items():
+            representation += symbol_value
+        return representation
