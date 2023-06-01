@@ -27,8 +27,8 @@ def parse_struct_field(parser: Parser) -> ParseResult:
         if parser.token.next.type != EnumTokenType.IDENTIFIER:
             raise_invalid_term_error(parser.token, expecting_msg='type name')
         field_symbol.type = LanguageType.UNDEFINED
+        parser.token = get_next_token(parser.token, expecting_msg='type name')
         field_type_tree = ParseTree(ParseTreeType.STRUCT_FIELD_TYPE_ANNOTATION, value=parser.token.raw)
-        parser.token = get_next_token(parser.token, expecting_msg='next field or end of struct')
         parser.token = get_next_token(parser.token, expecting_msg='next field or end of struct')
     if parser.token.type == EnumTokenType.COMMA:
         parser.token = get_next_token(parser.token, expecting_msg='closing brace')

@@ -14,3 +14,9 @@ class ParseTree:
 
     def add_child(self, tree: 'ParseTree') -> None:
         self.children.append(tree)
+
+    def print(self, level: int = 0) -> None:
+        suffix = "\t" * level
+        print(f'{suffix}[ Tree :: {self.tree_type}]')
+        print(f'{suffix}( {self.value} )')
+        list(map(lambda child: child.print(level + 1), self.children))

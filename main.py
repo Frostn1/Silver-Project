@@ -10,7 +10,7 @@ def main() -> None:
     tokens = lex(file_content)
     try:
         parser = parse(tokens)
-        print(parser.tree)
+        parser.tree.print()
         print(parser.table)
     except SilverException as e:
         print(e)
