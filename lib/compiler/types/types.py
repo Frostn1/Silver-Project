@@ -1,7 +1,8 @@
 from enum import auto, Enum
+from typing import Any
 
 
-class LanguageType(int, Enum):
+class LanguageType(str, Enum):
     @staticmethod
     def _generate_next_value_(name: str, start: int, count: int, last_values: list[Any]) -> Any:
         return name

@@ -17,3 +17,6 @@ class Symbol:
         representation += f'[ {self.symbol_name} ] ( {self.symbol_type} )\n'
         representation += f'> DECLARATION {self.declaration_position}\n'
         return representation
+
+    def __str__(self) -> str:
+        return self.__repr__()
