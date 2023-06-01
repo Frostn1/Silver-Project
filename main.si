@@ -1,8 +1,16 @@
-date {
+struct date {
 
 }
 
-person {
+struct person {
     name,
     age: date
+}
+
+block {
+
+}
+
+block data {
+
 }

@@ -40,4 +40,6 @@ token_types: List[TokenType] = [
 
     TokenType(':', 'Colon', EnumTokenType.COLON),
     TokenType(',', 'Comma', EnumTokenType.COMMA),
+    TokenType('struct', 'Struct', EnumTokenType.STRUCT),
+    TokenType('block', 'Block', EnumTokenType.BLOCK),
 ]

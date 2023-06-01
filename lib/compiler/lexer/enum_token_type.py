@@ -9,3 +9,5 @@ class EnumTokenType(int, Enum):
     IDENTIFIER = 4
     COLON = 5
     COMMA = 6
+    STRUCT = 7
+    BLOCK = 8

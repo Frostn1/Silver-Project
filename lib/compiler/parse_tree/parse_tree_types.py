@@ -11,3 +11,5 @@ class ParseTreeType(str, Enum):
     STRUCT_DECLARATION = auto()
     STRUCT_FIELD = auto()
     STRUCT_FIELD_TYPE_ANNOTATION = auto()
+    BLOCK_DECLARATION = auto()
+    ANONYMOUS_BLOCK_DECLARATION = auto()
