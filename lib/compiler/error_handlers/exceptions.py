@@ -1,4 +1,3 @@
-
 class SilverException(Exception):
     pass
 
@@ -8,4 +7,8 @@ class MissingTerm(SilverException):
 
 
 class InvalidTerm(SilverException):
+    pass
+
+
+class UnexpectedTerm(SilverException):
     pass
