@@ -11,18 +11,18 @@ from lib.compiler.parser.utils import try_get_next_token
 
 def struct_top_level(parser: Parser) -> None:
     # struct
-    if parser.token.next and parser.token.next.type == EnumTokenType.IDENTIFIER:
+    if parser.token.next and parser.token.next.type.short_representation == EnumTokenType.IDENTIFIER:
         parse_result = parse_struct(parser)
         parser.tree.add_child(parse_result.tree)
         parser.table.add_symbol(parse_result.symbol.symbol_name, parse_result.symbol)
     else:
-        raise_unexpected_term_error(parser.token, parser.token.raw if parser.token.raw else parser.token.type.raw)
+        raise_unexpected_term_error(parser.token, [EnumTokenType.STRUCT])
 
 
 def block_top_level(parser: Parser) -> None:
     # block
     if not parser.token.next:
-        raise_missing_term_error(parser.token, expecting_msg='block start')
+        raise_missing_term_error(parser.token, [EnumTokenType.LEFT_BRACE])
     elif parser.token.next.type == EnumTokenType.IDENTIFIER:
         # named struct
         parsed_result = parse_block(parser)
@@ -34,7 +34,7 @@ def block_top_level(parser: Parser) -> None:
         parser.tree.add_child(parsed_result.tree)
         parser.table.add_symbol(parsed_result.symbol.symbol_name, parsed_result.symbol)
     else:
-        raise_unexpected_term_error(parser.token, parser.token.raw if parser.token.raw else parser.token.type.raw)
+        raise_unexpected_term_error(parser.token, [EnumTokenType.BLOCK])
 
 
 TOP_LEVEL_PARSERS = {
@@ -47,7 +47,7 @@ def top_level(parser: Parser) -> None:
     if parser.token.type.short_representation in TOP_LEVEL_PARSERS:
         TOP_LEVEL_PARSERS[parser.token.type.short_representation](parser)
     else:
-        raise_unexpected_term_error(parser.token, parser.token.raw)
+        raise_unexpected_term_error(parser.token, list(TOP_LEVEL_PARSERS.keys()))
 
 
 def parse(tokens: List[Token]) -> Parser:

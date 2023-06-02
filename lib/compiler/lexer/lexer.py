@@ -55,6 +55,7 @@ def lex(file_content: str) -> List[Token]:
     start_position = Position(1, 1)
     for char in get_next_char(file_content):
         current_slice, is_ending = is_current_char_ending(char, current_slice)
+
         if is_ending:
             next_token = get_token(current_slice, start_position)
             if tokens:
@@ -64,7 +65,10 @@ def lex(file_content: str) -> List[Token]:
 
             current_slice = char if char in punctuation and current_slice != char else ''
             start_position = Position(current_position.row, current_position.column)
-        else:
+        elif _is_space(char):
+            parse_new_position(current_position, char)
             start_position = Position(current_position.row, current_position.column)
+            continue
         parse_new_position(current_position, char)
+
     return tokens

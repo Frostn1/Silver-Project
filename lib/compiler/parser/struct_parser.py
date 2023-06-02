@@ -44,18 +44,16 @@ def parse_struct_field(parser: Parser) -> ParseResult:
 
 
 def parse_struct(parser: Parser) -> ParseResult:
-    parser.token = get_next_token(parser.token, expecting_msg='struct name')
+    parser.token = get_next_token(parser.token, [EnumTokenType.IDENTIFIER])
     struct_name = parser.token.raw
     struct_symbol = StructSymbol(SymbolType.STRUCT_SYMBOL, struct_name, parser.token.position, [], [])
     struct_tree = ParseTree(ParseTreeType.STRUCT_DECLARATION)
-    parser.token = get_next_token(parser.token, expecting_msg='opening brace')
-    if parser.token.type != EnumTokenType.LEFT_BRACE:
-        raise_missing_term_error(parser.token, expecting_msg='opening brace')
-    parser.token = get_next_token(parser.token, expecting_msg='identifier or closing brace')
+    parser.token = get_next_token(parser.token, [EnumTokenType.LEFT_BRACE])
+    parser.token = get_next_token(parser.token, [EnumTokenType.IDENTIFIER, EnumTokenType.RIGHT_BRACE])
     while parser.token.type == EnumTokenType.IDENTIFIER:
         parse_result = parse_struct_field(parser)
         struct_symbol.add_field(parse_result.symbol)
         struct_tree.add_child(parse_result.tree)
-    if parser.token.type != EnumTokenType.RIGHT_BRACE:
-        raise_missing_term_error(parser.token, expecting_msg='closing brace')
+    if parser.token.type.short_representation != EnumTokenType.RIGHT_BRACE:
+        raise_missing_term_error(parser.token, [EnumTokenType.RIGHT_BRACE])
     return ParseResult(struct_tree, struct_symbol)
