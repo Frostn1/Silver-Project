@@ -16,6 +16,15 @@ class Token:
     next: Optional['Token']
     prev: Optional['Token']
 
+    @property
+    def end(self) -> int:
+        start_column = self.position.column
+        if self.raw:
+            return start_column + len(self.raw)
+        if self.type.raw:
+            return start_column + len(self.type.raw)
+        return start_column
+
 
 def _get_token_type(current_slice: str) -> TokenType:
     if current_slice in token_types:

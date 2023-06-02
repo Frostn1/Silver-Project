@@ -3,10 +3,22 @@ struct date {
 }
 
 struct dog {
-    breed
-
+    breed d d:
 }
 
 struct person {
     name,
+    age: date
+}
+
+block {
+
+}
+
+block data {
+
+}
+
+block data
+
 }

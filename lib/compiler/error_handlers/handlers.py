@@ -1,13 +1,16 @@
-from typing import List
+from typing import List, Optional
 
 from lib.compiler.error_handlers.error_config import ERROR_POSITION_FORMAT
 from lib.compiler.error_handlers.exceptions import MissingTerm, InvalidTerm, UnexpectedTerm
 from lib.compiler.lexer.enum_token_type import EnumTokenType
+from lib.compiler.lexer.position import Position
 from lib.compiler.lexer.token import Token
 
 POINTER_CHARACTER = '^'
 SPACER_CHARACTER = '-'
 NEW_LINE_CHARACTER = '\n'
+TAB_CHARACTER = '\t'
+SPACE_CHARACTER = ' '
 
 
 def _get_info(token: Token) -> str:
@@ -18,19 +21,41 @@ def _get_info(token: Token) -> str:
     return ''
 
 
+def _parse_new_position(token: Token, last_position: Token = None) -> str:
+    messages = []
+    token_position = token.position
+    row_difference = 0
+    column_difference = token_position.column
+    if last_position:
+        column_difference = abs(
+            last_position.end - token_position.column) if last_position.position.row == token_position.row else token_position.column
+
+        row_difference = abs(last_position.position.row - token_position.row)
+
+    messages.append(NEW_LINE_CHARACTER * row_difference)
+    messages.append(SPACE_CHARACTER * column_difference)
+    messages.append(_get_info(token))
+    return ''.join(messages)
+
+
 def _try_parse_error_message(token: Token) -> str:
     messages = []
-    error_row = token.position.row
+    last_position: Optional[Token] = None
+
     if token.prev:
-        messages.append(_get_info(token.prev))
-        messages.append(NEW_LINE_CHARACTER * abs(token.prev.position.row - error_row))
-    messages.append(_get_info(token))
-    messages.append(NEW_LINE_CHARACTER)
-    messages.append(_get_error_info_message(token))
+        messages.append(_parse_new_position(token.prev))
+        last_position = token.prev
+
+    messages.append(_parse_new_position(token, last_position))
+    postfix = [_get_error_info_message(token)]
+    last_position = token
+
     if token.next:
-        messages.append(NEW_LINE_CHARACTER * abs(token.prev.position.row - error_row))
-        messages.append(_get_info(token.next))
-    return ' '.join(messages)
+        postfix.append(_parse_new_position(token.next, last_position))
+    if token.next.position.row != token.position.row:
+        postfix = postfix[::-1]
+
+    return ''.join(messages + [NEW_LINE_CHARACTER] + postfix)
 
 
 def _get_position_format(token: Token) -> str:
@@ -43,8 +68,9 @@ def _format_error(expect_token_types: List[EnumTokenType]) -> str:
 
 
 def _get_error_info_message(token: Token) -> str:
-    suffix = SPACER_CHARACTER * token.position.column
     suffix = ''
+    if token.prev and token.prev.position.row == token.position.row:
+        suffix = TAB_CHARACTER + SPACER_CHARACTER * token.end
     token_raw = ''
     if token.raw:
         token_raw = token.raw
