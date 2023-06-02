@@ -8,7 +8,7 @@ from lib.compiler.lexer.token import Token
 def get_next_token(token: Token, expect_token_types: Optional[List[EnumTokenType]] = None):
     if token.next is None:
         raise_missing_term_error(token, expect_token_types)
-    if expect_token_types and token.next.type.short_representation not in expect_token_types:
+    if expect_token_types and token.next.type not in expect_token_types:
         raise_unexpected_term_error(token, expect_token_types)
     return token.next
 

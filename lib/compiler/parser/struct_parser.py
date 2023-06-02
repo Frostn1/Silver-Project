@@ -17,28 +17,28 @@ def parse_type(parser: Parser) -> Tuple[ParseTree, LanguageType]:
     # for now just check that type is an identifier
 
     if parser.token.next.type != EnumTokenType.IDENTIFIER:
-        raise_invalid_term_error(parser.token, expecting_msg='type name')
-    parser.token = get_next_token(parser.token, expecting_msg='type name')
+        raise_invalid_term_error(parser.token, [EnumTokenType.IDENTIFIER])
+    parser.token = get_next_token(parser.token, [EnumTokenType.IDENTIFIER])
     field_type_tree = ParseTree(ParseTreeType.STRUCT_FIELD_TYPE_ANNOTATION, value=parser.token.raw)
-    parser.token = get_next_token(parser.token, expecting_msg='next field or end of struct')
+    parser.token = get_next_token(parser.token, [EnumTokenType.IDENTIFIER, EnumTokenType.RIGHT_BRACE])
     return field_type_tree, LanguageType.UNDEFINED
 
 
 def parse_struct_field(parser: Parser) -> ParseResult:
     if parser.token.type != EnumTokenType.IDENTIFIER:
-        raise_invalid_term_error(parser.token, expecting_msg='identifier')
+        raise_invalid_term_error(parser.token, [EnumTokenType.IDENTIFIER])
     field_name = parser.token.raw  # for symbol table later
     field_symbol = StructFieldSymbol(SymbolType.STRUCT_FIELD_SYMBOL, field_name, parser.token.position, [],
                                      LanguageType.ANY)
     field_tree = ParseTree(ParseTreeType.STRUCT_FIELD)
-    parser.token = get_next_token(parser.token, expecting_msg='comma or colon')
+    parser.token = get_next_token(parser.token, [EnumTokenType.COLON, EnumTokenType.COMMA, EnumTokenType.RIGHT_BRACE])
 
     if parser.token.type == EnumTokenType.COLON:
         field_type_tree, field_symbol.type = parse_type(parser)
         field_tree.add_child(field_type_tree)
 
     if parser.token.type == EnumTokenType.COMMA:
-        parser.token = get_next_token(parser.token, expecting_msg='closing brace')
+        parser.token = get_next_token(parser.token, [EnumTokenType.IDENTIFIER])
 
     return ParseResult(field_tree, field_symbol)
 
@@ -54,6 +54,6 @@ def parse_struct(parser: Parser) -> ParseResult:
         parse_result = parse_struct_field(parser)
         struct_symbol.add_field(parse_result.symbol)
         struct_tree.add_child(parse_result.tree)
-    if parser.token.type.short_representation != EnumTokenType.RIGHT_BRACE:
+    if parser.token.type != EnumTokenType.RIGHT_BRACE:
         raise_missing_term_error(parser.token, [EnumTokenType.RIGHT_BRACE])
     return ParseResult(struct_tree, struct_symbol)

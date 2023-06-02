@@ -2,15 +2,11 @@ struct date {
 
 }
 
+struct dog {
+    breed
+
+}
+
 struct person {
     name,
-    age: date
-}
-
-block {
-
-}
-
-block data
-
 }

@@ -13,13 +13,16 @@ class TokenType:
     include_original: bool = False
 
     def __eq__(self, other: Any) -> bool:
-        if isinstance(other, str):
+        if isinstance(other, EnumTokenType):
+            return self.short_representation == other
+        elif isinstance(other, str):
             return self.raw == other
         elif isinstance(other, TokenType):
             return self.short_representation == other.short_representation
-        elif isinstance(other, EnumTokenType):
-            return self.short_representation == other
         return False
+
+    def __hash__(self) -> int:
+        return hash(self.short_representation)
 
     def __ne__(self, other: Any) -> bool:
         return not self.__eq__(other)

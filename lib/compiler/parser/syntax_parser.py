@@ -11,7 +11,7 @@ from lib.compiler.parser.utils import try_get_next_token
 
 def struct_top_level(parser: Parser) -> None:
     # struct
-    if parser.token.next and parser.token.next.type.short_representation == EnumTokenType.IDENTIFIER:
+    if parser.token.next and parser.token.next.type == EnumTokenType.IDENTIFIER:
         parse_result = parse_struct(parser)
         parser.tree.add_child(parse_result.tree)
         parser.table.add_symbol(parse_result.symbol.symbol_name, parse_result.symbol)
@@ -44,8 +44,8 @@ TOP_LEVEL_PARSERS = {
 
 
 def top_level(parser: Parser) -> None:
-    if parser.token.type.short_representation in TOP_LEVEL_PARSERS:
-        TOP_LEVEL_PARSERS[parser.token.type.short_representation](parser)
+    if parser.token.type in TOP_LEVEL_PARSERS:
+        TOP_LEVEL_PARSERS[parser.token.type](parser)
     else:
         raise_unexpected_term_error(parser.token, list(TOP_LEVEL_PARSERS.keys()))
 
